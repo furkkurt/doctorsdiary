@@ -1,82 +1,82 @@
 { "frames": {
    "0": {
-    "frame": { "x": 0, "y": 0, "w": 341, "h": 695 },
+    "frame": { "x": 0, "y": 0, "w": 341, "h": 702 },
     "rotated": false,
     "trimmed": false,
-    "spriteSourceSize": { "x": 0, "y": 0, "w": 341, "h": 695 },
-    "sourceSize": { "w": 341, "h": 695 },
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 341, "h": 702 },
+    "sourceSize": { "w": 341, "h": 702 },
     "duration": 100
    },
    "1": {
-    "frame": { "x": 341, "y": 0, "w": 341, "h": 695 },
+    "frame": { "x": 341, "y": 0, "w": 341, "h": 702 },
     "rotated": false,
     "trimmed": false,
-    "spriteSourceSize": { "x": 0, "y": 0, "w": 341, "h": 695 },
-    "sourceSize": { "w": 341, "h": 695 },
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 341, "h": 702 },
+    "sourceSize": { "w": 341, "h": 702 },
     "duration": 100
    },
    "2": {
-    "frame": { "x": 682, "y": 0, "w": 341, "h": 695 },
+    "frame": { "x": 682, "y": 0, "w": 341, "h": 702 },
     "rotated": false,
     "trimmed": false,
-    "spriteSourceSize": { "x": 0, "y": 0, "w": 341, "h": 695 },
-    "sourceSize": { "w": 341, "h": 695 },
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 341, "h": 702 },
+    "sourceSize": { "w": 341, "h": 702 },
     "duration": 100
    },
    "3": {
-    "frame": { "x": 1023, "y": 0, "w": 341, "h": 695 },
+    "frame": { "x": 1023, "y": 0, "w": 341, "h": 702 },
     "rotated": false,
     "trimmed": false,
-    "spriteSourceSize": { "x": 0, "y": 0, "w": 341, "h": 695 },
-    "sourceSize": { "w": 341, "h": 695 },
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 341, "h": 702 },
+    "sourceSize": { "w": 341, "h": 702 },
     "duration": 100
    },
    "4": {
-    "frame": { "x": 1364, "y": 0, "w": 341, "h": 695 },
+    "frame": { "x": 1364, "y": 0, "w": 341, "h": 702 },
     "rotated": false,
     "trimmed": false,
-    "spriteSourceSize": { "x": 0, "y": 0, "w": 341, "h": 695 },
-    "sourceSize": { "w": 341, "h": 695 },
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 341, "h": 702 },
+    "sourceSize": { "w": 341, "h": 702 },
     "duration": 100
    },
    "5": {
-    "frame": { "x": 1705, "y": 0, "w": 341, "h": 695 },
+    "frame": { "x": 1705, "y": 0, "w": 341, "h": 702 },
     "rotated": false,
     "trimmed": false,
-    "spriteSourceSize": { "x": 0, "y": 0, "w": 341, "h": 695 },
-    "sourceSize": { "w": 341, "h": 695 },
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 341, "h": 702 },
+    "sourceSize": { "w": 341, "h": 702 },
     "duration": 100
    },
    "6": {
-    "frame": { "x": 2046, "y": 0, "w": 341, "h": 695 },
+    "frame": { "x": 2046, "y": 0, "w": 341, "h": 702 },
     "rotated": false,
     "trimmed": false,
-    "spriteSourceSize": { "x": 0, "y": 0, "w": 341, "h": 695 },
-    "sourceSize": { "w": 341, "h": 695 },
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 341, "h": 702 },
+    "sourceSize": { "w": 341, "h": 702 },
     "duration": 100
    },
    "7": {
-    "frame": { "x": 2387, "y": 0, "w": 341, "h": 695 },
+    "frame": { "x": 2387, "y": 0, "w": 341, "h": 702 },
     "rotated": false,
     "trimmed": false,
-    "spriteSourceSize": { "x": 0, "y": 0, "w": 341, "h": 695 },
-    "sourceSize": { "w": 341, "h": 695 },
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 341, "h": 702 },
+    "sourceSize": { "w": 341, "h": 702 },
     "duration": 100
    },
    "8": {
-    "frame": { "x": 2728, "y": 0, "w": 341, "h": 695 },
+    "frame": { "x": 2728, "y": 0, "w": 341, "h": 702 },
     "rotated": false,
     "trimmed": false,
-    "spriteSourceSize": { "x": 0, "y": 0, "w": 341, "h": 695 },
-    "sourceSize": { "w": 341, "h": 695 },
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 341, "h": 702 },
+    "sourceSize": { "w": 341, "h": 702 },
     "duration": 100
    },
    "9": {
-    "frame": { "x": 3069, "y": 0, "w": 341, "h": 695 },
+    "frame": { "x": 3069, "y": 0, "w": 341, "h": 702 },
     "rotated": false,
     "trimmed": false,
-    "spriteSourceSize": { "x": 0, "y": 0, "w": 341, "h": 695 },
-    "sourceSize": { "w": 341, "h": 695 },
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 341, "h": 702 },
+    "sourceSize": { "w": 341, "h": 702 },
     "duration": 100
    }
  },
@@ -85,7 +85,7 @@
   "version": "1.1-dev",
   "image": "/home/furkan/projects/phaser/gamecem/assets/doktor.png",
   "format": "RGBA8888",
-  "size": { "w": 3410, "h": 695 },
+  "size": { "w": 3410, "h": 702 },
   "scale": "1",
   "frameTags": [
   ],

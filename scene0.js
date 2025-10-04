@@ -5,7 +5,6 @@ class scene0 extends Phaser.Scene{
 
   create(){
     //diyalog sahnesi başladı diğer sahnelerde sadece get dicen galiba
-    // EDIT: yok hep launchlayacaksın galiba
     this.scene.launch("dialogueOverlay")
     this.scene.bringToTop("dialogueOverlay")
     this.dialogue = this.scene.get('dialogueOverlay');
@@ -148,7 +147,7 @@ class scene0 extends Phaser.Scene{
       })
     })
     this.time.delayedCall(42000, () => {
-      this.scene.start("scene1")
+      this.scene.start("scene1", {from: 0})
     })
 
   };
@@ -178,6 +177,5 @@ class scene0 extends Phaser.Scene{
   }
 
   update(){
-    console.log(this.player.x)
   }
 }

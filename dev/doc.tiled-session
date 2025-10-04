@@ -3,33 +3,44 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "room1.tmx",
+    "activeFile": "corridor.tmx",
     "expandedProjectPaths": [
+        "."
     ],
     "fileStates": {
-        "room1.tmx": {
-            "scale": 0.7425,
-            "selectedLayer": 0,
+        "corridor.tmx": {
+            "scale": 0.1402,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 898.3164983164982,
-                "y": 315.8249158249158
+                "x": 2681.8830242510703,
+                "y": 795.2924393723251
+            }
+        },
+        "room1.tmx": {
+            "scale": 0.5,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 846,
+                "y": 307
             }
         }
     },
     "last.exportedFilePath": "/home/furkan/projects/phaser/gamecem/assets",
     "map.fixedSize": true,
-    "map.height": 197,
+    "map.height": 1278,
     "map.lastUsedExportFilter": "All Files (*)",
     "map.lastUsedFormat": "tmx",
     "map.tileHeight": 2,
     "map.tileWidth": 2,
-    "map.width": 540,
+    "map.width": 5809,
     "openFiles": [
-        "room1.tmx"
+        "room1.tmx",
+        "corridor.tmx"
     ],
     "project": "doc.tiled-project",
     "property.type": "bool",
     "recentFiles": [
-        "room1.tmx"
+        "room1.tmx",
+        "corridor.tmx"
     ]
 }

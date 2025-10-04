@@ -12,7 +12,7 @@ var config = {
       debug: false
     }
   },
-  scene: [preloader, demo, opening, brightnessOverlay, dialogueOverlay, inventoryOverlay, musicPlayer, mainMenu, settings, scene0, scene1, menu],
+  scene: [preloader, demo, opening, brightnessOverlay, dialogueOverlay, inventoryOverlay, musicPlayer, mainMenu, settings, scene0, scene1, scene2, scene3, menu],
   pixelArt: false,
   backgroundColor: "#000"
 };

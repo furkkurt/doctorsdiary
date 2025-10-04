@@ -3,17 +3,28 @@ class scene1 extends Phaser.Scene{
     super("scene1")
   }
 
-  create(){
+  create(data){
     //parlaklık şeysi (BUNA GEREK VAR MI BİLMİYORUM)
     this.scene.get('OverlayScene');
     this.dialogue = this.scene.launch('dialogueOverlay');
     this.dialogue = this.scene.get('dialogueOverlay');
     this.scene.launch("inventoryOverlay");
-    this.inventory = this.scene.get("inventoryOverlay");
+    this.inventory = this.scene.get("inventoryOverlay", 1);
     console.log("Inventory scene:", this.inventory); // Debug log
     this.scene.bringToTop("inventoryOverlay");
     this.scene.bringToTop("dialogueOverlay")
     this.selectedItem = "NaN"
+    this.inventoryArr=[]
+    this.from = data.from
+    if (this.from == undefined)
+      this.from = 0
+
+    if(this.currentSlot === 1)
+      this.slot = "firstSlotItem"
+    else if(this.currentSlot === 2)
+      this.slot = "secondSlotItem"
+    else
+      this.slot = "thirdSlotItem"
 
     let overlayDark = this.add.graphics();
     overlayDark.fillStyle(0x000000, 1);
@@ -60,6 +71,7 @@ class scene1 extends Phaser.Scene{
     this.book2.on("pointerdown", () => {this.inventory.pick(this.book2)})
     this.book2.on("pointerover", () => {this.book2.setTexture("book22")})
     this.book2.on("pointerout", () => {this.book2.setTexture("book2")})
+
 
     this.drugs= this.physics.add.sprite(0,0,"drugs").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable()
     this.drugs.setInteractive()
@@ -128,7 +140,14 @@ class scene1 extends Phaser.Scene{
     this.input.keyboard.on("keydown-A", this.left.bind(this));
     this.input.keyboard.on("keydown-D", this.right.bind(this));
     this.input.keyboard.on("keydown-E", () => {
-      console.log(this.selectedItem)
+
+      if(this.inventoryArr.includes(localStorage.getItem(this.slot+"1")) == false)
+        this.inventoryArr.push(localStorage.getItem(this.slot+"1"));
+      if(this.inventoryArr.includes(localStorage.getItem(this.slot+"2")) == false)
+        this.inventoryArr.push(localStorage.getItem(this.slot+"2"));
+      if(this.inventoryArr.includes(localStorage.getItem(this.slot+"3")) == false)
+        this.inventoryArr.push(localStorage.getItem(this.slot+"3"));
+
       switch(this.selectedItem){
         case "NaN":
           break;
@@ -148,17 +167,16 @@ class scene1 extends Phaser.Scene{
           this.inventory.pick(this.selectedItem, false, "I lost my habbit of reading...", this.dialogue);
           break;
         case this.chair:
-          this.inventory.pick(this.selectedItem, false, "I wonder if there is anyone left to host in my office.", this.dialogue);
+          this.inventory.pick(this.selectedItem, false, "I wonder if there is anyone left I can host in my office.", this.dialogue);
           break;
-
-
-
       }
     });
     this.input.keyboard.on("keyup-A", this.stop.bind(this));
     this.input.keyboard.on("keyup-D", this.stop.bind(this));
     this.input.keyboard.on("keydown-ESC", this.pause.bind(this));
     this.input.keyboard.on("keydown-SPACE", this.pause.bind(this));
+
+    console.log(this.from)
   };
 
 
@@ -215,6 +233,7 @@ class scene1 extends Phaser.Scene{
 
       }, loop: true
     })
+    console.log(this.from == 0, this.inventoryArr.includes("book12"), this.inventoryArr.includes("book22"))
   }
   update() {
     /*
@@ -236,5 +255,16 @@ class scene1 extends Phaser.Scene{
     //tutorial yazısını e yle alcan falan yap
     if (this.player.x > 1400)
       this.tutorText2.paused = false
+    if (this.player.x < 0){
+      this.stop();
+      this.player.x += 10
+    }
+    console.log(this.inventoryArr)
+    if(this.player.x > this.mapWidth){
+      if (this.from == 0 && (this.inventoryArr.includes("book12") && this.inventoryArr.includes("book22")))
+        this.scene.start("scene2", {from: 1})
+      else if (this.from == 2)
+        this.scene.start("scene2", {from: 1})
+    }
   }
 }

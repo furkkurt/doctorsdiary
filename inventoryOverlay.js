@@ -2,22 +2,22 @@ class inventoryOverlay extends Phaser.Scene{
   constructor(){
     super("inventoryOverlay");
   }
-  create(){
+  create(from){
     this.inventory = this.add.sprite(-20,this.cameras.main.centerY,"inventory").setOrigin(0, 0.5).setScale(6).setScrollFactor(0).setDepth(99)
-    // Default to first slot if not set
-    this.currentSlot = this.currentSlot || 1;
-    
-    if(this.currentSlot === 1)
+
+    if(currentSlot === 1)
       this.slot = "firstSlotItem"
-    else if(this.currentSlot === 2)
+    else if(currentSlot === 2)
       this.slot = "secondSlotItem"
     else
       this.slot = "thirdSlotItem"
 
     this.item1 = this.add.sprite(this.inventory.x+20, this.inventory.y-140, "").setOrigin(0).setScale(2).setVisible(false)
     this.item2 = this.add.sprite(this.inventory.x+20, this.inventory.y-40, "").setOrigin(0).setVisible(false)
-    this.item2.setScale(this.inventory.width/this.item2.width)
     this.item3 = this.add.sprite(this.inventory.x+20, this.inventory.y+60, "").setOrigin(0).setScale(2).setVisible(false)
+
+    this.updateSlots()
+
 
   };
 
@@ -58,10 +58,16 @@ class inventoryOverlay extends Phaser.Scene{
     if(msg != ""){
       dialogue.dialogue(msg)
 
-      this.time.delayedCall(5000, () => {
+      this.time.delayedCall(10000, () => {
         dialogue.hideDialogue()
       })
     }
+
+    //merdiven
+    if(item == this.stairs)
+      this.stairs()
+    else if(item == this.ofis1)
+      this.ofis1()
   }
 
   updateSlots() {
@@ -85,6 +91,14 @@ class inventoryOverlay extends Phaser.Scene{
       this.item3.setVisible(true)
       this.item3.setTexture(localStorage.getItem(this.slot+"3"))
     }
+  }
+
+  stairs(){
+    console.log("stairs")
+  }
+
+  ofis1() {
+    this.scene.start("scene1", {from: data.from})
   }
 
   update(){

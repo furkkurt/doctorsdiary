@@ -18,6 +18,9 @@ class preloader extends Phaser.Scene {
         this.load.image("textbg", "./assets/textbg.png");
         this.load.atlas("doc", "./assets/doktor.png", "./assets/doktor.json");
         this.load.image("testBg", "./assets/roombg1.webp");
+        this.load.image("bg2", "./assets/bg2.png");
+        this.load.image("bg3", "./assets/bg3.png");
+        this.load.image("bg4", "./assets/bg4.png");
         this.load.image("corridorBg", "./assets/room2.webp");
         this.load.image("testBg2", "./assets/roombg1light.webp");
         this.load.image("testBgObjects", "./assets/room1objects.webp");
@@ -31,6 +34,7 @@ class preloader extends Phaser.Scene {
         this.load.image("book22", "./assets/book22.webp");
         this.load.image("inventory", "./assets/inventory.png");
         this.load.tilemapTiledJSON('room1', 'assets/room1.json');
+        this.load.tilemapTiledJSON('corridor2', 'assets/corridor2.json');
 
         this.load.audio("ong", "music/ong.wav")
         this.load.audio("docsTheme", "music/docsTheme.wav")
@@ -106,7 +110,7 @@ class preloader extends Phaser.Scene {
         })
         this.anims.create({
             key:"docWalk",
-            frameRate: 8,
+            frameRate: 10,
             frames: [{key:"doc", frame:"1"}, {key: "doc", frame: "2"}, {key: "doc", frame: "3"}, {key: "doc", frame: "4"}, {key: "doc", frame: "5"}, {key: "doc", frame: "6"}, {key: "doc", frame: "7"}, {key: "doc", frame: "8"}, {key: "doc", frame: "9"}],
             repeat: -1
         })
