@@ -1,0 +1,35 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "room1.tmx",
+    "expandedProjectPaths": [
+    ],
+    "fileStates": {
+        "room1.tmx": {
+            "scale": 0.7425,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 898.3164983164982,
+                "y": 315.8249158249158
+            }
+        }
+    },
+    "last.exportedFilePath": "/home/furkan/projects/phaser/gamecem/assets",
+    "map.fixedSize": true,
+    "map.height": 197,
+    "map.lastUsedExportFilter": "All Files (*)",
+    "map.lastUsedFormat": "tmx",
+    "map.tileHeight": 2,
+    "map.tileWidth": 2,
+    "map.width": 540,
+    "openFiles": [
+        "room1.tmx"
+    ],
+    "project": "doc.tiled-project",
+    "property.type": "bool",
+    "recentFiles": [
+        "room1.tmx"
+    ]
+}
