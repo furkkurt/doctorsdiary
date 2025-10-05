@@ -16,6 +16,8 @@ class preloader extends Phaser.Scene {
         this.load.image("bg4", "./assets/bg4.png");
         this.load.image("bg5", "./assets/bg5.png");
         this.load.image("bg6", "./assets/bg6.png");
+        this.load.image("bg62", "./assets/bg62.png");
+        this.load.image("bg7", "./assets/bg7.png");
         this.load.image("corridorBg", "./assets/room2.webp");
         this.load.image("testBg2", "./assets/roombg1light.webp");
         this.load.image("testBgObjects", "./assets/room1objects.webp");
@@ -29,9 +31,11 @@ class preloader extends Phaser.Scene {
         this.load.image("book22", "./assets/book22.webp");
         this.load.image("book1item", "./assets/book1Item.png");
         this.load.image("book2item", "./assets/book2Item.png");
+        this.load.image("matchesitem", "./assets/matches.png");
         this.load.image("inventory", "./assets/inventory.png");
         this.load.tilemapTiledJSON('room1', 'assets/room1.json');
         this.load.tilemapTiledJSON('room2', 'assets/kidsRoom.json');
+        this.load.tilemapTiledJSON('office2', 'assets/ofis2.json');
         this.load.tilemapTiledJSON('kidsRoom', 'assets/kidsRoom.json');
         this.load.tilemapTiledJSON('corridor2', 'assets/corridor2.json');
         this.load.tilemapTiledJSON('corridorUp', 'assets/corridorUp.json');
@@ -42,7 +46,8 @@ class preloader extends Phaser.Scene {
         this.load.atlas("kidsPort", "./assets/kidsport1.png", "./assets/kidsport1.json");
         //doldurma
         this.load.image("stairs", "./assets/stairs.png");
-        this.load.image("stairs2", "./assets/stairs2.png");
+        this.load.image("stairs2", "./assets/stairs.png");
+        this.load.image("matches", "./assets/stairs.png");
         this.load.image("ofis1", "./assets/ofis1.png");
         this.load.image("kidsRoomDoor", "./assets/kidsRoom.png");
 
@@ -89,16 +94,10 @@ class preloader extends Phaser.Scene {
             localStorage.setItem("thirdSlotItem2", "");
         if(localStorage.getItem("thirdSlotItem3") == undefined)
             localStorage.setItem("thirdSlotItem3", "");
-        if(localStorage.getItem("firstSlotProgress") == undefined)
-            localStorage.setItem("firstSlotProgress", "");
-        if(localStorage.getItem("secondSlotProgress") == undefined)
-            localStorage.setItem("secondSlotProgress", "");
-        if(localStorage.getItem("thirdSlotProgress") == undefined)
-            localStorage.setItem("thirdSlotProgress", "");
+        // progress is tracked via first/second/thirdSlotScene only
 
 
-        //BUNU SONRA SİL
-        localStorage.setItem("firstSlotScene", "")
+        // keep existing saves intact; do not reset slot scene keys here
 
         this.loading = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, "LOADING", {
             fontFamily: "Moving",
@@ -253,12 +252,6 @@ class preloader extends Phaser.Scene {
             key: "docPort12",
             frameRate: 1,
             frames: [{key: "docPort", frame: "11"}],
-            repeat: 0
-        })
-        this.anims.create({
-            key: "nursePort1",
-            frameRate: 1,
-            frames: [{key: "nursePort", frame: "0"}],
             repeat: 0
         })
         

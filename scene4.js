@@ -8,8 +8,7 @@ class scene4 extends Phaser.Scene{
     if (data && data.currentSlot !== undefined) {
       currentSlot = data.currentSlot;
     }
-    if (progress<2)
-      progress = 2
+    // Do not force progress here; leave progression to author-driven events
 
     this.scene.launch("dialogueOverlay");
     this.scene.bringToTop("dialogueOverlay");
@@ -27,6 +26,7 @@ class scene4 extends Phaser.Scene{
     overlayDark.setScrollFactor(0);
     overlayDark.setDepth(100)
     this.dialogue.fadeOut(overlayDark)
+    this.logProgress("scene4 create")
 
     // Use bg6 and kidsRoom map
     this.bg = this.add.image(0,0,"bg6").setOrigin(0)
@@ -35,7 +35,7 @@ class scene4 extends Phaser.Scene{
     this.scaleFactor = this.mapWidth/this.bg.width
 
     // Doctor enters from the right side of the screen
-    this.doctor = this.physics.add.sprite(this.mapWidth + 100, 1050, "doc").setDepth(99).setScale(this.scaleFactor).setScale(1.3)
+    this.doctor = this.physics.add.sprite(this.mapWidth + 100, 1000, "doc").setDepth(99).setScale(this.scaleFactor).setScale(1.3)
     this.doctor.play("docIdle")
     this.doctor.flipX = true; // Face left (toward the room)
 
@@ -68,8 +68,42 @@ class scene4 extends Phaser.Scene{
     this.cameras.main.setBounds(0, 0, this.mapWidth, this.mapHeight);
     this.cameras.main.startFollow(this.doctor, true, 0.1, 0.1);
 
-    // Start the cutscene sequence
-    this.startCutscene();
+    // Movement input bindings
+    this.input.keyboard.on("keydown-A", this.left.bind(this));
+    this.input.keyboard.on("keydown-D", this.right.bind(this));
+    this.input.keyboard.on("keyup-A", this.stop.bind(this));
+    this.input.keyboard.on("keyup-D", this.stop.bind(this));
+    this.input.keyboard.on("keydown-ESC", () => { if (!this.controlsLocked) { this.stop(); } });
+
+    // Movement state
+    this.isWalking = false
+    this.walkingSound = null
+    this.controlsLocked = false
+
+    // Start the appropriate sequence
+    if (progress === 9) {
+      // Progress 9: kids hidden, doctor walks in, says a line, then player can move
+      if (this.kids) this.kids.setVisible(false);
+      this.controlsLocked = true;
+      this.time.delayedCall(500, () => {
+        this.doctor.setVelocityX(-200);
+        this.doctor.play("docWalk");
+        this.musicPlayer.playSfx("walk");
+        this.time.delayedCall(1500, () => {
+          this.doctor.setVelocityX(0);
+          this.doctor.play("docIdle");
+          this.musicPlayer.stopAllSfx();
+          this.dialogue.dialogue("Huh... Where are they?", null, "docPort", null, "docPort1", "Doctor");
+          this.time.delayedCall(1500, () => {
+            this.dialogue.hideDialogue();
+            this.controlsLocked = false;
+          });
+        });
+      });
+    } else {
+      // Default: original cutscene
+      this.startCutscene();
+    }
 
     console.log("Scene4 created - cutscene ready for dialogue implementation");
   };
@@ -104,6 +138,40 @@ class scene4 extends Phaser.Scene{
         });
       });
     });
+  }
+
+  right() {
+    if (this.controlsLocked) return;
+    this.doctor.setVelocityX(500);
+    this.doctor.play("docWalk", true)
+    this.doctor.flipX = false
+    this.dialogue.hideDialogue()
+    if (!this.isWalking) {
+      this.isWalking = true
+      this.walkingSound = this.musicPlayer.playSfx("walk")
+    }
+  }
+
+  left() {
+    if (this.controlsLocked) return;
+    this.doctor.setVelocityX(-500)
+    this.doctor.play("docWalk", true)
+    this.doctor.flipX = true
+    this.dialogue.hideDialogue()
+    if (!this.isWalking) {
+      this.isWalking = true
+      this.walkingSound = this.musicPlayer.playSfx("walk")
+    }
+  }
+
+  stop() {
+    this.doctor.setVelocity(0);
+    this.doctor.play("docIdle")
+    if (this.isWalking && this.walkingSound) {
+      this.walkingSound.stop()
+      this.walkingSound = null
+      this.isWalking = false
+    }
   }
 
   startDialogueSequence() {
@@ -231,7 +299,7 @@ class scene4 extends Phaser.Scene{
       { text: "youre cooler than you seem mister doctor!", leftPortrait: "kidsPort", rightPortrait: "docPort", leftAnimation: "kidsPort2", rightAnimation: "docPort1", name: "Ayaz" },
       { text: "hah!... i suppose i can show you some of my old talents.", leftPortrait: "kidsPort", rightPortrait: "docPort", leftAnimation: "kidsPort3", rightAnimation: "docPort1", name: "Doctor" }
     ];
-    this.dialogue.startDialogueSequence(dialogueArray, () => {
+      this.dialogue.startDialogueSequence(dialogueArray, () => {
       this.fadeToBlackAndBack(() => {
         this.startDialogueSequenceP6_Part2();
       });
@@ -381,6 +449,11 @@ class scene4 extends Phaser.Scene{
           this.musicPlayer.stopAllSfx();
           this.musicPlayer.playDoorSfx("door");
           
+          // progress 6 to 7 (author-controlled; leave as-is but fix typo)
+          if(progress == 6)
+            progress = 7
+
+
           // Transition to scene3
           this.scene.stop("dialogueOverlay");
           this.scene.stop("musicPlayer");
@@ -394,7 +467,44 @@ class scene4 extends Phaser.Scene{
     });
   }
 
+  saveProgressToSlot(){
+    const key = currentSlot === 1 ? "firstSlotScene" : (currentSlot === 2 ? "secondSlotScene" : "thirdSlotScene")
+    try{ localStorage.setItem(key, String(progress)) } catch(e) {}
+  }
+
+  logProgress(where){
+    const key = currentSlot === 1 ? "firstSlotScene" : (currentSlot === 2 ? "secondSlotScene" : "thirdSlotScene")
+    console.log(`[${where}] currentSlot=`, currentSlot, "progress=", progress, key, "=", localStorage.getItem(key))
+  }
+startDoorTransition() {
+    // Prevent multiple transitions
+    if (this.isTransitioning) return;
+    this.isTransitioning = true;
+    
+    // Disable player movement
+    this.input.keyboard.removeAllListeners();
+    
+    // Stop walking sound and play door sound
+    this.musicPlayer.stopAllSfx();
+    this.musicPlayer.playDoorSfx("door");
+    
+    // Fade in the dark overlay
+    this.dialogue.fadeIn(this.overlayDark, 1000);
+    
+    // After 1 second delay, transition to scene2
+    this.time.delayedCall(1000, () => {
+      this.scene.stop("inventoryOverlay");
+      this.scene.stop("dialogueOverlay");
+      this.scene.start("scene3", {
+        from: 4,
+        currentSlot: currentSlot
+      });
+    });
+  }
+
   update(){
-    // No update logic needed for cutscene
+  if ((this.doctor.x > this.mapWidth - 50 && !this.isTransitioning) && this.controlsLocked == false){
+       this.startDoorTransition();
+    }
   }
 }

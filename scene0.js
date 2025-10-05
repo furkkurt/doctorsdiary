@@ -17,6 +17,7 @@ class scene0 extends Phaser.Scene{
     this.scene.bringToTop("dialogueOverlay")
     this.dialogue = this.scene.get('dialogueOverlay');
     progress = 0;
+    this.logProgress("scene0 start")
 
     let overlayDark = this.add.graphics();
     overlayDark.fillStyle(0x000000, 1);
@@ -141,13 +142,13 @@ class scene0 extends Phaser.Scene{
       this.musicPlayer.stopAllSfx();
     })
     this.time.delayedCall(32000, () => {
-      this.dialogue.dialogue("... ", "docPort", null, "docPort1")
+      this.dialogue.dialogue("... ", null, "docPort", null, "docPort1")
     })
     this.time.delayedCall(34000, () => {
-      this.dialogue.dialogue("Better start working on my... ", "docPort", null, "docPort1")
+      this.dialogue.dialogue("Better start working on my... ", null, "docPort", null, "docPort1")
     })
     this.time.delayedCall(37000, () => {
-      this.dialogue.dialogue("case here.", "docPort", null, "docPort1")
+      this.dialogue.dialogue("case here.", null, "docPort", null, "docPort1")
     })
     this.time.delayedCall(40000, () => {
       this.time.addEvent({
@@ -156,6 +157,8 @@ class scene0 extends Phaser.Scene{
           overlayDark.alpha += 0.01
           this.dialogue.dialogueBox.alpha -= .01
           this.dialogue.dialogueText.alpha -= .01
+          if (this.dialogue.leftPortrait) this.dialogue.leftPortrait.alpha -= .01
+          if (this.dialogue.rightPortrait) this.dialogue.rightPortrait.alpha -= .01
         }, repeat: 100
       })
     })
@@ -172,6 +175,11 @@ class scene0 extends Phaser.Scene{
     this.scene.launch("menu", {from: this.scene.key})
     this.scene.pause()
     this.time.addEvent({delay: 10, callback: () => {this.stop();}})
+  }
+
+  logProgress(where){
+    const key = currentSlot === 1 ? "firstSlotScene" : (currentSlot === 2 ? "secondSlotScene" : "thirdSlotScene")
+    console.log(`[${where}] currentSlot=`, currentSlot, "progress=", progress, key, "=", localStorage.getItem(key))
   }
 
   bigText(text) {

@@ -26,6 +26,11 @@ class scene3 extends Phaser.Scene{
       this.startProgress5Cutscene();
       return; // Exit early to prevent normal scene setup
     }
+    // Check for progress 7 sequence (return after scene4)
+    if (progress === 7) {
+      this.startProgress7Sequence();
+      return; // Exit early to prevent normal scene setup
+    }
     
     this.isWalking = false
     this.walkingSound = null
@@ -37,6 +42,7 @@ class scene3 extends Phaser.Scene{
     this.overlayDark.setScrollFactor(0);
     this.overlayDark.setDepth(100)
     this.dialogue.fadeOut(this.overlayDark)
+    this.logProgress("scene3 create")
 
     // Use bg5 and corridorUp map
     this.bg = this.add.image(0,0,"bg5").setOrigin(0)
@@ -44,9 +50,8 @@ class scene3 extends Phaser.Scene{
     this.mapHeight = this.bg.height * this.bg.scaleY;
     this.scaleFactor = this.mapWidth/this.bg.width
     // Check progress and position player accordingly
-    if (progress === 2) {
-      progress = 3
-      // Position player at kidsRoom object location
+    if (progress === 2 || data.from == 4) {
+      // Position player at kidsRoom object location (do not change progress here)
       const map = this.make.tilemap({ key: 'corridorUp' });
       const intLayer = map.getObjectLayer('interactive');
       if (intLayer && intLayer.objects) {
@@ -78,15 +83,15 @@ class scene3 extends Phaser.Scene{
     
     if (intLayer && intLayer.objects) {
       console.log("Objects in interactive layer:", intLayer.objects);
-      intLayer.objects.forEach(obj => {
+    intLayer.objects.forEach(obj => {
         console.log("Processing object:", obj.name, "at", obj.x, obj.y);
         if (obj.name === 'kidsRoom') {
           this.kidsRoom.x = obj.x*this.scaleFactor
           this.kidsRoom.y = obj.y*this.scaleFactor
         }
         if (obj.name === 'stairs') {
-          this.stairs.x = obj.x*this.scaleFactor
-          this.stairs.y = obj.y*this.scaleFactor
+        this.stairs.x = obj.x*this.scaleFactor
+        this.stairs.y = obj.y*this.scaleFactor
         }
       });
     } else {
@@ -95,6 +100,12 @@ class scene3 extends Phaser.Scene{
 
     this.cameras.main.setBounds(0, 0, this.mapWidth, this.mapHeight);
     this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
+
+    // If coming from scene2, spawn at left edge facing right
+    if (data && data.from === 2) {
+      this.player.setPosition(50, 800);
+      this.player.flipX = false;
+    }
 
     this.input.keyboard.on("keydown-A", this.left.bind(this));
     this.input.keyboard.on("keydown-D", this.right.bind(this));
@@ -115,12 +126,12 @@ class scene3 extends Phaser.Scene{
               this.startDoorTransition();
             });
           } else {
-            this.startDoorTransition();
+          this.startDoorTransition();
           }
           break;
           case this.stairs:
-            this.inventory.pick(this.selectedItem, false, "", this.dialogue);
-            break;
+          this.inventory.pick(this.selectedItem, false, "", this.dialogue);
+          break;
       }
     });
     this.itemSelector();
@@ -159,6 +170,23 @@ class scene3 extends Phaser.Scene{
       this.scene.stop("dialogueOverlay");
       this.scene.stop("musicPlayer");
       this.scene.start("scene4", {
+        from: 3,
+        currentSlot: currentSlot
+      });
+    });
+  }
+
+  startTransitionToScene2() {
+    if (this.isTransitioning) return;
+    this.isTransitioning = true;
+    this.input.keyboard.removeAllListeners();
+    this.musicPlayer.stopAllSfx();
+    this.musicPlayer.playDoorSfx("door");
+    this.dialogue.fadeIn(this.overlayDark, 1000);
+    this.time.delayedCall(1000, () => {
+      this.scene.stop("inventoryOverlay");
+      this.scene.stop("dialogueOverlay");
+      this.scene.start("scene2", {
         from: 3,
         currentSlot: currentSlot
       });
@@ -227,6 +255,11 @@ class scene3 extends Phaser.Scene{
 
 
   update() {
+    // Transition to scene2 when reaching the left edge (outside cutscenes)
+    if (!this.controlsLocked && this.player && this.player.x < 50 && !this.isTransitioning && progress !== 5 && progress !== 7) {
+      this.startTransitionToScene2();
+      return;
+    }
     if (this.player.x < 0){
       this.stop();
       this.player.x += 10
@@ -397,6 +430,133 @@ class scene3 extends Phaser.Scene{
     });
   }
 
+  startProgress7Sequence() {
+    // Background
+    this.bg = this.add.image(0,0,"bg5").setOrigin(0)
+    this.mapWidth = this.bg.width * this.bg.scaleX;
+    this.mapHeight = this.bg.height * this.bg.scaleY;
+    this.scaleFactor = this.mapWidth/this.bg.width
+
+    // Dark overlay with flicker (reuse progress 5 style)
+    this.overlayDark = this.add.graphics();
+    this.overlayDark.fillStyle(0x000000, 1);
+    this.overlayDark.fillRect(0, 0, this.scale.width, this.scale.height);
+    this.overlayDark.setScrollFactor(0);
+    this.overlayDark.setDepth(100);
+    this.overlayDark.alpha = 0.8;
+    this.flickerTween = this.tweens.add({
+      targets: this.overlayDark,
+      alpha: { from: 0.6, to: 1.0 },
+      duration: 250,
+      ease: 'Linear',
+      yoyo: true,
+      repeat: -1,
+      onRepeat: () => {
+        if (Math.random() < 0.3) {
+          const randomDelay = Phaser.Math.Between(100, 400);
+          this.time.delayedCall(randomDelay, () => {
+            this.overlayDark.alpha = Phaser.Math.FloatBetween(0.5, 1.0);
+          });
+        }
+      }
+    });
+
+    // Load map and place nurse & kidsRoom from interactive object
+    const map = this.make.tilemap({ key: 'corridorUp' });
+    const intLayer = map.getObjectLayer('interactive');
+    let nurseX = 1400;
+    let nurseY = 800;
+    let doorX = 1800;
+    let doorY = 800;
+    if (intLayer && intLayer.objects) {
+      intLayer.objects.forEach(obj => {
+        if (obj.name === 'nurse') {
+          nurseX = obj.x * this.scaleFactor;
+          nurseY = obj.y * this.scaleFactor;
+        }
+        if (obj.name === 'kidsRoom') {
+          doorX = obj.x * this.scaleFactor;
+          doorY = obj.y * this.scaleFactor;
+        }
+        if (obj.name === 'stairs') {
+          // place stairs too if needed later
+          this.stairsX = obj.x * this.scaleFactor;
+          this.stairsY = obj.y * this.scaleFactor;
+        }
+      });
+    }
+
+    // Nurse sprite
+    this.nurse = this.physics.add.sprite(nurseX, nurseY, "nurse").setDepth(98).setScale(1.0).setImmovable();
+    this.nurse.play && this.nurse.play("nurseIdle");
+
+    // Invisible interaction objects
+    this.kidsRoom = this.physics.add.sprite(doorX, doorY, "kidsRoomDoor").setOrigin(0.5,1).setImmovable().setVisible(false)
+    this.stairs = this.physics.add.sprite(this.stairsX || 0, this.stairsY || 0, "stairs2").setOrigin(0.5,1).setImmovable().setVisible(false)
+
+    // Player at kidsRoom door
+    this.player = this.physics.add.sprite(doorX, 800, "doc").setDepth(99).setScale(1.1);
+    this.player.play("docIdle");
+
+    // Camera
+    this.cameras.main.setBounds(0, 0, this.mapWidth, this.mapHeight);
+    this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
+
+    // Movement controls; lock until dialogue finishes
+    this.isWalking = false;
+    this.controlsLocked = true;
+    this.input.keyboard.on("keydown-A", this.left.bind(this));
+    this.input.keyboard.on("keydown-D", this.right.bind(this));
+    this.input.keyboard.on("keyup-A", this.stop.bind(this));
+    this.input.keyboard.on("keyup-D", this.stop.bind(this));
+    this.input.keyboard.on("keydown-ESC", this.pause.bind(this));
+    this.input.keyboard.on("keydown-SPACE", this.pause.bind(this));
+
+    // Selection helpers
+    this.objects = [this.kidsRoom, this.stairs];
+    this.itemSelector();
+    this.input.keyboard.on("keydown-E", () => {
+      switch(this.selectedItem){
+        case "NaN":
+          break;
+        case this.kidsRoom:
+          this.inventory.pick(this.selectedItem, false, "", this.dialogue);
+          this.startDoorTransition();
+          break;
+        case this.stairs:
+          this.inventory.pick(this.selectedItem, false, "", this.dialogue);
+          // stairs2 handled by inventoryOverlay if needed
+          break;
+      }
+    });
+
+    // Auto dialogue
+    const seq = [
+      { text: "youre getting closer?", leftPortrait: "docPort", rightPortrait: "nursePort", leftAnimation: "docPort1", rightAnimation: null, name: "Nurse" },
+      { text: "what-!? You again!?", leftPortrait: "docPort", rightPortrait: null, leftAnimation: "docPort12", rightAnimation: null, name: "Doctor" },
+      { text: "but to what?", leftPortrait: "docPort", rightPortrait: "nursePort", leftAnimation: "docPort1", rightAnimation: null, name: "Nurse" },
+      { text: "does it have to be just one?", leftPortrait: "docPort", rightPortrait: "nursePort", leftAnimation: "docPort1", rightAnimation: null, name: "Nurse" },
+      { text: "it can't be both?", leftPortrait: "docPort", rightPortrait: "nursePort", leftAnimation: "docPort1", rightAnimation: null, name: "Nurse" }
+    ];
+    this.startDialogueWhenReady(seq, () => {
+      this.controlsLocked = false;
+    });
+  }
+
+  startDialogueWhenReady(seq, onDone){
+    const tryStart = () => {
+      const overlay = this.dialogue;
+      if (overlay && overlay.dialogueBox && overlay.dialogueText && overlay.scene.isActive()){
+        overlay.startDialogueSequence(seq, onDone)
+        return true
+      }
+      return false
+    }
+    if (!tryStart()){
+      this.time.addEvent({ delay: 100, callback: () => { if (!tryStart()) this.time.addEvent({ delay: 100, callback: tryStart }) } })
+    }
+  }
+
   startNurseDialogue() {
     this.cut5NurseDialogueStarted = true;
     this.lockControlsFor(1000);
@@ -410,7 +570,17 @@ class scene3 extends Phaser.Scene{
     ];
     this.dialogue.startDialogueSequence(seq, () => {
       this.cut5NurseDialogueDone = true;
-      progress = 6;
+      // Do not change progress here; caller will decide when to advance
     });
+  }
+
+  saveProgressToSlot(){
+    const key = currentSlot === 1 ? "firstSlotScene" : (currentSlot === 2 ? "secondSlotScene" : "thirdSlotScene")
+    try{ localStorage.setItem(key, String(progress)) } catch(e) {}
+  }
+
+  logProgress(where){
+    const key = currentSlot === 1 ? "firstSlotScene" : (currentSlot === 2 ? "secondSlotScene" : "thirdSlotScene")
+    console.log(`[${where}] currentSlot=`, currentSlot, "progress=", progress, key, "=", localStorage.getItem(key))
   }
 }

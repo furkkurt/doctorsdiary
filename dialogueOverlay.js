@@ -42,12 +42,12 @@ class dialogueOverlay extends Phaser.Scene{
       this.showPortrait(rightPortrait, rightAnimation, "right")
     }
     
-    // Set name tag if provided
-    if (name) {
+    // Set name tag if provided (guard against uninitialized text/sprites)
+    if (name && this.nameText && this.nameTag) {
       this.nameText.text = name;
       this.fadeIn(this.nameTag, 100);
       this.fadeIn(this.nameText, 100);
-    } else {
+    } else if (this.nameTag && this.nameText) {
       this.fadeOut(this.nameTag, 100);
       this.fadeOut(this.nameText, 100);
     }
@@ -212,7 +212,8 @@ class dialogueOverlay extends Phaser.Scene{
     const isLastEntry = this.currentDialogueIndex === this.dialogueSequence.length - 1
     
     // Clear previous text
-    this.dialogueText.text = ""
+    if(this.dialogueText != undefined)
+      this.dialogueText.text = ""
     
     // Always hide previous portraits first to prevent lingering or duplicates
     this.hidePortraits()
@@ -228,7 +229,7 @@ class dialogueOverlay extends Phaser.Scene{
     }
     
     // Set name tag if provided
-    if (currentDialogue.name) {
+    if (currentDialogue.name && this.nameText != undefined) {
       this.nameText.text = currentDialogue.name;
       this.fadeIn(this.nameTag, 100);
       this.fadeIn(this.nameText, 100);

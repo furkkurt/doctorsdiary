@@ -13,13 +13,6 @@ class scene1 extends Phaser.Scene{
     this.scene.bringToTop("inventoryOverlay");
     this.scene.bringToTop("dialogueOverlay")
     this.selectedItem = "NaN"
-    this.inventoryArr=[]
-      if(this.inventoryArr.includes(localStorage.getItem(this.slot+"1")) == false)
-        this.inventoryArr.push(localStorage.getItem(this.slot+"1"));
-      if(this.inventoryArr.includes(localStorage.getItem(this.slot+"2")) == false)
-        this.inventoryArr.push(localStorage.getItem(this.slot+"2"));
-      if(this.inventoryArr.includes(localStorage.getItem(this.slot+"3")) == false)
-        this.inventoryArr.push(localStorage.getItem(this.slot+"3"));
     this.from = data.from
     this.isWalking = false
     this.walkingSound = null
@@ -31,13 +24,17 @@ class scene1 extends Phaser.Scene{
     if (data && data.currentSlot !== undefined) {
       currentSlot = data.currentSlot;
     }
+    this.currentSlot = currentSlot
 
     this.musicPlayer = this.scene.get("musicPlayer")
     this.musicPlayer.playMusic("docsTheme")
 
-    //progress ayarlamaca
-    if (progress<1)
+    //progress ayarlamaca - only clamp if 0, do not auto-advance
+    if (progress < 1) {
       progress = 1
+      this.saveProgressToSlot()
+    }
+    this.logProgress("scene1 create after clamp")
     
     // Check for progress 3 cutscene
     if (progress === 3) {
@@ -51,6 +48,15 @@ class scene1 extends Phaser.Scene{
       this.slot = "secondSlotItem"
     else
       this.slot = "thirdSlotItem"
+
+    // build inventory array AFTER determining slot
+    this.inventoryArr=[]
+    const i1 = localStorage.getItem(this.slot+"1")
+    const i2 = localStorage.getItem(this.slot+"2")
+    const i3 = localStorage.getItem(this.slot+"3")
+    if (i1 && !this.inventoryArr.includes(i1)) this.inventoryArr.push(i1)
+    if (i2 && !this.inventoryArr.includes(i2)) this.inventoryArr.push(i2)
+    if (i3 && !this.inventoryArr.includes(i3)) this.inventoryArr.push(i3)
 
     this.overlayDark = this.add.graphics();
     this.overlayDark.fillStyle(0x000000, 1);
@@ -174,6 +180,23 @@ class scene1 extends Phaser.Scene{
     })
     }
 
+    // Progress 7 guidance: prompt meds and show tutor text
+    if (progress === 7) {
+    const tryPrompt = () => {
+      if (this.dialogue && this.dialogue.dialogueText) {
+        this.dialogue.dialogue("I need to take my meds", null, "docPort", null, "docPort1", "Doctor");
+        this.tutorText = this.add.text(20,10,"Take your meds",{fontFamily:"Moving", fontSize:"32px", color: "white"}).setOrigin(0).setScrollFactor(0)
+        this.tutorText.alpha = 0
+        this.time.delayedCall(500, () => { this.dialogue.fadeIn(this.tutorText) })
+        return true;
+      }
+      return false;
+    }
+    if (!tryPrompt()) {
+      this.time.addEvent({ delay: 100, callback: () => { if (!tryPrompt()) this.time.addEvent({ delay: 100, callback: tryPrompt }) } })
+    }
+    }
+
     this.input.keyboard.on("keydown-A", this.left.bind(this));
     this.input.keyboard.on("keydown-D", this.right.bind(this));
     this.input.keyboard.on("keydown-E", () => {
@@ -189,7 +212,11 @@ class scene1 extends Phaser.Scene{
           this.inventory.pick(this.selectedItem, true, "", this.dialogue);
           break;
         case this.drugs:
+          if (progress === 7) {
+            this.startMedsCutscene();
+          } else {
           this.inventory.pick(this.selectedItem, false, "I don't need them right now.", this.dialogue);
+          }
           break;
         case this.lamp:
           this.inventory.pick(this.selectedItem, false, "", this.dialogue);
@@ -519,6 +546,32 @@ class scene1 extends Phaser.Scene{
     });
   }
 
+  startMedsCutscene(){
+    if (this.isTransitioning) return;
+    this.isTransitioning = true;
+    // Fade to black
+    this.dialogue.fadeIn(this.overlayDark, 1000);
+    // After fade, show bigText then restart
+    this.time.delayedCall(1200, () => {
+      const bigText = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, "3 days left", {
+        fontFamily: "Moving",
+        fontSize: "96px",
+        color: "#ffffff",
+        stroke: "#000000",
+        strokeThickness: 8
+      }).setOrigin(0.5).setScrollFactor(0).setDepth(101);
+      bigText.alpha = 0;
+      this.tweens.add({ targets: bigText, alpha: 1, duration: 800, ease: 'Linear' });
+      this.time.delayedCall(2500, () => {
+        // Clean overlays and restart scene1 at starting position
+        this.scene.stop("inventoryOverlay");
+        this.scene.stop("dialogueOverlay");
+        progress = 8
+        this.scene.start("scene1", { from: 0, currentSlot: currentSlot });
+      });
+    });
+  }
+
   showProgress3Text() {
     // Create big text like in scene0
     const bigText = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, "4 days left", {
@@ -574,8 +627,7 @@ class scene1 extends Phaser.Scene{
 
         // After showing second text, update progress and fade back in
         this.time.delayedCall(5000, () => {
-          // Update progress to 4
-          progress = 4;
+          // Do not change progress here automatically; keep author-controlled
           
           // Fade out second text
           this.tweens.add({
@@ -618,10 +670,12 @@ class scene1 extends Phaser.Scene{
       this.player.x += 10
     }
 
-    if ((this.player.x > this.mapWidth && !this.isTransitioning) && progress != 3){
+    if ((this.player.x > this.mapWidth - 50 && !this.isTransitioning) && progress != 3){
        if (progress == 1) {
-         if(this.inventoryArr.includes("book1") && this.inventoryArr.includes("book2")){
-           progress = 2
+        const hasItems = this.hasRequiredItems();
+        console.log("[scene1 exit check] hasRequiredItems=", hasItems, "inventoryArr=", this.inventoryArr);
+        if(hasItems){
+           // Do not change progress here automatically; keep author-controlled
            this.startDoorTransition();
          } else {
           this.player.x -= 10
@@ -632,4 +686,23 @@ class scene1 extends Phaser.Scene{
        }
      }
   }
+
+  saveProgressToSlot(){
+    const key = currentSlot === 1 ? "firstSlotScene" : (currentSlot === 2 ? "secondSlotScene" : "thirdSlotScene")
+    try{ localStorage.setItem(key, String(progress)) } catch(e) {}
+  }
+
+  logProgress(where){
+    const key = currentSlot === 1 ? "firstSlotScene" : (currentSlot === 2 ? "secondSlotScene" : "thirdSlotScene")
+    console.log(`[${where}] currentSlot=`, currentSlot, "progress=", progress, key, "=", localStorage.getItem(key))
+  }
+
+  hasRequiredItems(){
+    const s1 = localStorage.getItem(this.slot+"1")
+    const s2 = localStorage.getItem(this.slot+"2")
+    const s3 = localStorage.getItem(this.slot+"3")
+    const items = [s1, s2, s3]
+    return items.includes("book1") && items.includes("book2")
+  }
 }
+

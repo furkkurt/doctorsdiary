@@ -44,16 +44,25 @@ class mainMenu extends Phaser.Scene{
       if(localStorage.getItem("firstSlotScene") == ""){
         currentSlot = 1
         localStorage.setItem("firstSlotScene", "0")
+        localStorage.setItem("firstSlotItem1", "")
+        localStorage.setItem("firstSlotItem2", "")
+        localStorage.setItem("firstSlotItem3", "")
         this.scene.start("scene0")
       }
       else if(localStorage.getItem("secondSlotScene") == ""){
         currentSlot = 2
         localStorage.setItem("secondSlotScene", "0")
+        localStorage.setItem("secondSlotItem1", "")
+        localStorage.setItem("secondSlotItem2", "")
+        localStorage.setItem("secondSlotItem3", "")
         this.scene.start("scene0")
       }
       else if(localStorage.getItem("thirdSlotScene") == ""){
         currentSlot = 3
         localStorage.setItem("thirdSlotScene", "0")
+        localStorage.setItem("thirdSlotItem1", "")
+        localStorage.setItem("thirdSlotItem2", "")
+        localStorage.setItem("thirdSlotItem3", "")
         this.scene.start("scene0")
       }
       else{
@@ -64,6 +73,7 @@ class mainMenu extends Phaser.Scene{
 
     this.loadGameBtn.on("pointerover", () => {this.hover(this.loadGameBtn)});
     this.loadGameBtn.on("pointerout", () => {this.hoverout(this.loadGameBtn)});
+    this.loadGameBtn.on("pointerdown", () => {this.scene.start("loadGame")});
 
     this.settingsBtn.on("pointerover", () => {this.hover(this.settingsBtn)});
     this.settingsBtn.on("pointerout", () => {this.hoverout(this.settingsBtn)});

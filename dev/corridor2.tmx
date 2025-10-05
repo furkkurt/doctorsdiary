@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="2904" height="639" tilewidth="2" tileheight="2" infinite="0" nextlayerid="4" nextobjectid="7">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="2904" height="639" tilewidth="2" tileheight="2" infinite="0" nextlayerid="4" nextobjectid="9">
+ <editorsettings>
+  <export target="../assets/corridor2.json" format="json"/>
+ </editorsettings>
  <objectgroup id="3" name="interactive">
   <object id="2" name="desk" x="3495.98" y="830.337" width="165.211" height="103.578"/>
   <object id="3" name="power" x="4411.76" y="399.16" width="130.252" height="117.647"/>
   <object id="4" name="ofis2" x="1894.96" y="659.664" width="142.857" height="155.462"/>
   <object id="5" name="ofis1" x="756.303" y="672.269" width="172.269" height="147.059"/>
   <object id="6" name="stairs" x="5214.29" y="651.261" width="243.697" height="180.672"/>
+  <object id="7" name="nurse" x="2847.35" y="724.393" width="109.8" height="93.412"/>
+  <object id="8" x="5336.98" y="588.95"/>
  </objectgroup>
  <imagelayer id="2" name="bg">
   <image source="../assets/bg4.png" width="5809" height="1278"/>
