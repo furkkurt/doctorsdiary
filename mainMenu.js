@@ -1,3 +1,11 @@
+var brightness = parseInt(localStorage.getItem("brightness")) ?? 5
+var musicVolume = parseInt(localStorage.getItem("musicVol")) ?? 5
+var sfxVolume = parseInt(localStorage.getItem("sfxVol")) ?? 5
+var favNum = parseInt(localStorage.getItem("favNum")) ?? 5
+var currentMusic = ""
+var currentSlot = 0
+var progress = 0
+
 class mainMenu extends Phaser.Scene{
   constructor(){
     super("mainMenu")

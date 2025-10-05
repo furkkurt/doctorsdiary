@@ -1,3 +1,11 @@
+var brightness = parseInt(localStorage.getItem("brightness")) ?? 5
+var musicVolume = parseInt(localStorage.getItem("musicVol")) ?? 5
+var sfxVolume = parseInt(localStorage.getItem("sfxVol")) ?? 5
+var favNum = parseInt(localStorage.getItem("favNum")) ?? 5
+var currentMusic = ""
+var currentSlot = 0
+var progress = 0
+
 class scene0 extends Phaser.Scene{
   constructor(){
     super("scene0")
@@ -8,6 +16,7 @@ class scene0 extends Phaser.Scene{
     this.scene.launch("dialogueOverlay")
     this.scene.bringToTop("dialogueOverlay")
     this.dialogue = this.scene.get('dialogueOverlay');
+    progress = 0;
 
     let overlayDark = this.add.graphics();
     overlayDark.fillStyle(0x000000, 1);
@@ -17,6 +26,7 @@ class scene0 extends Phaser.Scene{
 
     this.bigTextText = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, "", {fontFamily: "Moving", fontSize: "64px"}).setOrigin(0.5).setDepth(101);
 
+    this.scene.launch("musicPlayer")
     this.musicPlayer = this.scene.get("musicPlayer")
     this.musicPlayer.playMusic("docsTheme")
 
@@ -114,6 +124,7 @@ class scene0 extends Phaser.Scene{
     })
     this.time.delayedCall(25000, () => {
       this.player.play("docWalk")
+      this.musicPlayer.playSfx("walk")
       this.player.setVelocityX(200)
       this.time.addEvent({
         delay: 20,
@@ -126,15 +137,17 @@ class scene0 extends Phaser.Scene{
     this.time.delayedCall(30000, () => {
       this.player.setVelocityX(0);
       this.player.play("docIdle")
+      // Stop walking sound when player stops
+      this.musicPlayer.stopAllSfx();
     })
     this.time.delayedCall(32000, () => {
-      this.dialogue.dialogue("... ")
+      this.dialogue.dialogue("... ", "docPort", null, "docPort1")
     })
     this.time.delayedCall(34000, () => {
-      this.dialogue.dialogue("Better start working on my... ")
+      this.dialogue.dialogue("Better start working on my... ", "docPort", null, "docPort1")
     })
     this.time.delayedCall(37000, () => {
-      this.dialogue.dialogue("case here.")
+      this.dialogue.dialogue("case here.", "docPort", null, "docPort1")
     })
     this.time.delayedCall(40000, () => {
       this.time.addEvent({
@@ -146,8 +159,10 @@ class scene0 extends Phaser.Scene{
         }, repeat: 100
       })
     })
-    this.time.delayedCall(42000, () => {
-      this.scene.start("scene1", {from: 0})
+    this.time.delayedCall(42000, () => {this.scene.stop("inventoryOverlay");
+      this.scene.stop("dialogueOverlay");
+      this.scene.stop("musicPlayer");
+      this.scene.start("scene1", {from: 0, currentSlot: currentSlot})
     })
 
   };

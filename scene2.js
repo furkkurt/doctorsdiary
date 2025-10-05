@@ -4,22 +4,30 @@ class scene2 extends Phaser.Scene{
   }
 
   create(data){
-    this.scene.launch("dialogueOverlay")
-    this.scene.bringToTop("dialogueOverlay")
-    this.scene.launch("inventoryOverlay", {from: 2});
+    // Set the current slot from the passed data
+    if (data && data.currentSlot !== undefined) {
+      currentSlot = data.currentSlot;
+    }
+    
+    this.scene.launch("dialogueOverlay");
+    this.scene.bringToTop("dialogueOverlay");
+    this.scene.launch("inventoryOverlay");
     this.inventory = this.scene.get("inventoryOverlay");
     this.dialogue = this.scene.get('dialogueOverlay');
     this.itemSelector();
     console.log(data.from)
 
-    let overlayDark = this.add.graphics();
-    overlayDark.fillStyle(0x000000, 1);
-    overlayDark.fillRect(0, 0, this.scale.width, this.scale.height);
-    overlayDark.setScrollFactor(0);
-    overlayDark.setDepth(100)
-    this.dialogue.fadeOut(overlayDark)
-
     this.musicPlayer = this.scene.get("musicPlayer")
+    this.isWalking = false
+    this.walkingSound = null
+    this.isTransitioning = false
+
+    this.overlayDark = this.add.graphics();
+    this.overlayDark.fillStyle(0x000000, 1);
+    this.overlayDark.fillRect(0, 0, this.scale.width, this.scale.height);
+    this.overlayDark.setScrollFactor(0);
+    this.overlayDark.setDepth(100)
+    this.dialogue.fadeOut(this.overlayDark)
 
     this.bg = this.add.image(0,0,"bg4").setOrigin(0)
     this.mapWidth = this.bg.width * this.bg.scaleX;
@@ -28,11 +36,11 @@ class scene2 extends Phaser.Scene{
     this.player = this.physics.add.sprite(900,800,"doc").setDepth(99).setScale(1.1)
     this.player.play("docIdle")
 
-    this.ofis1= this.physics.add.sprite(0,0,"").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable()
-    this.ofis2= this.physics.add.sprite(0,0,"").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable()
-    this.stairs= this.physics.add.sprite(0,0,"").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable()
-    this.power = this.physics.add.sprite(0,0,"").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable()
-    this.desk = this.physics.add.sprite(0,0,"").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable()
+    this.ofis1= this.physics.add.sprite(0,0,"ofis1").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable().setVisible(false)
+    this.ofis2= this.physics.add.sprite(0,0,"ofis2").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable().setVisible(false)
+    this.stairs= this.physics.add.sprite(0,0,"stairs").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable().setVisible(false)
+    this.power = this.physics.add.sprite(0,0,"power").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable().setVisible(false)
+    this.desk = this.physics.add.sprite(0,0,"desk").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable().setVisible(false)
 
     this.objects = [this.ofis1, this.ofis2, this.stairs, this.desk, this.power]
 
@@ -71,6 +79,7 @@ class scene2 extends Phaser.Scene{
           break;
         case this.ofis1:
           this.inventory.pick(this.selectedItem, false, "", this.dialogue);
+          this.startDoorTransition();
           break;
         case this.ofis2:
           this.inventory.pick(this.selectedItem, false, "", this.dialogue);
@@ -94,12 +103,46 @@ class scene2 extends Phaser.Scene{
     this.scene.launch("menu", {from: this.scene.key})
     this.scene.pause()
     this.time.addEvent({delay: 10, callback: () => {this.stop();}})
+    // Stop all SFX sounds when pausing
+    this.musicPlayer.stopAllSfx();
+  }
+
+  startDoorTransition() {
+    // Prevent multiple transitions
+    if (this.isTransitioning) return;
+    this.isTransitioning = true;
+    
+    // Disable player movement
+    this.input.keyboard.removeAllListeners();
+    
+    // Stop walking sound and play door sound
+    this.musicPlayer.stopAllSfx();
+    this.musicPlayer.playDoorSfx("door");
+    
+    // Fade in the dark overlay
+    this.dialogue.fadeIn(this.overlayDark, 1000);
+    
+    // After 1 second delay, transition to scene1
+    this.time.delayedCall(1000, () => {
+      this.scene.stop("inventoryOverlay");
+      this.scene.stop("dialogueOverlay");
+      this.scene.start("scene1", {
+        from: 2,
+        currentSlot: currentSlot
+      });
+    });
   }
   right() {
     this.player.setVelocityX(500);
     this.player.play("docWalk", true)
     this.player.flipX = false
     this.dialogue.hideDialogue()
+    
+    // Play walking sound only when starting to walk
+    if (!this.isWalking) {
+      this.isWalking = true
+      this.walkingSound = this.musicPlayer.playSfx("walkEcho")
+    }
   }
 
   left() {
@@ -107,11 +150,24 @@ class scene2 extends Phaser.Scene{
     this.player.play("docWalk", true)
     this.player.flipX = true
     this.dialogue.hideDialogue()
+    
+    // Play walking sound only when starting to walk
+    if (!this.isWalking) {
+      this.isWalking = true
+      this.walkingSound = this.musicPlayer.playSfx("walkEcho")
+    }
   }
 
   stop() {
     this.player.setVelocity(0);
     this.player.play("docIdle")
+    
+    // Stop walking sound when stopping
+    if (this.isWalking && this.walkingSound) {
+      this.walkingSound.stop()
+      this.walkingSound = null
+      this.isWalking = false
+    }
   }
 
   itemSelector() {

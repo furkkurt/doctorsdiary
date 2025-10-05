@@ -1,10 +1,3 @@
-var brightness = parseInt(localStorage.getItem("brightness")) ?? 5
-var musicVolume = parseInt(localStorage.getItem("musicVol")) ?? 5
-var sfxVolume = parseInt(localStorage.getItem("sfxVol")) ?? 5
-var favNum = parseInt(localStorage.getItem("favNum")) ?? 5
-var currentMusic = ""
-var currentSlot = 0
-
 class preloader extends Phaser.Scene {
     constructor() {
         super("preloader");
@@ -21,6 +14,8 @@ class preloader extends Phaser.Scene {
         this.load.image("bg2", "./assets/bg2.png");
         this.load.image("bg3", "./assets/bg3.png");
         this.load.image("bg4", "./assets/bg4.png");
+        this.load.image("bg5", "./assets/bg5.png");
+        this.load.image("bg6", "./assets/bg6.png");
         this.load.image("corridorBg", "./assets/room2.webp");
         this.load.image("testBg2", "./assets/roombg1light.webp");
         this.load.image("testBgObjects", "./assets/room1objects.webp");
@@ -32,12 +27,30 @@ class preloader extends Phaser.Scene {
         this.load.image("book12", "./assets/book12.webp");
         this.load.image("book2", "./assets/book2.webp");
         this.load.image("book22", "./assets/book22.webp");
+        this.load.image("book1item", "./assets/book1Item.png");
+        this.load.image("book2item", "./assets/book2Item.png");
         this.load.image("inventory", "./assets/inventory.png");
         this.load.tilemapTiledJSON('room1', 'assets/room1.json');
+        this.load.tilemapTiledJSON('room2', 'assets/kidsRoom.json');
+        this.load.tilemapTiledJSON('kidsRoom', 'assets/kidsRoom.json');
         this.load.tilemapTiledJSON('corridor2', 'assets/corridor2.json');
+        this.load.tilemapTiledJSON('corridorUp', 'assets/corridorUp.json');
+        this.load.image("nurse", "./assets/nurse.webp");
+        this.load.image("nursePort", "./assets/nursePort.webp");
+        this.load.atlas("docPort", "./assets/docport1.png", "./assets/docport1.json");
+        this.load.atlas("kids", "./assets/kids1.png", "./assets/kids1.json");
+        this.load.atlas("kidsPort", "./assets/kidsport1.png", "./assets/kidsport1.json");
+        //doldurma
+        this.load.image("stairs", "./assets/stairs.png");
+        this.load.image("stairs2", "./assets/stairs2.png");
+        this.load.image("ofis1", "./assets/ofis1.png");
+        this.load.image("kidsRoomDoor", "./assets/kidsRoom.png");
 
         this.load.audio("ong", "music/ong.wav")
         this.load.audio("docsTheme", "music/docsTheme.wav")
+        this.load.audio("walk", "sfx/walking.wav")
+        this.load.audio("walkEcho", "sfx/walkingEcho.wav")
+        this.load.audio("door", "sfx/door.wav")
 
     };
 
@@ -76,6 +89,12 @@ class preloader extends Phaser.Scene {
             localStorage.setItem("thirdSlotItem2", "");
         if(localStorage.getItem("thirdSlotItem3") == undefined)
             localStorage.setItem("thirdSlotItem3", "");
+        if(localStorage.getItem("firstSlotProgress") == undefined)
+            localStorage.setItem("firstSlotProgress", "");
+        if(localStorage.getItem("secondSlotProgress") == undefined)
+            localStorage.setItem("secondSlotProgress", "");
+        if(localStorage.getItem("thirdSlotProgress") == undefined)
+            localStorage.setItem("thirdSlotProgress", "");
 
 
         //BUNU SONRA SİL
@@ -114,6 +133,135 @@ class preloader extends Phaser.Scene {
             frames: [{key:"doc", frame:"1"}, {key: "doc", frame: "2"}, {key: "doc", frame: "3"}, {key: "doc", frame: "4"}, {key: "doc", frame: "5"}, {key: "doc", frame: "6"}, {key: "doc", frame: "7"}, {key: "doc", frame: "8"}, {key: "doc", frame: "9"}],
             repeat: -1
         })
+        this.anims.create({
+            key: "kids1",
+            frameRate: 1,
+            frames: [{key: "kids", frame: "0"}],
+            repeat: 0
+        })
+        this.anims.create({
+            key: "kids2",
+            frameRate: 1,
+            frames: [{key: "kids", frame: "1"}],
+            repeat: 0
+        })
+        //portraits 
+        this.anims.create({
+            key: "kidsPort1",
+            frameRate: 1,
+            frames: [{key: "kidsPort", frame: "0"}],
+            repeat: 0
+        })
+        this.anims.create({
+            key: "kidsPort2",
+            frameRate: 1,
+            frames: [{key: "kidsPort", frame: "1"}],
+            repeat: 0
+        })
+        this.anims.create({
+            key: "kidsPort3",
+            frameRate: 1,
+            frames: [{key: "kidsPort", frame: "2"}],
+            repeat: 0
+        })
+        this.anims.create({ 
+            key: "kidsPort4",
+            frameRate: 1,
+            frames: [{key: "kidsPort", frame: "3"}],
+            repeat: 0
+        })
+        this.anims.create({
+            key: "kidsPort5",
+            frameRate: 1,
+            frames: [{key: "kidsPort", frame: "4"}],
+            repeat: 0
+        })
+        this.anims.create({
+            key: "kidsPort6",
+            frameRate: 1,
+            frames: [{key: "kidsPort", frame: "5"}],
+            repeat: 0
+        })
+        
+        this.anims.create({
+            key: "docPort1",
+            frameRate: 1,
+            frames: [{key: "docPort", frame: "0"}],
+            repeat: 0
+        })
+        this.anims.create({
+            key: "docPort2",
+            frameRate: 1,
+            frames: [{key: "docPort", frame: "1"}],
+            repeat: 0
+        })
+        this.anims.create({
+            key: "docPort3",
+            frameRate: 1,
+            frames: [{key: "docPort", frame: "2"}],
+            repeat: 0
+        })
+        this.anims.create({
+            key: "docPort4",
+            frameRate: 1,
+            frames: [{key: "docPort", frame: "3"}],
+            repeat: 0
+        })
+        this.anims.create({
+            key: "docPort5",
+            frameRate: 1,
+            frames: [{key: "docPort", frame: "4"}],
+            repeat: 0
+        })
+        this.anims.create({
+            key: "docPort6",
+            frameRate: 1,
+            frames: [{key: "docPort", frame: "5"}],
+            repeat: 0
+        })
+        this.anims.create({
+            key: "docPort7",
+            frameRate: 1,
+            frames: [{key: "docPort", frame: "6"}],
+            repeat: 0
+        })
+        this.anims.create({
+            key: "docPort8",
+            frameRate: 1,
+            frames: [{key: "docPort", frame: "7"}],
+            repeat: 0
+        })
+        this.anims.create({
+            key: "docPort9",
+            frameRate: 1,
+            frames: [{key: "docPort", frame: "8"}],
+            repeat: 0
+        })
+        this.anims.create({
+            key: "docPort10",
+            frameRate: 1,
+            frames: [{key: "docPort", frame: "9"}],
+            repeat: 0
+        })
+        this.anims.create({
+            key: "docPort11",
+            frameRate: 1,
+            frames: [{key: "docPort", frame: "10"}],
+            repeat: 0
+        })
+        this.anims.create({
+            key: "docPort12",
+            frameRate: 1,
+            frames: [{key: "docPort", frame: "11"}],
+            repeat: 0
+        })
+        this.anims.create({
+            key: "nursePort1",
+            frameRate: 1,
+            frames: [{key: "nursePort", frame: "0"}],
+            repeat: 0
+        })
+        
 
         this.scene.start("demo")
 

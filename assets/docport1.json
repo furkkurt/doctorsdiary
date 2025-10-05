@@ -1,0 +1,120 @@
+{ "frames": {
+   "0": {
+    "frame": { "x": 0, "y": 0, "w": 829, "h": 817 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 829, "h": 817 },
+    "sourceSize": { "w": 829, "h": 817 },
+    "duration": 100
+   },
+   "1": {
+    "frame": { "x": 829, "y": 0, "w": 829, "h": 817 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 829, "h": 817 },
+    "sourceSize": { "w": 829, "h": 817 },
+    "duration": 100
+   },
+   "2": {
+    "frame": { "x": 1658, "y": 0, "w": 829, "h": 817 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 829, "h": 817 },
+    "sourceSize": { "w": 829, "h": 817 },
+    "duration": 100
+   },
+   "3": {
+    "frame": { "x": 2487, "y": 0, "w": 829, "h": 817 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 829, "h": 817 },
+    "sourceSize": { "w": 829, "h": 817 },
+    "duration": 100
+   },
+   "4": {
+    "frame": { "x": 3316, "y": 0, "w": 829, "h": 817 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 829, "h": 817 },
+    "sourceSize": { "w": 829, "h": 817 },
+    "duration": 100
+   },
+   "5": {
+    "frame": { "x": 4145, "y": 0, "w": 829, "h": 817 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 829, "h": 817 },
+    "sourceSize": { "w": 829, "h": 817 },
+    "duration": 100
+   },
+   "6": {
+    "frame": { "x": 4974, "y": 0, "w": 829, "h": 817 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 829, "h": 817 },
+    "sourceSize": { "w": 829, "h": 817 },
+    "duration": 100
+   },
+   "7": {
+    "frame": { "x": 5803, "y": 0, "w": 829, "h": 817 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 829, "h": 817 },
+    "sourceSize": { "w": 829, "h": 817 },
+    "duration": 100
+   },
+   "8": {
+    "frame": { "x": 6632, "y": 0, "w": 829, "h": 817 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 829, "h": 817 },
+    "sourceSize": { "w": 829, "h": 817 },
+    "duration": 100
+   },
+   "9": {
+    "frame": { "x": 7461, "y": 0, "w": 829, "h": 817 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 829, "h": 817 },
+    "sourceSize": { "w": 829, "h": 817 },
+    "duration": 100
+   },
+   "10": {
+    "frame": { "x": 8290, "y": 0, "w": 829, "h": 817 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 829, "h": 817 },
+    "sourceSize": { "w": 829, "h": 817 },
+    "duration": 100
+   },
+   "11": {
+    "frame": { "x": 9119, "y": 0, "w": 829, "h": 817 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 829, "h": 817 },
+    "sourceSize": { "w": 829, "h": 817 },
+    "duration": 100
+   },
+   "12": {
+    "frame": { "x": 9948, "y": 0, "w": 829, "h": 817 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 829, "h": 817 },
+    "sourceSize": { "w": 829, "h": 817 },
+    "duration": 100
+   }
+ },
+ "meta": {
+  "app": "https://github.com/LibreSprite/LibreSprite/",
+  "version": "1.1-dev",
+  "image": "/home/furkan/projects/phaser/gamecem/assets/docport1.png",
+  "format": "RGBA8888",
+  "size": { "w": 10777, "h": 817 },
+  "scale": "1",
+  "frameTags": [
+  ],
+  "layers": [
+   { "name": "Layer", "opacity": 255, "blendMode": "normal" }
+  ]
+ }
+}

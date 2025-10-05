@@ -3,7 +3,7 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "corridor.tmx",
+    "activeFile": "room1.tmx",
     "expandedProjectPaths": [
         "."
     ],
@@ -13,26 +13,56 @@
             "selectedLayer": 1,
             "viewCenter": {
                 "x": 2681.8830242510703,
-                "y": 795.2924393723251
+                "y": 417.26105563480724
+            }
+        },
+        "corridor2.tmx": {
+            "scale": 1.767578125,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 2904.5392265193373,
+                "y": 639.0099447513812
+            }
+        },
+        "corridorUp.tmx": {
+            "expandedObjectLayers": [
+                3
+            ],
+            "scale": 0.1467,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 3415.1329243353784,
+                "y": 616.9052488070893
+            }
+        },
+        "kidsRoom.tmx": {
+            "expandedObjectLayers": [
+                3
+            ],
+            "scale": 0.4032,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 1277.281746031746,
+                "y": 980.9027777777778
             }
         },
         "room1.tmx": {
-            "scale": 0.5,
-            "selectedLayer": 1,
+            "scale": 0.227,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 846,
-                "y": 307
+                "x": 2030.837004405286,
+                "y": 737.8854625550659
             }
         }
     },
     "last.exportedFilePath": "/home/furkan/projects/phaser/gamecem/assets",
     "map.fixedSize": true,
-    "map.height": 1278,
+    "map.height": 740,
     "map.lastUsedExportFilter": "All Files (*)",
     "map.lastUsedFormat": "tmx",
     "map.tileHeight": 2,
     "map.tileWidth": 2,
-    "map.width": 5809,
+    "map.width": 2030,
     "openFiles": [
         "room1.tmx",
         "corridor.tmx"
@@ -40,7 +70,7 @@
     "project": "doc.tiled-project",
     "property.type": "bool",
     "recentFiles": [
-        "room1.tmx",
-        "corridor.tmx"
+        "corridor.tmx",
+        "room1.tmx"
     ]
 }

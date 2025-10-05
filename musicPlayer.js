@@ -26,6 +26,13 @@ class musicPlayer extends Phaser.Scene{
     return sfx;
   }
 
+  playDoorSfx(key) {
+    let doorSfx = this.sound.add(key, { volume: sfxVolume/5 });
+    doorSfx.isDoorSfx = true; // Mark as door SFX to exclude from stopAllSfx
+    doorSfx.play();
+    return doorSfx;
+  }
+
   setMusicVolume(value) {
     this.sound.sounds.forEach(s => {
       if (s.loop) {   // looplananlar müziktir varsaydım
@@ -38,6 +45,14 @@ class musicPlayer extends Phaser.Scene{
     this.sound.sounds.forEach(s => {
       if (!s.loop) {  // looplanmıyorsa sound efekt varsaydım
         s.setVolume(sfxVolume/5);
+      }
+    });
+  }
+
+  stopAllSfx() {
+    this.sound.sounds.forEach(s => {
+      if (!s.loop && !s.isDoorSfx) {  // looplanmıyorsa sound efekt varsaydım, ama door SFX hariç
+        s.stop();
       }
     });
   }

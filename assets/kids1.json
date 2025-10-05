@@ -1,0 +1,32 @@
+{ "frames": {
+   "0": {
+    "frame": { "x": 0, "y": 0, "w": 713, "h": 703 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 713, "h": 703 },
+    "sourceSize": { "w": 713, "h": 703 },
+    "duration": 100
+   },
+   "1": {
+    "frame": { "x": 713, "y": 0, "w": 713, "h": 703 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 713, "h": 703 },
+    "sourceSize": { "w": 713, "h": 703 },
+    "duration": 100
+   }
+ },
+ "meta": {
+  "app": "https://github.com/LibreSprite/LibreSprite/",
+  "version": "1.1-dev",
+  "image": "/home/furkan/projects/phaser/gamecem/assets/kids1.png",
+  "format": "RGBA8888",
+  "size": { "w": 1426, "h": 703 },
+  "scale": "1",
+  "frameTags": [
+  ],
+  "layers": [
+   { "name": "Layer", "opacity": 255, "blendMode": "normal" }
+  ]
+ }
+}

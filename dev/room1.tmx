@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="845" height="308" tilewidth="2" tileheight="2" infinite="0" nextlayerid="8" nextobjectid="14">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="2030" height="740" tilewidth="2" tileheight="2" infinite="0" nextlayerid="9" nextobjectid="14">
  <editorsettings>
   <export target="../assets/room1.json" format="json"/>
  </editorsettings>
  <objectgroup id="7" name="interactive">
-  <object id="3" name="drugs" x="1104.38" y="398.653" width="18.8552" height="28.2828"/>
-  <object id="8" name="book2" x="1035.69" y="401.347" width="41.7508" height="40.404"/>
-  <object id="9" name="book1" x="878.114" y="394.613" width="36.3636" height="36.3636"/>
-  <object id="10" name="lamp" x="1195.96" y="549.495" width="45.7912" height="39.0572"/>
-  <object id="11" name="window" x="535.354" y="257.912" width="36.3636" height="36.3636"/>
-  <object id="12" name="shelf" x="213.818" y="463.818" width="36.3636" height="36.3636"/>
-  <object id="13" name="chair" x="1323.82" y="431.818" width="36.3636" height="36.3636"/>
+  <object id="3" name="drugs" x="2670.98" y="965.611" width="18.8552" height="28.2828"/>
+  <object id="8" name="book2" x="2514.79" y="1005.9" width="41.7508" height="40.404"/>
+  <object id="9" name="book1" x="2149.22" y="966.405" width="36.3636" height="36.3636"/>
+  <object id="10" name="lamp" x="2887.76" y="1359.36" width="45.7912" height="39.0572"/>
+  <object id="11" name="window" x="1352.22" y="666.344" width="36.3636" height="36.3636"/>
+  <object id="12" name="shelf" x="534.415" y="1162.11" width="36.3636" height="36.3636"/>
+  <object id="13" name="chair" x="3185.92" y="1108.15" width="36.3636" height="36.3636"/>
  </objectgroup>
  <imagelayer id="2" name="bg">
-  <image source="../assets/roombg1.webp" width="1691" height="616"/>
+  <image source="../assets/roombg1.webp" width="4060" height="1480"/>
  </imagelayer>
- <imagelayer id="4" name="objects">
-  <image source="../assets/room1objects.webp" width="1691" height="616"/>
+ <imagelayer id="8" name="objects">
+  <image source="../assets/room1objects.webp" width="4060" height="1480"/>
  </imagelayer>
 </map>

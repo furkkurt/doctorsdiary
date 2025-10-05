@@ -8,6 +8,8 @@ class demo extends Phaser.Scene{
     this.add.text(10,210,"scene 0").setInteractive().on("pointerdown",()=>{this.scene.start("scene0")}).setScale(4)
     this.add.text(10,310,"scene 1").setInteractive().on("pointerdown",()=>{this.scene.start("scene1")}).setScale(4)
     this.add.text(10,410,"scene 2").setInteractive().on("pointerdown",()=>{this.scene.start("scene2", {from: 1})}).setScale(4)
+    this.add.text(10,510,"scene 3").setInteractive().on("pointerdown",()=>{this.scene.start("scene3", {from: 1})}).setScale(4)
+    this.add.text(10,610,"scene 4").setInteractive().on("pointerdown",()=>{this.scene.start("scene4", {from: 1})}).setScale(4)
 
 
   };
