@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="2904" height="639" tilewidth="2" tileheight="2" infinite="0" nextlayerid="4" nextobjectid="4">
+ <editorsettings>
+  <export target="../assets/corridorDown.json" format="json"/>
+ </editorsettings>
+ <imagelayer id="2" name="bg">
+  <image source="../assets/bg3.png" width="5809" height="1278"/>
+ </imagelayer>
+ <objectgroup id="3" name="interactive">
+  <object id="1" name="garden" x="1182.72" y="793.6" width="107.52" height="112.64"/>
+  <object id="2" name="stairs2" x="5213.58" y="787.854" width="109.8" height="93.412"/>
+  <object id="3" name="toilet" x="3765.76" y="814.08" width="107.52" height="112.64"/>
+ </objectgroup>
+</map>

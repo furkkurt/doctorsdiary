@@ -3,7 +3,7 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "room1.tmx",
+    "activeFile": "corridorUp.tmx",
     "expandedProjectPaths": [
         "."
     ],
@@ -23,8 +23,27 @@
             "scale": 0.1796,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 3691.536748329621,
-                "y": 1060.6904231625833
+                "x": 2906.458797327394,
+                "y": 637.5278396436524
+            }
+        },
+        "corridorDown.tmx": {
+            "expandedObjectLayers": [
+                3
+            ],
+            "scale": 0.1953125,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 2723.84,
+                "y": 734.72
+            }
+        },
+        "corridorDown2.tmx": {
+            "scale": 0.1953125,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": -302.08000000000004,
+                "y": 637.44
             }
         },
         "corridorUp.tmx": {
@@ -34,8 +53,16 @@
             "scale": 0.1467,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 2392.638036809816,
-                "y": 637.3551465576006
+                "x": 449.8977505112475,
+                "y": 889.5705521472396
+            }
+        },
+        "garden.tmx": {
+            "scale": 0.1953125,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 4433.92,
+                "y": 739.8400000000001
             }
         },
         "kidsRoom.tmx": {
@@ -50,11 +77,11 @@
             }
         },
         "room1.tmx": {
-            "scale": 0.227,
+            "scale": 0.1797,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 4083.700440528634,
-                "y": 737.8854625550659
+                "x": 2031.1630495269897,
+                "y": 737.3400111296605
             }
         },
         "untitled.tmx": {
@@ -68,20 +95,24 @@
     },
     "last.exportedFilePath": "/home/furkan/projects/phaser/gamecem/assets",
     "map.fixedSize": true,
-    "map.height": 740,
+    "map.height": 742,
     "map.lastUsedExportFilter": "All Files (*)",
     "map.lastUsedFormat": "tmx",
     "map.tileHeight": 2,
     "map.tileWidth": 2,
-    "map.width": 2030,
+    "map.width": 2049,
     "openFiles": [
         "room1.tmx",
-        "corridor.tmx"
+        "corridor.tmx",
+        "corridor2.tmx",
+        "corridorUp.tmx"
     ],
     "project": "doc.tiled-project",
     "property.type": "bool",
     "recentFiles": [
+        "room1.tmx",
         "corridor.tmx",
-        "room1.tmx"
+        "corridor2.tmx",
+        "corridorUp.tmx"
     ]
 }

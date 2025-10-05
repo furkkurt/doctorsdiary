@@ -42,12 +42,12 @@ class dialogueOverlay extends Phaser.Scene{
       this.showPortrait(rightPortrait, rightAnimation, "right")
     }
     
-    // Set name tag if provided (guard against uninitialized text/sprites)
-    if (name && this.nameText && this.nameTag) {
+    // Set name tag if provided
+    if (name) {
       this.nameText.text = name;
       this.fadeIn(this.nameTag, 100);
       this.fadeIn(this.nameText, 100);
-    } else if (this.nameTag && this.nameText) {
+    } else {
       this.fadeOut(this.nameTag, 100);
       this.fadeOut(this.nameText, 100);
     }
@@ -115,36 +115,36 @@ class dialogueOverlay extends Phaser.Scene{
   showPortrait(textureKey, animation, side) {
     console.log("Creating portrait:", textureKey, animation, side);
     
-    // Create portrait sprite
-    let portrait = this.add.sprite(0, this.scale.height, textureKey).setScrollFactor(0).setOrigin(0, 1)
-    portrait.alpha = 0
+    // Determine the actual texture key based on animation number
+    const actualTextureKey = animation ? `${textureKey}${animation}` : textureKey;
+    console.log("Using texture key:", actualTextureKey);
     
-    // Position based on side - bottom corners with proper margins
-    if (side === "left") {
-      portrait.setPosition(0, this.scale.height) // bottom left with margin
-      this.leftPortrait = portrait
-    } else if (side === "right") {
-      portrait.setPosition(this.scale.width-portrait.width, this.scale.height) // bottom right with margin
-      this.rightPortrait = portrait
+    // Create portrait sprite with scaling
+    let portrait = this.add.sprite(0, this.scale.height, actualTextureKey)
+      .setScrollFactor(0)
+      .setScale(0.25)    // Scale down portraits significantly
+      .setDepth(99)     // Set depth between dialogue box and name tag
+    
+    portrait.alpha = 0;
+    
+    // Always put doctor on left, others on right
+    const isDoctor = textureKey.includes('docPort');
+    if (isDoctor || side === "left") {
+      portrait.setOrigin(0, 1);  // Bottom-left corner
+      portrait.setPosition(0, this.scale.height);  // Bottom-left of screen
+      this.leftPortrait = portrait;
+    } else {
+      portrait.setOrigin(1, 1);  // Bottom-right corner
+      portrait.setPosition(this.scale.width, this.scale.height);  // Bottom-right of screen
+      this.rightPortrait = portrait;
     }
     
-    console.log("Portrait positioned at:", portrait.x, portrait.y);
-    
-    // Play animation if provided
-    if (animation) {
-      console.log("Playing animation:", animation);
-      portrait.play(animation)
-    }
-    
-    // Flip kids portrait to face the right direction
-    portrait.flipX = true;
-    
+    console.log("Portrait positioned at:", portrait.x, portrait.y, "Scale:", portrait.scaleX);
     console.log("Portrait created successfully, fading in...");
-    console.log("Portrait visible:", portrait.visible, "alpha:", portrait.alpha, "depth:", portrait.depth);
-    
-    // Fade in immediately (no forced alpha to 1 to avoid flicker)
-    portrait.alpha = 0
-    this.fadeIn(portrait, 200)
+
+    // Fade in
+    portrait.alpha = 0;
+    this.fadeIn(portrait, 200);
   }
 
   hidePortraits() {
@@ -212,8 +212,7 @@ class dialogueOverlay extends Phaser.Scene{
     const isLastEntry = this.currentDialogueIndex === this.dialogueSequence.length - 1
     
     // Clear previous text
-    if(this.dialogueText != undefined)
-      this.dialogueText.text = ""
+    this.dialogueText.text = ""
     
     // Always hide previous portraits first to prevent lingering or duplicates
     this.hidePortraits()
@@ -229,7 +228,7 @@ class dialogueOverlay extends Phaser.Scene{
     }
     
     // Set name tag if provided
-    if (currentDialogue.name && this.nameText != undefined) {
+    if (currentDialogue.name) {
       this.nameText.text = currentDialogue.name;
       this.fadeIn(this.nameTag, 100);
       this.fadeIn(this.nameText, 100);
@@ -369,7 +368,6 @@ class dialogueOverlay extends Phaser.Scene{
       this.sequenceCallback = null
     }
   }
-
   update(){
   }
 }

@@ -184,7 +184,7 @@ class scene1 extends Phaser.Scene{
     if (progress === 7) {
     const tryPrompt = () => {
       if (this.dialogue && this.dialogue.dialogueText) {
-        this.dialogue.dialogue("I need to take my meds", null, "docPort", null, "docPort1", "Doctor");
+        this.dialogue.dialogue("I need to take my meds", "docPort", null, "1", null, "Doctor");
         this.tutorText = this.add.text(20,10,"Take your meds",{fontFamily:"Moving", fontSize:"32px", color: "white"}).setOrigin(0).setScrollFactor(0)
         this.tutorText.alpha = 0
         this.time.delayedCall(500, () => { this.dialogue.fadeIn(this.tutorText) })

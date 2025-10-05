@@ -98,17 +98,17 @@ class scene5 extends Phaser.Scene{
         case "NaN":
           break;
         case this.matches:
-          this.inventory.pick(this.selectedItem, true, "I found some matches here!", this.dialogue);
+          this.inventory.pick(this.selectedItem, true, "I found some matches here!", this.dialogue, "docPort", null, "1", null);
           break;
 
 
+      }
       if(this.inventoryArr.includes(localStorage.getItem(this.slot+"1")) == false)
         this.inventoryArr.push(localStorage.getItem(this.slot+"1"));
       if(this.inventoryArr.includes(localStorage.getItem(this.slot+"2")) == false)
         this.inventoryArr.push(localStorage.getItem(this.slot+"2"));
       if(this.inventoryArr.includes(localStorage.getItem(this.slot+"3")) == false)
         this.inventoryArr.push(localStorage.getItem(this.slot+"3"));
-      }
     });
     this.input.keyboard.on("keyup-A", this.stop.bind(this));
     this.input.keyboard.on("keyup-D", this.stop.bind(this));
@@ -278,7 +278,7 @@ class scene5 extends Phaser.Scene{
       this.player.x += 10
     }
 
-    if (this.player.x > this.mapWidth - 50 && !this.isTransitioning){
+  if (this.player.x > this.mapWidth - 50 && !this.isTransitioning){
        this.startDoorTransition();
     }
   }

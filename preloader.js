@@ -13,8 +13,11 @@ class preloader extends Phaser.Scene {
         this.load.image("testBg", "./assets/roombg1.webp");
         this.load.image("bg2", "./assets/bg2.png");
         this.load.image("bg3", "./assets/bg3.png");
+        this.load.image("bg3", "./assets/bg32.png");
         this.load.image("bg4", "./assets/bg4.png");
+        this.load.image("bg42", "./assets/bg42.png");
         this.load.image("bg5", "./assets/bg5.png");
+        this.load.image("bg52", "./assets/bg52.png");
         this.load.image("bg6", "./assets/bg6.png");
         this.load.image("bg62", "./assets/bg62.png");
         this.load.image("bg7", "./assets/bg7.png");
@@ -31,7 +34,7 @@ class preloader extends Phaser.Scene {
         this.load.image("book22", "./assets/book22.webp");
         this.load.image("book1item", "./assets/book1Item.png");
         this.load.image("book2item", "./assets/book2Item.png");
-        this.load.image("matchesitem", "./assets/matches.png");
+        this.load.image("matchesitem", "./assets/matchesItem.png");
         this.load.image("inventory", "./assets/inventory.png");
         this.load.tilemapTiledJSON('room1', 'assets/room1.json');
         this.load.tilemapTiledJSON('room2', 'assets/kidsRoom.json');
@@ -39,14 +42,27 @@ class preloader extends Phaser.Scene {
         this.load.tilemapTiledJSON('kidsRoom', 'assets/kidsRoom.json');
         this.load.tilemapTiledJSON('corridor2', 'assets/corridor2.json');
         this.load.tilemapTiledJSON('corridorUp', 'assets/corridorUp.json');
+        this.load.tilemapTiledJSON('corridorDown', 'assets/corridorDown.json');
+        this.load.tilemapTiledJSON('corridorDown2', 'assets/corridorDown2.json');
+        this.load.tilemapTiledJSON('garden', 'assets/garden.json');
         this.load.image("nurse", "./assets/nurse.webp");
         this.load.image("nursePort", "./assets/nursePort.webp");
-        this.load.atlas("docPort", "./assets/docport1.png", "./assets/docport1.json");
-        this.load.atlas("kids", "./assets/kids1.png", "./assets/kids1.json");
-        this.load.atlas("kidsPort", "./assets/kidsport1.png", "./assets/kidsport1.json");
+        
+        // Load individual doctor portraits
+        for (let i = 1; i <= 14; i++) {
+            this.load.image(`docPort${i}`, `./assets/doc${i}.png`);
+        }
+        
+        // Load individual kids portraits
+        for (let i = 1; i <= 20; i++) {
+            this.load.image(`kidsPort${i}`, `./assets/twins${i}.png`);
+        }
+        
+        this.load.atlas("kids", "./assets/t1-sheet.webp", "./assets/kids1.json");
         //doldurma
         this.load.image("stairs", "./assets/stairs.png");
         this.load.image("stairs2", "./assets/stairs.png");
+        this.load.image("toilet", "./assets/stairs.png");
         this.load.image("matches", "./assets/stairs.png");
         this.load.image("ofis1", "./assets/ofis1.png");
         this.load.image("kidsRoomDoor", "./assets/kidsRoom.png");
@@ -56,6 +72,7 @@ class preloader extends Phaser.Scene {
         this.load.audio("walk", "sfx/walking.wav")
         this.load.audio("walkEcho", "sfx/walkingEcho.wav")
         this.load.audio("door", "sfx/door.wav")
+        this.load.audio("toilet", "sfx/toilet.wav")
 
     };
 
@@ -144,117 +161,7 @@ class preloader extends Phaser.Scene {
             frames: [{key: "kids", frame: "1"}],
             repeat: 0
         })
-        //portraits 
-        this.anims.create({
-            key: "kidsPort1",
-            frameRate: 1,
-            frames: [{key: "kidsPort", frame: "0"}],
-            repeat: 0
-        })
-        this.anims.create({
-            key: "kidsPort2",
-            frameRate: 1,
-            frames: [{key: "kidsPort", frame: "1"}],
-            repeat: 0
-        })
-        this.anims.create({
-            key: "kidsPort3",
-            frameRate: 1,
-            frames: [{key: "kidsPort", frame: "2"}],
-            repeat: 0
-        })
-        this.anims.create({ 
-            key: "kidsPort4",
-            frameRate: 1,
-            frames: [{key: "kidsPort", frame: "3"}],
-            repeat: 0
-        })
-        this.anims.create({
-            key: "kidsPort5",
-            frameRate: 1,
-            frames: [{key: "kidsPort", frame: "4"}],
-            repeat: 0
-        })
-        this.anims.create({
-            key: "kidsPort6",
-            frameRate: 1,
-            frames: [{key: "kidsPort", frame: "5"}],
-            repeat: 0
-        })
-        
-        this.anims.create({
-            key: "docPort1",
-            frameRate: 1,
-            frames: [{key: "docPort", frame: "0"}],
-            repeat: 0
-        })
-        this.anims.create({
-            key: "docPort2",
-            frameRate: 1,
-            frames: [{key: "docPort", frame: "1"}],
-            repeat: 0
-        })
-        this.anims.create({
-            key: "docPort3",
-            frameRate: 1,
-            frames: [{key: "docPort", frame: "2"}],
-            repeat: 0
-        })
-        this.anims.create({
-            key: "docPort4",
-            frameRate: 1,
-            frames: [{key: "docPort", frame: "3"}],
-            repeat: 0
-        })
-        this.anims.create({
-            key: "docPort5",
-            frameRate: 1,
-            frames: [{key: "docPort", frame: "4"}],
-            repeat: 0
-        })
-        this.anims.create({
-            key: "docPort6",
-            frameRate: 1,
-            frames: [{key: "docPort", frame: "5"}],
-            repeat: 0
-        })
-        this.anims.create({
-            key: "docPort7",
-            frameRate: 1,
-            frames: [{key: "docPort", frame: "6"}],
-            repeat: 0
-        })
-        this.anims.create({
-            key: "docPort8",
-            frameRate: 1,
-            frames: [{key: "docPort", frame: "7"}],
-            repeat: 0
-        })
-        this.anims.create({
-            key: "docPort9",
-            frameRate: 1,
-            frames: [{key: "docPort", frame: "8"}],
-            repeat: 0
-        })
-        this.anims.create({
-            key: "docPort10",
-            frameRate: 1,
-            frames: [{key: "docPort", frame: "9"}],
-            repeat: 0
-        })
-        this.anims.create({
-            key: "docPort11",
-            frameRate: 1,
-            frames: [{key: "docPort", frame: "10"}],
-            repeat: 0
-        })
-        this.anims.create({
-            key: "docPort12",
-            frameRate: 1,
-            frames: [{key: "docPort", frame: "11"}],
-            repeat: 0
-        })
-        
+        // Portraits are now static images, no animations needed
 
         this.scene.start("demo")
 

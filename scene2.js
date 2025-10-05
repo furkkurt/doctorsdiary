@@ -24,13 +24,20 @@ class scene2 extends Phaser.Scene{
     this.controlsLocked = false
 
     // build inventory array AFTER determining slot
-    this.inventoryArr=[]
-    const i1 = localStorage.getItem(this.slot+"1")
-    const i2 = localStorage.getItem(this.slot+"2")
-    const i3 = localStorage.getItem(this.slot+"3")
-    if (i1 && !this.inventoryArr.includes(i1)) this.inventoryArr.push(i1)
-    if (i2 && !this.inventoryArr.includes(i2)) this.inventoryArr.push(i2)
-    if (i3 && !this.inventoryArr.includes(i3)) this.inventoryArr.push(i3)
+    this.slot = currentSlot === 1 ? "firstSlotItem" : (currentSlot === 2 ? "secondSlotItem" : "thirdSlotItem");
+    this.inventoryArr = [];
+    
+    // Get items from localStorage
+    const i1 = localStorage.getItem(this.slot + "1");
+    const i2 = localStorage.getItem(this.slot + "2");
+    const i3 = localStorage.getItem(this.slot + "3");
+    
+    // Only add non-empty items to inventory
+    if (i1 && i1 !== "" && !this.inventoryArr.includes(i1)) this.inventoryArr.push(i1);
+    if (i2 && i2 !== "" && !this.inventoryArr.includes(i2)) this.inventoryArr.push(i2);
+    if (i3 && i3 !== "" && !this.inventoryArr.includes(i3)) this.inventoryArr.push(i3);
+    
+    console.log("Current slot:", currentSlot, "Inventory:", this.inventoryArr);
 
     this.overlayDark = this.add.graphics();
     this.overlayDark.fillStyle(0x000000, 1);
@@ -39,8 +46,8 @@ class scene2 extends Phaser.Scene{
     this.overlayDark.setDepth(100)
     this.dialogue.fadeOut(this.overlayDark)
     this.logProgress("scene2 create")
-
-    this.bg = this.add.image(0,0,"bg4").setOrigin(0)
+    console.log("SAHNE İKİDEYİZ")
+    this.bg = this.add.image(0,0,"bg42").setOrigin(0)
     this.mapWidth = this.bg.width * this.bg.scaleX;
     this.mapHeight = this.bg.height * this.bg.scaleY;
     this.scaleFactor = this.mapWidth/this.bg.width
@@ -91,6 +98,8 @@ class scene2 extends Phaser.Scene{
     this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
     // Progress 8: enable dark flickering overlay
     if (progress === 8 || progress === 9) {
+      this.bg.setTexture("bg42")
+    /*
       this.overlayDark.alpha = 0.8;
       this.flickerTween = this.tweens.add({
         targets: this.overlayDark,
@@ -108,13 +117,23 @@ class scene2 extends Phaser.Scene{
           }
         }
       });
+    */
       // Flags for progress 8 events
       this.p8NurseDialogueStarted = false;
       this.p8BoundaryWarned = false;
     }
-
     // If coming from scene3, spawn at right edge facing left
     if (data && data.from === 3) {
+      this.player.setPosition(this.mapWidth - 50, 800);
+      this.player.flipX = true;
+    }
+    // If coming from scene5, spawn at position 1800
+    if (data && data.from === 5) {
+      this.player.setPosition(1800, 800);
+      this.player.flipX = true;
+    }
+    // If coming from scene6, spawn at right edge facing left
+    if (data && data.from === 6) {
       this.player.setPosition(this.mapWidth - 50, 800);
       this.player.flipX = true;
     }
@@ -126,7 +145,7 @@ class scene2 extends Phaser.Scene{
         case "NaN":
           break;
         case this.stairs:
-          this.inventory.pick(this.selectedItem, false, "", this.dialogue);
+          this.transitionToScene6();
           break;
         case this.ofis1:
           this.inventory.pick(this.selectedItem, false, "", this.dialogue);
@@ -134,7 +153,7 @@ class scene2 extends Phaser.Scene{
           break;
         case this.ofis2:
           this.inventory.pick(this.selectedItem, false, "", this.dialogue);
-          if (progress === 8) {
+          if (progress === 8 || progress === 9) {
             this.startTransitionToScene5();
           }
           break;
@@ -193,6 +212,7 @@ class scene2 extends Phaser.Scene{
   }
 
   startTransitionToScene5() {
+    progress = 9
     if (this.isTransitioning) return;
     this.isTransitioning = true;
     this.input.keyboard.removeAllListeners();
@@ -203,6 +223,32 @@ class scene2 extends Phaser.Scene{
       this.scene.stop("inventoryOverlay");
       this.scene.stop("dialogueOverlay");
       this.scene.start("scene5", { from: 2, currentSlot: currentSlot });
+    });
+  }
+
+  transitionToScene6() {
+    // Prevent multiple transitions
+    if (this.isTransitioning) return;
+    this.isTransitioning = true;
+    
+    // Disable player movement
+    this.input.keyboard.removeAllListeners();
+    
+    // Stop walking sound and play door sound
+    this.musicPlayer.stopAllSfx();
+    this.musicPlayer.playDoorSfx("door");
+    
+    // Fade in the dark overlay
+    this.dialogue.fadeIn(this.overlayDark, 1000);
+    
+    // After fade completes, transition to scene6
+    this.time.delayedCall(1000, () => {
+      this.scene.stop("inventoryOverlay");
+      this.scene.stop("dialogueOverlay");
+      this.scene.start("scene6", {
+        from: 2,
+        currentSlot: currentSlot
+      });
     });
   }
 
@@ -293,16 +339,15 @@ class scene2 extends Phaser.Scene{
   update() {
     // Progress 8 scripted events
     if (progress === 8) {
-      progress = 9
       // Trigger nurse dialogue at x > 2000 once
       if (!this.p8NurseDialogueStarted && this.player.x > 2000) {
         this.p8NurseDialogueStarted = true;
         this.lockControlsFor(1000);
         const seq = [
-          { text: "dark, darker yet darker?", leftPortrait: "docPort", rightPortrait: "nursePort", leftAnimation: "docPort1", rightAnimation: null, name: "Nurse" },
-          { text: "dark like the asit that rain in their eyes?", leftPortrait: "docPort", rightPortrait: "nursePort", leftAnimation: "docPort1", rightAnimation: null, name: "Nurse" },
-          { text: ".......", leftPortrait: "docPort", rightPortrait: null, leftAnimation: "docPort11", rightAnimation: null, name: "Doctor" },
-          { text: "kids are outside?", leftPortrait: "docPort", rightPortrait: "nursePort", leftAnimation: "docPort1", rightAnimation: null, name: "Nurse" }
+          { text: "dark, darker yet darker?", leftPortrait: "docPort", rightPortrait: "nursePort", leftAnimation: "1", rightAnimation: null, name: "Nurse" },
+          { text: "dark like the asit that rain in their eyes?", leftPortrait: "docPort", rightPortrait: "nursePort", leftAnimation: "1", rightAnimation: null, name: "Nurse" },
+          { text: ".......", leftPortrait: "docPort", rightPortrait: null, leftAnimation: "11", rightAnimation: null, name: "Doctor" },
+          { text: "kids are outside?", leftPortrait: "docPort", rightPortrait: "nursePort", leftAnimation: "1", rightAnimation: null, name: "Nurse" }
         ];
         this.dialogue.startDialogueSequence(seq, () => {
           if (this.nurse) {
@@ -311,28 +356,157 @@ class scene2 extends Phaser.Scene{
         });
       }
 
-      // Block going beyond x > 2500 with warning (but only lock briefly)
-      if (this.player.x > 2500 && !this.p8BoundaryWarned) {
-        if (this.inventoryArr.includes("matches")){
-          return;
-        }
-        else {
+    }
+
+    // Progress 9 match usage
+    if (progress === 8 || progress === 9) {      // Block going beyond x > 2500 with warning (but only lock briefly)
+      if (this.player.x > 2500) {
+        if (!this.inventoryArr.includes("matches")) {
           this.p8BoundaryWarned = true;
           this.player.x = 2450;
           this.lockControlsFor(3000);
-          this.dialogue.dialogue("I dont want to walk into dark, i need to find a source of light", null, "docPort", null, "docPort1", "Doctor");
+          this.dialogue.dialogue("I dont want to walk into dark, i need to find a source of light", "docPort", null, "1", null, "Doctor");
           this.time.delayedCall(2000, () => { this.p8BoundaryWarned = false; });
         }
       }
+      // Going forward past 2500
+      if (this.inventoryArr.includes("matches") && ((this.player.x > 2500) && (this.player.x < 3400) && (!this.matchButtonShown && !this.isTransitioning))) {
+        this.stop();
+        this.player.x = 2500;
+        this.lockControlsFor(2000);
+        
+        // Create match use button if not exists
+        if (!this.useMatchBtn) {
+          this.useMatchBtn = this.add.text(
+            this.cameras.main.centerX, 
+            this.cameras.main.centerY,
+            "Click to use match",
+            {fontFamily:"Moving", fontSize:"64px", color: "white"}
+          ).setOrigin(0.5).setScrollFactor(0).setDepth(101).setInteractive();
+          
+          this.useMatchBtn.on("pointerdown", () => {
+            if (this.isTransitioning) return;
+            this.isTransitioning = true;
+            this.useMatchBtn.destroy();
+            this.matchButtonShown = false;
+            
+            // Fade out, move player, fade in
+            this.dialogue.fadeIn(this.overlayDark, 1000);
+            
+            // Remove keyboard controls during transition
+            this.input.keyboard.removeAllListeners();
+            
+            // Wait for fade to complete, then teleport
+            this.time.delayedCall(2000, () => {
+              // Stop any existing movement and physics
+              console.log("MOVED")
+              this.player.setVelocity(0, 0);
+              this.player.x = 3500;
+              
+              // Force camera update
+              this.cameras.main.stopFollow();
+              this.cameras.main.pan(3500, this.player.y, 0);
+              this.cameras.main.startFollow(this.player, true);
+              
+              // Wait a bit then fade back in
+              this.time.delayedCall(300, () => {
+                this.dialogue.fadeOut(this.overlayDark, 1000);
+                this.time.delayedCall(1100, () => {
+                  // Re-enable keyboard controls
+                  this.input.keyboard.on("keydown-A", this.left.bind(this));
+                  this.input.keyboard.on("keydown-D", this.right.bind(this));
+                  this.input.keyboard.on("keyup-A", this.stop.bind(this));
+                  this.input.keyboard.on("keyup-D", this.stop.bind(this));
+                  this.input.keyboard.on("keydown-ESC", this.pause.bind(this));
+                  this.input.keyboard.on("keydown-SPACE", this.pause.bind(this));
+                  this.isTransitioning = false;
+                });
+              });
+            });
+          });
+          this.matchButtonShown = true;
+        }
+      }
+      
+      // Going backward from 3500
+      if (this.player.x < 3500 && this.player.x > 3400 && !this.matchButtonShown && !this.isTransitioning) {
+        this.stop();
+        this.player.x = 3500;
+        this.lockControlsFor(2000);
+        
+        // Create return button if not exists
+        if (!this.useMatchBtn) {
+          this.useMatchBtn = this.add.text(
+            this.cameras.main.centerX,
+            this.cameras.main.centerY,
+            "Click to use match",
+            {fontFamily:"Moving", fontSize:"64px", color: "white"}
+          ).setOrigin(0.5).setScrollFactor(0).setDepth(101).setInteractive();
+          
+          this.useMatchBtn.on("pointerdown", () => {
+            if (this.isTransitioning) return;
+            this.isTransitioning = true;
+            this.useMatchBtn.destroy();
+            this.matchButtonShown = false;
+            
+            // Fade out, move player, fade in
+            this.dialogue.fadeIn(this.overlayDark, 1000);
+            
+            // Remove keyboard controls during transition
+            this.input.keyboard.removeAllListeners();
+            
+            // Wait for fade to complete, then teleport
+            this.time.delayedCall(1200, () => {
+              // Stop any existing movement and physics
+              this.player.setVelocity(0, 0);
+              this.player.x = 2500;
+              this.player.flipX = true;
+              
+              // Force camera update
+              this.cameras.main.stopFollow();
+              this.cameras.main.pan(2500, this.player.y, 0);
+              this.cameras.main.startFollow(this.player, true);
+              
+              // Wait a bit then fade back in
+              this.time.delayedCall(300, () => {
+                this.dialogue.fadeOut(this.overlayDark, 1000);
+                this.time.delayedCall(1100, () => {
+                  // Re-enable keyboard controls
+                  this.input.keyboard.on("keydown-A", this.left.bind(this));
+                  this.input.keyboard.on("keydown-D", this.right.bind(this));
+                  this.input.keyboard.on("keyup-A", this.stop.bind(this));
+                  this.input.keyboard.on("keyup-D", this.stop.bind(this));
+                  this.input.keyboard.on("keydown-ESC", this.pause.bind(this));
+                  this.input.keyboard.on("keydown-SPACE", this.pause.bind(this));
+                  this.isTransitioning = false;
+                });
+              });
+            });
+          });
+          this.matchButtonShown = true;
+        }
+      }
+      
+      // Clear button when moving away
+      if (this.useMatchBtn && 
+          ((this.player.x < 2400 && this.player.x > 0) || 
+           (this.player.x > 3600 && this.player.x < this.mapWidth))) {
+        this.useMatchBtn.destroy();
+        this.useMatchBtn = null;
+        this.matchButtonShown = false;
+      }
     }
+
     // Transition to scene3 when reaching the right edge
     if (this.player.x > this.mapWidth - 50 && !this.isTransitioning) {
       this.startTransitionToScene3();
       return;
     }
+    // Left boundary
     if (this.player.x < 0){
       this.stop();
       this.player.x += 10
     }
   }
+
 }

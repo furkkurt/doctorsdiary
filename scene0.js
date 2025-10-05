@@ -142,13 +142,13 @@ class scene0 extends Phaser.Scene{
       this.musicPlayer.stopAllSfx();
     })
     this.time.delayedCall(32000, () => {
-      this.dialogue.dialogue("... ", null, "docPort", null, "docPort1")
+      this.dialogue.dialogue("... ", "docPort", null, "1", null)
     })
     this.time.delayedCall(34000, () => {
-      this.dialogue.dialogue("Better start working on my... ", null, "docPort", null, "docPort1")
+      this.dialogue.dialogue("Better start working on my... ", "docPort", null, "1", null)
     })
     this.time.delayedCall(37000, () => {
-      this.dialogue.dialogue("case here.", null, "docPort", null, "docPort1")
+      this.dialogue.dialogue("case here.", "docPort", null, "1", null)
     })
     this.time.delayedCall(40000, () => {
       this.time.addEvent({

@@ -9,6 +9,7 @@ class scene3 extends Phaser.Scene{
       currentSlot = data.currentSlot;
     }
     
+    console.log("SAHNE ÜÇDEYŞZ")
     this.scene.launch("dialogueOverlay");
     this.scene.bringToTop("dialogueOverlay");
     this.scene.launch("inventoryOverlay");
@@ -121,7 +122,7 @@ class scene3 extends Phaser.Scene{
             }
           } else if (progress === 2) {
             // Special dialogue for progress 2
-            this.dialogue.dialogue("Wouldn't wanna tire them too much...", null, "docPort", null, "docPort1", "Doctor");
+            this.dialogue.dialogue("Wouldn't wanna tire them too much...", "docPort", null, "1", null, "Doctor");
             this.time.delayedCall(2000, () => {
               this.startDoorTransition();
             });
@@ -272,7 +273,7 @@ class scene3 extends Phaser.Scene{
         this.cut5Shown200 = true;
         this.lockControlsFor(1000);
         this.stop();
-        this.dialogue.dialogue("huh-...", "docPort", null, "docPort1", null, "Doctor");
+        this.dialogue.dialogue("huh-...", "docPort", null, "1", null, "Doctor");
       }
       if (!this.cut5Shown600 && this.player.x > 1200) {
         this.cut5Shown600 = true;
@@ -280,13 +281,13 @@ class scene3 extends Phaser.Scene{
         this.dialogue.hideDialogue();
         this.lockControlsFor(1000);
         this.stop();
-        this.dialogue.dialogue("is there someone? ...hello?","docPort", null, "docPort1", null, "Doctor");
+        this.dialogue.dialogue("is there someone? ...hello?","docPort", null, "1", null, "Doctor");
       }
       if (!this.cut5Shown1000 && this.player.x > 2000) {
         this.cut5Shown1000 = true;
         this.lockControlsFor(1000);
         this.stop();
-        this.dialogue.dialogue(".... its dark.", "docPort", null, "docPort1", null, "Doctor");
+        this.dialogue.dialogue(".... its dark.", "docPort", null, "1", null, "Doctor");
       }
       
       // Nurse dialogue now triggered via kidsRoom interaction when progress===5
@@ -296,7 +297,7 @@ class scene3 extends Phaser.Scene{
         if (this.cut5WalkTimer == null) {
           this.cut5WalkTimer = this.time.delayedCall(1000, () => {
             this.stop();
-            this.dialogue.dialogue("...its dark", null, "docPort", null, "docPort1", "Doctor");
+            this.dialogue.dialogue("...its dark", "docPort", null, "1", null, "Doctor");
             this.cut5PostWalkShown = true;
           });
         }
@@ -326,6 +327,7 @@ class scene3 extends Phaser.Scene{
     this.overlayDark.alpha = 0.8; // Set initial alpha to 80% darkness (darker overall)
     
     // Create subtle flickering light effect (easier on eyes)
+    /*
     this.flickerTween = this.tweens.add({
       targets: this.overlayDark,
       alpha: { from: 0.6, to: 1.0 }, // Flicker between 60% darkness and complete black
@@ -343,7 +345,7 @@ class scene3 extends Phaser.Scene{
         }
       }
     });
-    
+    */
     // Load map and place nurse & kidsRoom from interactive object
     const map = this.make.tilemap({ key: 'corridorUp' });
     const intLayer = map.getObjectLayer('interactive');
@@ -432,12 +434,13 @@ class scene3 extends Phaser.Scene{
 
   startProgress7Sequence() {
     // Background
-    this.bg = this.add.image(0,0,"bg5").setOrigin(0)
+    this.bg = this.add.image(0,0,"bg52").setOrigin(0)
     this.mapWidth = this.bg.width * this.bg.scaleX;
     this.mapHeight = this.bg.height * this.bg.scaleY;
     this.scaleFactor = this.mapWidth/this.bg.width
-
+    
     // Dark overlay with flicker (reuse progress 5 style)
+    /*
     this.overlayDark = this.add.graphics();
     this.overlayDark.fillStyle(0x000000, 1);
     this.overlayDark.fillRect(0, 0, this.scale.width, this.scale.height);
@@ -460,7 +463,7 @@ class scene3 extends Phaser.Scene{
         }
       }
     });
-
+    */
     // Load map and place nurse & kidsRoom from interactive object
     const map = this.make.tilemap({ key: 'corridorUp' });
     const intLayer = map.getObjectLayer('interactive');
@@ -532,11 +535,11 @@ class scene3 extends Phaser.Scene{
 
     // Auto dialogue
     const seq = [
-      { text: "youre getting closer?", leftPortrait: "docPort", rightPortrait: "nursePort", leftAnimation: "docPort1", rightAnimation: null, name: "Nurse" },
-      { text: "what-!? You again!?", leftPortrait: "docPort", rightPortrait: null, leftAnimation: "docPort12", rightAnimation: null, name: "Doctor" },
-      { text: "but to what?", leftPortrait: "docPort", rightPortrait: "nursePort", leftAnimation: "docPort1", rightAnimation: null, name: "Nurse" },
-      { text: "does it have to be just one?", leftPortrait: "docPort", rightPortrait: "nursePort", leftAnimation: "docPort1", rightAnimation: null, name: "Nurse" },
-      { text: "it can't be both?", leftPortrait: "docPort", rightPortrait: "nursePort", leftAnimation: "docPort1", rightAnimation: null, name: "Nurse" }
+      { text: "youre getting closer?", leftPortrait: "docPort", rightPortrait: "nursePort", leftAnimation: "1", rightAnimation: null, name: "Nurse" },
+      { text: "what-!? You again!?", leftPortrait: "docPort", rightPortrait: null, leftAnimation: "12", rightAnimation: null, name: "Doctor" },
+      { text: "but to what?", leftPortrait: "docPort", rightPortrait: "nursePort", leftAnimation: "1", rightAnimation: null, name: "Nurse" },
+      { text: "does it have to be just one?", leftPortrait: "docPort", rightPortrait: "nursePort", leftAnimation: "1", rightAnimation: null, name: "Nurse" },
+      { text: "it can't be both?", leftPortrait: "docPort", rightPortrait: "nursePort", leftAnimation: "1", rightAnimation: null, name: "Nurse" }
     ];
     this.startDialogueWhenReady(seq, () => {
       this.controlsLocked = false;
@@ -562,11 +565,11 @@ class scene3 extends Phaser.Scene{
     this.lockControlsFor(1000);
     // Doctor portrait on the left only; Nurse has no portrait
     const seq = [
-      { text: "Don't be scared...", leftPortrait: "docPort", rightPortrait: "nursePort", leftAnimation: "docPort1", rightAnimation: null, name: "Nurse" },
-      { text: "Sometimes stepping in and embracing your fears is better?", leftPortrait: "docPort", rightPortrait: "nursePort", leftAnimation: "docPort1", rightAnimation: null, name: "Nurse" },
-      { text: "What?", leftPortrait: "docPort", rightPortrait: null, leftAnimation: "docPort1", rightAnimation: null, name: "Doctor" },
-      { text: "...?", leftPortrait: "docPort", rightPortrait: "nursePort", leftAnimation: "docPort1", rightAnimation: null, name: "Nurse" },
-      { text: "Hello? Nurse Ayşa? Is that you?", leftPortrait: "docPort", rightPortrait: null, leftAnimation: "docPort1", rightAnimation: null, name: "Doctor" },
+      { text: "Don't be scared...", leftPortrait: "docPort", rightPortrait: "nursePort", leftAnimation: "1", rightAnimation: null, name: "Nurse" },
+      { text: "Sometimes stepping in and embracing your fears is better?", leftPortrait: "docPort", rightPortrait: "nursePort", leftAnimation: "1", rightAnimation: null, name: "Nurse" },
+      { text: "What?", leftPortrait: "docPort", rightPortrait: null, leftAnimation: "1", rightAnimation: null, name: "Doctor" },
+      { text: "...?", leftPortrait: "docPort", rightPortrait: "nursePort", leftAnimation: "1", rightAnimation: null, name: "Nurse" },
+      { text: "Hello? Nurse Ayşa? Is that you?", leftPortrait: "docPort", rightPortrait: null, leftAnimation: "1", rightAnimation: null, name: "Doctor" },
     ];
     this.dialogue.startDialogueSequence(seq, () => {
       this.cut5NurseDialogueDone = true;

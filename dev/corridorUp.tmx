@@ -5,7 +5,6 @@
  </editorsettings>
  <objectgroup id="3" name="interactive">
   <object id="1" name="kidsRoom" x="4437.89" y="663.717" width="109.8" height="93.412"/>
-  <object id="2" name="stairs2" x="231.399" y="689.49" width="109.8" height="93.412"/>
   <object id="3" name="nurse" x="4999.65" y="769.195" width="109.8" height="93.412"/>
  </objectgroup>
  <imagelayer id="2" name="bg">

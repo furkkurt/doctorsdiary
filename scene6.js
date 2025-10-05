@@ -30,31 +30,33 @@ class scene6 extends Phaser.Scene{
     this.dialogue.fadeOut(this.overlayDark)
     this.logProgress("scene2 create")
 
-    this.bg = this.add.image(0,0,"bg4").setOrigin(0)
+    this.bg = this.add.image(0,0,"bg3").setOrigin(0)
     this.mapWidth = this.bg.width * this.bg.scaleX;
     this.mapHeight = this.bg.height * this.bg.scaleY;
     this.scaleFactor = this.mapWidth/this.bg.width
-    this.player = this.physics.add.sprite(900,800,"doc").setDepth(99).setScale(1.1)
+    this.player = this.physics.add.sprite(this.mapWidth - 300,800,"doc").setDepth(99).setScale(1.1)
     this.player.play("docIdle")
+    this.player.flipX = true;
 
-    this.ofis1= this.physics.add.sprite(0,0,"ofis1").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable().setVisible(false)
-    this.ofis2= this.physics.add.sprite(0,0,"ofis2").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable().setVisible(false)
-    this.stairs= this.physics.add.sprite(0,0,"stairs").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable().setVisible(false)
+    this.toilet= this.physics.add.sprite(0,0,"toilet").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable().setVisible(false)
+    this.garden= this.physics.add.sprite(0,0,"garden").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable().setVisible(false)
+    this.stairs2= this.physics.add.sprite(0,0,"stairs2").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable().setVisible(false)
 
-    this.objects = [this.ofis1, this.ofis2, this.stairs]
+    this.objects = [this.toilet, this.stairs2, this.garden]
 
-    const map = this.make.tilemap({ key: 'corridor2' });
+    const map = this.make.tilemap({ key: 'corridorDown' });
     const intLayer = map.getObjectLayer('interactive');
     intLayer.objects.forEach(obj => {
-      if (obj.name === 'ofis1') {
-        this.ofis1.x = obj.x*this.scaleFactor
-        this.ofis1.y = obj.y*this.scaleFactor
-      } else if (obj.name === "ofis2") {
-        this.ofis2.x = obj.x*this.scaleFactor
-        this.ofis2.y = obj.y*this.scaleFactor
-      } else if(obj.name === "stairs") {
-        this.stairs.x = obj.x*this.scaleFactor
-        this.stairs.y = obj.y*this.scaleFactor
+      if (obj.name === 'toilet') {
+        this.toilet.x = obj.x*this.scaleFactor
+        this.toilet.y = obj.y*this.scaleFactor
+        console.log("toilet found")
+      }else if(obj.name === "stairs2") {
+        this.stairs2.x = obj.x*this.scaleFactor
+        this.stairs2.y = obj.y*this.scaleFactor
+      } else if(obj.name === "garden") {
+        this.garden.x = obj.x*this.scaleFactor
+        this.garden.y = obj.y*this.scaleFactor
       }  
     });
 
@@ -67,15 +69,14 @@ class scene6 extends Phaser.Scene{
       switch(this.selectedItem){
         case "NaN":
           break;
-        case this.stairs:
-          this.inventory.pick(this.selectedItem, false, "", this.dialogue);
+        case this.stairs2:
+          this.transitionToScene2();
           break;
-        case this.ofis1:
-          this.inventory.pick(this.selectedItem, false, "", this.dialogue);
-          this.startDoorTransition();
+        case this.toilet:
+          this.toiletInteraction();
           break;
-        case this.ofis2:
-          this.inventory.pick(this.selectedItem, false, "", this.dialogue);
+        case this.garden:
+          this.transitionToScene8();
           break;
       }
     });
@@ -85,6 +86,13 @@ class scene6 extends Phaser.Scene{
     this.input.keyboard.on("keydown-SPACE", this.pause.bind(this));
   };
 
+  toiletInteraction(){
+    this.musicPlayer.playSfx("toilet")
+    this.dialogue.fadeIn(this.overlayDark, 1000);
+    this.time.delayedCall(1000, () => {
+      this.dialogue.fadeOut(this.overlayDark, 1000);
+    })
+  }
 
   pause(){
     this.scene.launch("menu", {from: this.scene.key})
@@ -137,6 +145,58 @@ class scene6 extends Phaser.Scene{
       this.scene.stop("inventoryOverlay");
       this.scene.stop("dialogueOverlay");
       this.scene.start("scene7", {
+        from: 6,
+        currentSlot: currentSlot
+      });
+    });
+  }
+
+  transitionToScene2() {
+    // Prevent multiple transitions
+    if (this.isTransitioning) return;
+    this.isTransitioning = true;
+    
+    // Disable player movement
+    this.input.keyboard.removeAllListeners();
+    
+    // Stop walking sound and play door sound
+    this.musicPlayer.stopAllSfx();
+    this.musicPlayer.playDoorSfx("door");
+    
+    // Fade in the dark overlay
+    this.dialogue.fadeIn(this.overlayDark, 1000);
+    
+    // After fade completes, transition to scene2
+    this.time.delayedCall(1000, () => {
+      this.scene.stop("inventoryOverlay");
+      this.scene.stop("dialogueOverlay");
+      this.scene.start("scene2", {
+        from: 6,
+        currentSlot: currentSlot
+      });
+    });
+  }
+
+  transitionToScene8() {
+    // Prevent multiple transitions
+    if (this.isTransitioning) return;
+    this.isTransitioning = true;
+    
+    // Disable player movement
+    this.input.keyboard.removeAllListeners();
+    
+    // Stop walking sound and play door sound
+    this.musicPlayer.stopAllSfx();
+    this.musicPlayer.playDoorSfx("door");
+    
+    // Fade in the dark overlay
+    this.dialogue.fadeIn(this.overlayDark, 1000);
+    
+    // After fade completes, transition to scene8
+    this.time.delayedCall(1000, () => {
+      this.scene.stop("inventoryOverlay");
+      this.scene.stop("dialogueOverlay");
+      this.scene.start("scene8", {
         from: 6,
         currentSlot: currentSlot
       });

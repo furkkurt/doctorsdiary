@@ -117,12 +117,12 @@ class inventoryOverlay extends Phaser.Scene{
     console.log("Scene2 found:", scene2 ? "yes" : "no");
     
     if (scene2) {
-      console.log("Starting scene3 from scene2");
-      // Start scene3 from scene2
+      console.log("Starting scene6 from scene2");
+      // Start scene6 from scene2
       scene2.scene.stop("inventoryOverlay");
       scene2.scene.stop("dialogueOverlay");
       scene2.scene.stop("musicPlayer");
-      scene2.scene.start("scene3", {
+      scene2.scene.start("scene6", {
         from: 2,
         currentSlot: currentSlot
       });
@@ -135,21 +135,21 @@ class inventoryOverlay extends Phaser.Scene{
     console.log("stairs2() function called");
     
     // Try to find scene3 specifically
-    let scene3 = this.scene.manager.getScene("scene3");
-    console.log("Scene3 found:", scene3 ? "yes" : "no");
+    let scene6 = this.scene.manager.getScene("scene6");
+    console.log("Scene6 found:", scene6 ? "yes" : "no");
     
     if (scene3) {
       console.log("Starting scene2 from scene3");
-      // Start scene2 from scene3
+      // Start scene2 from scene6
       scene3.scene.stop("inventoryOverlay");
       scene3.scene.stop("dialogueOverlay");
       scene3.scene.stop("musicPlayer");
       scene3.scene.start("scene2", {
-        from: 3,
+        from: 6,
         currentSlot: currentSlot
       });
     } else {
-      console.log("Scene3 not found");
+      console.log("Scene6 not found");
     }
   }
 

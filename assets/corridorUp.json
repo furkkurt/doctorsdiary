@@ -20,17 +20,6 @@
                 }, 
                 {
                  "height":93.412,
-                 "id":2,
-                 "name":"stairs2",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":109.8,
-                 "x":231.399,
-                 "y":689.49
-                }, 
-                {
-                 "height":93.412,
                  "id":3,
                  "name":"nurse",
                  "rotation":0,
@@ -38,7 +27,7 @@
                  "visible":true,
                  "width":109.8,
                  "x":4999.65,
-                 "y":769.195162917519
+                 "y":769.195
                 }],
          "opacity":1,
          "type":"objectgroup",

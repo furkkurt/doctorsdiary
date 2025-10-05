@@ -69,11 +69,14 @@ class scene4 extends Phaser.Scene{
     this.cameras.main.startFollow(this.doctor, true, 0.1, 0.1);
 
     // Movement input bindings
+
+    if(progress == 9){
     this.input.keyboard.on("keydown-A", this.left.bind(this));
     this.input.keyboard.on("keydown-D", this.right.bind(this));
     this.input.keyboard.on("keyup-A", this.stop.bind(this));
     this.input.keyboard.on("keyup-D", this.stop.bind(this));
-    this.input.keyboard.on("keydown-ESC", () => { if (!this.controlsLocked) { this.stop(); } });
+    this.input.keyboard.on("keydown-ESC", () => this.stop() );
+    }
 
     // Movement state
     this.isWalking = false
@@ -177,103 +180,103 @@ class scene4 extends Phaser.Scene{
   startDialogueSequence() {
     const dialogueArray = [
       // Dr – Hello there, child.
-      { text: "Hello there, child.", leftPortrait: null, rightPortrait: "docPort", leftAnimation: null, rightAnimation: "docPort1", name: "Doctor" },
+      { text: "Hello there, child.", leftPortrait: "docPort", rightPortrait: null, leftAnimation: "1", rightAnimation: null, name: "Doctor" },
       
       // Aras – ...
-      { text: "...", leftPortrait: "kidsPort", rightPortrait: "docPort", leftAnimation: "kidsPort3", rightAnimation: "docPort1", name: "Aras" },
+      { text: "...", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "3", name: "Aras" },
       
       // Ayaz – ...Hello there..!
-      { text: "...Hello there..!", leftPortrait: "kidsPort", rightPortrait: "docPort", leftAnimation: "kidsPort2", rightAnimation: "docPort1", name: "Ayaz" },
+      { text: "...Hello there..!", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "2", name: "Ayaz" },
       
       // Dr – So, tell me about your daily life.
-      { text: "So, tell me about your daily life.", leftPortrait: "kidsPort", rightPortrait: "docPort", leftAnimation: "kidsPort3", rightAnimation: "docPort1", name: "Doctor" },
+      { text: "So, tell me about your daily life.", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "3", name: "Doctor" },
       
       // Ay – Um... we... we like to draw!
-      { text: "Um... we... we like to draw!", leftPortrait: "kidsPort", rightPortrait: "docPort", leftAnimation: "kidsPort2", rightAnimation: "docPort1", name: "Ayaz" },
+      { text: "Um... we... we like to draw!", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "2", name: "Ayaz" },
       
       // Dr – I mean... how do you do your excretion and such?
-      { text: "I mean... how do you do your excretion and such?", leftPortrait: "kidsPort", rightPortrait: "docPort", leftAnimation: "kidsPort3", rightAnimation: "docPort1", name: "Doctor" },
+      { text: "I mean... how do you do your excretion and such?", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "3", name: "Doctor" },
       
       // Dr – ...Urination and bowel movements.
-      { text: "...Urination and bowel movements.", leftPortrait: "kidsPort", rightPortrait: "docPort", leftAnimation: "kidsPort3", rightAnimation: "docPort1", name: "Doctor" },
+      { text: "...Urination and bowel movements.", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "3", name: "Doctor" },
       
       // "Damn, it's been long since I had a case with a child."
-      { text: "\"Damn, it's been long since I had a case with a child.\"", leftPortrait: "kidsPort", rightPortrait: "docPort", leftAnimation: "kidsPort3", rightAnimation: "docPort1", name: "Doctor" },
+      { text: "\"Damn, it's been long since I had a case with a child.\"", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "3", name: "Doctor" },
       
       // Ay – Ewww, that's gross.
-      { text: "Ewww, that's gross.", leftPortrait: "kidsPort", rightPortrait: "docPort", leftAnimation: "kidsPort2", rightAnimation: "docPort1", name: "Ayaz" },
+      { text: "Ewww, that's gross.", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "2", name: "Ayaz" },
       
       // Ar – Pff... snorts
-      { text: "Pff... snorts", leftPortrait: "kidsPort", rightPortrait: "docPort", leftAnimation: "kidsPort3", rightAnimation: "docPort1", name: "Aras" },
+      { text: "Pff... snorts", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "3", name: "Aras" },
       
       // Dr – Hm...
-      { text: "Hm...", leftPortrait: "kidsPort", rightPortrait: "docPort", leftAnimation: "kidsPort3", rightAnimation: "docPort1", name: "Doctor" },
+      { text: "Hm...", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "3", name: "Doctor" },
       
       // Dr – Can the other one talk?
-      { text: "Can the other one talk?", leftPortrait: "kidsPort", rightPortrait: "docPort", leftAnimation: "kidsPort3", rightAnimation: "docPort1", name: "Doctor" },
+      { text: "Can the other one talk?", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "3", name: "Doctor" },
       
       // Ay – Y-yeah! He's just shy sometimes.
-      { text: "Y-yeah! He's just shy sometimes.", leftPortrait: "kidsPort", rightPortrait: "docPort", leftAnimation: "kidsPort2", rightAnimation: "docPort1", name: "Ayaz" },
+      { text: "Y-yeah! He's just shy sometimes.", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "2", name: "Ayaz" },
       
       // Dr – Interesting... scribbles something
-      { text: "Interesting... scribbles something", leftPortrait: "kidsPort", rightPortrait: "docPort", leftAnimation: "kidsPort3", rightAnimation: "docPort1", name: "Doctor" },
+      { text: "Interesting... scribbles something", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "3", name: "Doctor" },
       
       // Ay – smiles nervously
-      { text: "smiles nervously", leftPortrait: "kidsPort", rightPortrait: "docPort", leftAnimation: "kidsPort2", rightAnimation: "docPort1", name: "Ayaz" },
+      { text: "smiles nervously", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "2", name: "Ayaz" },
       
       // Ar – ... looks away
-      { text: "... looks away", leftPortrait: "kidsPort", rightPortrait: "docPort", leftAnimation: "kidsPort3", rightAnimation: "docPort1", name: "Aras" },
+      { text: "... looks away", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "3", name: "Aras" },
       
       // Dr – Yeah, you guys don't share thoughts... since you don't share the same head and no connection through the thalamus. I thought I might ask anyway, haha.
-      { text: "Yeah, you guys don't share thoughts... since you don't share the same head and no connection through the thalamus. I thought I might ask anyway, haha.", leftPortrait: "kidsPort", rightPortrait: "docPort", leftAnimation: "kidsPort3", rightAnimation: "docPort1", name: "Doctor" },
+      { text: "Yeah, you guys don't share thoughts... since you don't share the same head and no connection through the thalamus. I thought I might ask anyway, haha.", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "3", name: "Doctor" },
       
       // twins look at each other
-      { text: "twins look at each other", leftPortrait: "kidsPort", rightPortrait: "docPort", leftAnimation: "kidsPort2", rightAnimation: "docPort1" },
+      { text: "twins look at each other", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "2" },
       
       // Ay – ...
-      { text: "...", leftPortrait: "kidsPort", rightPortrait: "docPort", leftAnimation: "kidsPort2", rightAnimation: "docPort1", name: "Ayaz" },
+      { text: "...", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "2", name: "Ayaz" },
       
       // Ay – ...Is it gonna hurt..?
-      { text: "...Is it gonna hurt..?", leftPortrait: "kidsPort", rightPortrait: "docPort", leftAnimation: "kidsPort2", rightAnimation: "docPort1", name: "Ayaz" },
+      { text: "...Is it gonna hurt..?", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "2", name: "Ayaz" },
       
       // Aras nudges Ayaz
-      { text: "Aras nudges Ayaz", leftPortrait: "kidsPort", rightPortrait: "docPort", leftAnimation: "kidsPort3", rightAnimation: "docPort1", name: "" },
+      { text: "Aras nudges Ayaz", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "3", name: "" },
       
       // Ar – Ssshh!
-      { text: "Ssshh!", leftPortrait: "kidsPort", rightPortrait: "docPort", leftAnimation: "kidsPort3", rightAnimation: "docPort1", name: "Aras" },
+      { text: "Ssshh!", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "3", name: "Aras" },
       
       // Ay – What! I gotta ask!?
-      { text: "What! I gotta ask!?", leftPortrait: "kidsPort", rightPortrait: "docPort", leftAnimation: "kidsPort2", rightAnimation: "docPort1", name: "Ayaz" },
+      { text: "What! I gotta ask!?", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "2", name: "Ayaz" },
       
       // Dr – Huh?
-      { text: "Huh?", leftPortrait: "kidsPort", rightPortrait: "docPort", leftAnimation: "kidsPort3", rightAnimation: "docPort1", name: "Doctor" },
+      { text: "Huh?", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "3", name: "Doctor" },
       
       // Ay – Nurse Aysa told us about the... tests...
-      { text: "Nurse Aysa told us about the... tests...", leftPortrait: "kidsPort", rightPortrait: "docPort", leftAnimation: "kidsPort2", rightAnimation: "docPort1", name: "Ayaz" },
+      { text: "Nurse Aysa told us about the... tests...", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "2", name: "Ayaz" },
       
       // Dr – Oh, the tests are nothing invasive. It's gonna take one week. I'll be just monitoring you...
-      { text: "Oh, the tests are nothing invasive. It's gonna take one week. I'll be just monitoring you...", leftPortrait: "kidsPort", rightPortrait: "docPort", leftAnimation: "kidsPort3", rightAnimation: "docPort1", name: "Doctor" },
+      { text: "Oh, the tests are nothing invasive. It's gonna take one week. I'll be just monitoring you...", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "3", name: "Doctor" },
       
       // both kids look at him
-      { text: "both kids look at him", leftPortrait: "kidsPort", rightPortrait: "docPort", leftAnimation: "kidsPort2", rightAnimation: "docPort1" },
+      { text: "both kids look at him", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "2" },
       
       // Dr – ....you ...guys. And some simple tests.
-      { text: "....you ...guys. And some simple tests.", leftPortrait: "kidsPort", rightPortrait: "docPort", leftAnimation: "kidsPort3", rightAnimation: "docPort1", name: "Doctor" },
+      { text: "....you ...guys. And some simple tests.", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "3", name: "Doctor" },
       
       // Dr – I'd love to meet your guys' nurse.
-      { text: "I'd love to meet your guys' nurse.", leftPortrait: "kidsPort", rightPortrait: "docPort", leftAnimation: "kidsPort3", rightAnimation: "docPort1", name: "Doctor" },
+      { text: "I'd love to meet your guys' nurse.", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "3", name: "Doctor" },
       
       // Ay – She's a shy one too.
-      { text: "She's a shy one too.", leftPortrait: "kidsPort", rightPortrait: "docPort", leftAnimation: "kidsPort2", rightAnimation: "docPort1", name: "Ayaz" },
+      { text: "She's a shy one too.", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "2", name: "Ayaz" },
       
       // Dr – She was not in the nursing station.
-      { text: "She was not in the nursing station.", leftPortrait: "kidsPort", rightPortrait: "docPort", leftAnimation: "kidsPort3", rightAnimation: "docPort1", name: "Doctor" },
+      { text: "She was not in the nursing station.", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "3", name: "Doctor" },
       
       // Ay – I dunno.
-      { text: "I dunno.", leftPortrait: "kidsPort", rightPortrait: "docPort", leftAnimation: "kidsPort2", rightAnimation: "docPort1", name: "Ayaz" },
+      { text: "I dunno.", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "2", name: "Ayaz" },
       
       // Dr – Hm... okay, let's give you guys' medication.
-      { text: "Hm... okay, let's give you guys' medication.", leftPortrait: "kidsPort", rightPortrait: "docPort", leftAnimation: "kidsPort3", rightAnimation: "docPort1", name: "Doctor" }
+      { text: "Hm... okay, let's give you guys' medication.", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "3", name: "Doctor" }
     ];
 
     this.dialogue.startDialogueSequence(dialogueArray, () => {
@@ -285,19 +288,19 @@ class scene4 extends Phaser.Scene{
   // Progress 6 alternative dialogue flow
   startDialogueSequenceP6_Part1() {
     const dialogueArray = [
-      { text: "hello there kids, good morning.", leftPortrait: "kidsPort", rightPortrait: "docPort", leftAnimation: "kidsPort3", rightAnimation: "docPort1", name: "Doctor" },
-      { text: "good morning doctor!", leftPortrait: "kidsPort", rightPortrait: "docPort", leftAnimation: "kidsPort2", rightAnimation: "docPort1", name: "Ayaz" },
-      { text: "what uh, What are you guys drawing?", leftPortrait: "kidsPort", rightPortrait: "docPort", leftAnimation: "kidsPort3", rightAnimation: "docPort1", name: "Doctor" },
-      { text: "green trees!", leftPortrait: "kidsPort", rightPortrait: "docPort", leftAnimation: "kidsPort2", rightAnimation: "docPort1", name: "Ayaz" },
-      { text: "looks green to me..!", leftPortrait: "kidsPort", rightPortrait: "docPort", leftAnimation: "kidsPort3", rightAnimation: "docPort1", name: "Doctor" },
-      { text: "you have a notebook, do you draw too mister doctor?", leftPortrait: "kidsPort", rightPortrait: "docPort", leftAnimation: "kidsPort2", rightAnimation: "docPort1", name: "Ayaz" },
-      { text: "ah- um no i uh i take notes... in it.", leftPortrait: "kidsPort", rightPortrait: "docPort", leftAnimation: "kidsPort3", rightAnimation: "docPort1", name: "Doctor" },
-      { text: "do u ever draw?", leftPortrait: "kidsPort", rightPortrait: "docPort", leftAnimation: "kidsPort2", rightAnimation: "docPort1", name: "Ayaz" },
-      { text: "no, i mean. I used to at least.", leftPortrait: "kidsPort", rightPortrait: "docPort", leftAnimation: "kidsPort3", rightAnimation: "docPort1", name: "Doctor" },
-      { text: "realy??!", leftPortrait: "kidsPort", rightPortrait: "docPort", leftAnimation: "kidsPort2", rightAnimation: "docPort1", name: "Ayaz" },
-      { text: "...yeah.", leftPortrait: "kidsPort", rightPortrait: "docPort", leftAnimation: "kidsPort3", rightAnimation: "docPort1", name: "Doctor" },
-      { text: "youre cooler than you seem mister doctor!", leftPortrait: "kidsPort", rightPortrait: "docPort", leftAnimation: "kidsPort2", rightAnimation: "docPort1", name: "Ayaz" },
-      { text: "hah!... i suppose i can show you some of my old talents.", leftPortrait: "kidsPort", rightPortrait: "docPort", leftAnimation: "kidsPort3", rightAnimation: "docPort1", name: "Doctor" }
+      { text: "hello there kids, good morning.", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "3", name: "Doctor" },
+      { text: "good morning doctor!", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "2", name: "Ayaz" },
+      { text: "what uh, What are you guys drawing?", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "3", name: "Doctor" },
+      { text: "green trees!", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "2", name: "Ayaz" },
+      { text: "looks green to me..!", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "3", name: "Doctor" },
+      { text: "you have a notebook, do you draw too mister doctor?", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "2", name: "Ayaz" },
+      { text: "ah- um no i uh i take notes... in it.", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "3", name: "Doctor" },
+      { text: "do u ever draw?", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "2", name: "Ayaz" },
+      { text: "no, i mean. I used to at least.", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "3", name: "Doctor" },
+      { text: "realy??!", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "2", name: "Ayaz" },
+      { text: "...yeah.", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "3", name: "Doctor" },
+      { text: "youre cooler than you seem mister doctor!", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "2", name: "Ayaz" },
+      { text: "hah!... i suppose i can show you some of my old talents.", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "3", name: "Doctor" }
     ];
       this.dialogue.startDialogueSequence(dialogueArray, () => {
       this.fadeToBlackAndBack(() => {
@@ -339,18 +342,18 @@ class scene4 extends Phaser.Scene{
 
   startDialogueSequenceP6_Part2() {
     const dialogueArray = [
-      { text: "heh.. i still got it.", leftPortrait: "kidsPort", rightPortrait: "docPort", leftAnimation: "kidsPort3", rightAnimation: "docPort1", name: "Doctor" },
-      { text: "woah. Where did you learn to draw like this mister doctor?", leftPortrait: "kidsPort", rightPortrait: "docPort", leftAnimation: "kidsPort2", rightAnimation: "docPort1", name: "Ayaz" },
-      { text: "well... i wanted to study finearts actually.", leftPortrait: "kidsPort", rightPortrait: "docPort", leftAnimation: "kidsPort3", rightAnimation: "docPort1", name: "Doctor" },
-      { text: "why didnt you?", leftPortrait: "kidsPort", rightPortrait: "docPort", leftAnimation: "kidsPort2", rightAnimation: "docPort1", name: "Ayaz" },
-      { text: "its... but of a long story. sad", leftPortrait: "kidsPort", rightPortrait: "docPort", leftAnimation: "kidsPort3", rightAnimation: "docPort1", name: "Doctor" },
-      { text: "hm...do you only draw with black?", leftPortrait: "kidsPort", rightPortrait: "docPort", leftAnimation: "kidsPort2", rightAnimation: "docPort1", name: "Ayaz" },
-      { text: "wel... i like it like this", leftPortrait: "kidsPort", rightPortrait: "docPort", leftAnimation: "kidsPort3", rightAnimation: "docPort1", name: "Doctor" },
-      { text: "its so gloomy.", leftPortrait: "kidsPort", rightPortrait: "docPort", leftAnimation: "kidsPort2", rightAnimation: "docPort1", name: "Ayaz" },
-      { text: "...", leftPortrait: "kidsPort", rightPortrait: "docPort", leftAnimation: "kidsPort3", rightAnimation: "docPort1", name: "Doctor" },
-      { text: "well im gonna give you a homework mister doctor! Make a colorfull drawing. U can borrow our creyons.", leftPortrait: "kidsPort", rightPortrait: "docPort", leftAnimation: "kidsPort2", rightAnimation: "docPort1", name: "Ayaz" },
-      { text: "you little rascals. Fine", leftPortrait: "kidsPort", rightPortrait: "docPort", leftAnimation: "kidsPort3", rightAnimation: "docPort1", name: "Doctor" },
-      { text: "let me give you guys your meds. Time to rest.", leftPortrait: "kidsPort", rightPortrait: "docPort", leftAnimation: "kidsPort3", rightAnimation: "docPort1", name: "Doctor" }
+      { text: "heh.. i still got it.", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "3", name: "Doctor" },
+      { text: "woah. Where did you learn to draw like this mister doctor?", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "2", name: "Ayaz" },
+      { text: "well... i wanted to study finearts actually.", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "3", name: "Doctor" },
+      { text: "why didnt you?", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "2", name: "Ayaz" },
+      { text: "its... but of a long story. sad", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "3", name: "Doctor" },
+      { text: "hm...do you only draw with black?", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "2", name: "Ayaz" },
+      { text: "wel... i like it like this", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "3", name: "Doctor" },
+      { text: "its so gloomy.", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "2", name: "Ayaz" },
+      { text: "...", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "3", name: "Doctor" },
+      { text: "well im gonna give you a homework mister doctor! Make a colorfull drawing. U can borrow our creyons.", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "2", name: "Ayaz" },
+      { text: "you little rascals. Fine", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "3", name: "Doctor" },
+      { text: "let me give you guys your meds. Time to rest.", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "3", name: "Doctor" }
     ];
     this.dialogue.startDialogueSequence(dialogueArray, () => {
       this.startPostDialogueSequence();
@@ -398,6 +401,7 @@ class scene4 extends Phaser.Scene{
     const map = this.make.tilemap({ key: 'kidsRoom' });
     const intLayer = map.getObjectLayer('interactive');
     
+    /**
     if (intLayer && intLayer.objects) {
       intLayer.objects.forEach(obj => {
         if (obj.name === 'kids2') {
@@ -407,9 +411,11 @@ class scene4 extends Phaser.Scene{
         }
       });
     }
-    
+    */ 
+    this.kids.setVisible(false)
+    this.bg.setTexture("bg62")
     // Move doctor to +300 x from kids position, same y
-    const doctorNewX = this.kids.x + 700;
+    const doctorNewX = 1400;
     this.doctor.setPosition(doctorNewX, this.doctor.y);
     console.log("Doctor moved to:", this.doctor.x, this.doctor.y);
   }
@@ -503,7 +509,7 @@ startDoorTransition() {
   }
 
   update(){
-  if ((this.doctor.x > this.mapWidth - 50 && !this.isTransitioning) && this.controlsLocked == false){
+  if ((this.doctor.x > this.mapWidth - 50 && !this.isTransitioning) && (this.controlsLocked == false && progress == 9)){
        this.startDoorTransition();
     }
   }

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="1895" height="639" tilewidth="2" tileheight="2" infinite="0" nextlayerid="4" nextobjectid="1">
+ <objectgroup id="2" name="interactive"/>
+ <imagelayer id="3" name="bg">
+  <image source="../assets/bg2.png" width="4791" height="1278"/>
+ </imagelayer>
+</map>
