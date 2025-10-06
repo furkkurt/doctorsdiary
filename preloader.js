@@ -13,7 +13,7 @@ class preloader extends Phaser.Scene {
         this.load.image("testBg", "./assets/roombg1.webp");
         this.load.image("bg2", "./assets/bg2.png");
         this.load.image("bg3", "./assets/bg3.png");
-        this.load.image("bg3", "./assets/bg32.png");
+        this.load.image("bg32", "./assets/bg32.png");
         this.load.image("bg4", "./assets/bg4.png");
         this.load.image("bg42", "./assets/bg42.png");
         this.load.image("bg5", "./assets/bg5.png");
@@ -21,6 +21,7 @@ class preloader extends Phaser.Scene {
         this.load.image("bg6", "./assets/bg6.png");
         this.load.image("bg62", "./assets/bg62.png");
         this.load.image("bg7", "./assets/bg7.png");
+        this.load.image("bg8", "./assets/bg8.png");
         this.load.image("corridorBg", "./assets/room2.webp");
         this.load.image("testBg2", "./assets/roombg1light.webp");
         this.load.image("testBgObjects", "./assets/room1objects.webp");
@@ -46,7 +47,7 @@ class preloader extends Phaser.Scene {
         this.load.tilemapTiledJSON('corridorDown2', 'assets/corridorDown2.json');
         this.load.tilemapTiledJSON('garden', 'assets/garden.json');
         this.load.image("nurse", "./assets/nurse.webp");
-        this.load.image("nursePort", "./assets/nursePort.webp");
+        this.load.image("nursePort", "./assets/nurse1-sheet.png");
         
         // Load individual doctor portraits
         for (let i = 1; i <= 14; i++) {
@@ -73,6 +74,15 @@ class preloader extends Phaser.Scene {
         this.load.audio("walkEcho", "sfx/walkingEcho.wav")
         this.load.audio("door", "sfx/door.wav")
         this.load.audio("toilet", "sfx/toilet.wav")
+        this.load.audio("nursesTheme", "music/nurseTheme.wav")
+        this.load.audio("goodEnding", "music/goodEnding.wav")
+        this.load.audio("monitor", "sfx/monitor.wav")
+
+        this.load.image("cs1", "./assets/cs1.png");
+        this.load.image("cs2", "./assets/cs2.png");
+        this.load.image("cs3", "./assets/cs3.png");
+        this.load.image("cs4", "./assets/cs4.png");
+        this.load.image("cs5", "./assets/cs5.png");
 
     };
 
@@ -163,7 +173,7 @@ class preloader extends Phaser.Scene {
         })
         // Portraits are now static images, no animations needed
 
-        this.scene.start("demo")
+        this.scene.start("mainMenu")
 
     }
 }

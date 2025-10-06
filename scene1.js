@@ -41,6 +41,28 @@ class scene1 extends Phaser.Scene{
       this.startProgress3Cutscene();
       return; // Exit early to prevent normal scene setup
     }
+    
+    // Check for progress 10 cutscene
+    if (progress === 10) {
+      this.startProgress10Cutscene();
+      return; // Exit early to prevent normal scene setup
+    }
+    
+    // Check for progress 11 cutscene
+    if (progress === 11) {
+      this.startProgress11Cutscene();
+      return; // Exit early to prevent normal scene setup
+    }
+
+    // Check for progress 13/14 cutscene
+    if (progress === 13) {
+      this.startProgress13Cutscene();
+      return; // Exit early to prevent normal scene setup
+    }
+    if (progress === 14) {
+      this.startProgress14Cutscene();
+      return; // Exit early to prevent normal scene setup
+    }
 
     if(this.currentSlot === 1)
       this.slot = "firstSlotItem"
@@ -212,12 +234,20 @@ class scene1 extends Phaser.Scene{
           this.inventory.pick(this.selectedItem, true, "", this.dialogue);
           break;
         case this.drugs:
-          if (progress === 7) {
-            this.startMedsCutscene();
-          } else {
-          this.inventory.pick(this.selectedItem, false, "I don't need them right now.", this.dialogue);
-          }
-          break;
+            if (progress === 7) {
+              this.startMedsCutscene();
+            } else if (progress === 10) {
+              this.startProgress10MedsCutscene();
+            } else if (progress === 11) {
+              this.dialogue.dialogue("I need to use the bathroom", "docPort", null, "1", null, "Doctor");
+              if (this.tutorText) {
+                this.tutorText.destroy();
+              }
+              this.tutorText = this.add.text(20,10,"Go to bathroom",{fontFamily:"Moving", fontSize:"32px", color: "white"}).setOrigin(0).setScrollFactor(0);
+              this.tutorText.alpha = 0;
+              this.dialogue.fadeIn(this.tutorText);
+            }
+            break;
         case this.lamp:
           this.inventory.pick(this.selectedItem, false, "", this.dialogue);
           break;
@@ -546,6 +576,672 @@ class scene1 extends Phaser.Scene{
     });
   }
 
+  startProgress10Cutscene() {
+    // Set up basic scene elements
+    this.scene.launch("dialogueOverlay");
+    this.scene.bringToTop("dialogueOverlay");
+    this.dialogue = this.scene.get('dialogueOverlay');
+    this.scene.launch("inventoryOverlay");
+    this.inventory = this.scene.get("inventoryOverlay", 1);
+    this.scene.bringToTop("inventoryOverlay");
+    
+    this.musicPlayer = this.scene.get("musicPlayer");
+    this.musicPlayer.playMusic("docsTheme");
+    
+    // Set up scene
+    this.bg1 = this.add.image(0,0,"testBg").setOrigin(0);
+    this.bg2 = this.add.image(0,0,"testBgObjects").setOrigin(0);
+    this.scaleFactor = this.scale.height/this.bg1.height;
+    this.bg1.setScale(this.scaleFactor);
+    this.bg2.setScale(this.scaleFactor);
+    
+    // Create player and objects
+    this.player = this.physics.add.sprite(1100,700,"doc").setDepth(99);
+    this.player.play("docIdle");
+    
+    // Set up all interactive objects
+    this.lamp = this.physics.add.sprite(0,0,"lamp").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable();
+    this.lamp.setInteractive();
+    this.lamp.on("pointerdown", () => {
+      if (this.lamp.texture.key == "lamp") {
+        this.bg1.setTexture("testBg2");
+        this.lamp.setTexture("lamp2");
+      } else {
+        this.bg1.setTexture("testBg");
+        this.lamp.setTexture("lamp");
+      }
+    });
+
+    this.book1 = this.physics.add.sprite(0,0,"book1").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable();
+    this.book1.setInteractive();
+    this.book1.on("pointerdown", () => {this.inventory.pick(this.book1)});
+
+    this.book2 = this.physics.add.sprite(0,0,"book2").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable();
+    this.book2.setInteractive();
+    this.book2.on("pointerdown", () => {this.inventory.pick(this.book2)});
+
+    this.drugs = this.physics.add.sprite(0,0,"drugs").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable();
+    this.drugs.setInteractive();
+    this.drugs.on("pointerdown", () => {this.inventory.pick(this.drugs)});
+
+    this.chair = this.physics.add.sprite(0,0,"").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable().setVisible(false);
+    this.window = this.physics.add.sprite(0,0,"").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable().setVisible(false);
+    this.shelf = this.physics.add.sprite(0,0,"").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable().setVisible(false);
+
+    this.objects = [this.book1, this.book2, this.drugs, this.lamp, this.chair, this.window, this.shelf];
+    this.itemSelector();
+
+    // Load map and position objects
+    const map = this.make.tilemap({ key: 'room1' });
+    const intLayer = map.getObjectLayer('interactive');
+    intLayer.objects.forEach(obj => {
+      if (obj.name === 'lamp') {
+        this.lamp.x = obj.x*this.scaleFactor;
+        this.lamp.y = obj.y*this.scaleFactor;
+      } else if (obj.name === "book1") {
+        this.book1.x = obj.x*this.scaleFactor;
+        this.book1.y = obj.y*this.scaleFactor;
+      } else if (obj.name === "book2") {
+        this.book2.x = obj.x*this.scaleFactor;
+        this.book2.y = obj.y*this.scaleFactor;
+      } else if (obj.name === "drugs") {
+        this.drugs.x = obj.x*this.scaleFactor;
+        this.drugs.y = obj.y*this.scaleFactor;
+      } else if (obj.name === "window") {
+        this.window.x = obj.x*this.scaleFactor;
+        this.window.y = obj.y*this.scaleFactor;
+      } else if (obj.name === "chair") {
+        this.chair.x = obj.x*this.scaleFactor;
+        this.chair.y = obj.y*this.scaleFactor;
+      } else if (obj.name === "shelf") {
+        this.shelf.x = obj.x*this.scaleFactor;
+        this.shelf.y = obj.y*this.scaleFactor;
+      }
+    });
+    
+    // Set up camera
+    this.mapWidth = this.bg1.width * this.bg1.scaleX;
+    this.mapHeight = this.bg1.height * this.bg1.scaleY;
+    this.cameras.main.setBounds(0, 0, this.mapWidth, this.mapHeight);
+    this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
+    
+    // Start walking loop sequence
+    this.walkingLoopCount = 0;
+    this.startWalkingLoop();
+  }
+
+  startWalkingLoop() {
+    if (this.walkingLoopCount >= 3) {
+      // After 3 loops, stop and show tutor text
+      this.player.setVelocityX(0);
+      this.player.play("docIdle");
+      this.musicPlayer.stopAllSfx();
+      
+      // Show tutor text
+      if (this.tutorText) {
+        this.tutorText.destroy();
+      }
+      this.tutorText = this.add.text(20,10,"Take your meds",{fontFamily:"Moving", fontSize:"32px", color: "white"}).setOrigin(0).setScrollFactor(0);
+      this.tutorText.alpha = 0;
+      this.dialogue.fadeIn(this.tutorText);
+      
+      // Enable controls
+      this.input.keyboard.on("keydown-A", this.left.bind(this));
+      this.input.keyboard.on("keydown-D", this.right.bind(this));
+      this.input.keyboard.on("keydown-E", () => {
+        switch(this.selectedItem){
+          case "NaN":
+            break;
+          case this.book1:
+            this.inventory.pick(this.selectedItem, true, "", this.dialogue);
+            break;
+          case this.book2:
+            this.inventory.pick(this.selectedItem, true, "", this.dialogue);
+            break;
+          case this.drugs:
+            if (progress === 13) {
+              this.startDoorTransition();
+            } else {
+              this.inventory.pick(this.selectedItem, false, "I don't need them right now.", this.dialogue);
+            }
+            break;
+          case this.lamp:
+            this.inventory.pick(this.selectedItem, false, "", this.dialogue);
+            break;
+          case this.window:
+            this.inventory.pick(this.selectedItem, false, "Brighter than ever!", this.dialogue);
+            break;
+          case this.shelf:
+            this.inventory.pick(this.selectedItem, false, "I lost my habbit of reading...", this.dialogue);
+            break;
+          case this.chair:
+            this.inventory.pick(this.selectedItem, false, "I wonder if there is anyone left I can host in my office.", this.dialogue);
+            break;
+        }
+      });
+      this.input.keyboard.on("keyup-A", this.stop.bind(this));
+      this.input.keyboard.on("keyup-D", this.stop.bind(this));
+      this.input.keyboard.on("keydown-ESC", this.pause.bind(this));
+      this.input.keyboard.on("keydown-SPACE", this.pause.bind(this));
+      
+      // Enable controls
+      this.input.keyboard.on("keydown-A", this.left.bind(this));
+      this.input.keyboard.on("keydown-D", this.right.bind(this));
+      this.input.keyboard.on("keydown-E", () => {
+        switch(this.selectedItem){
+          case "NaN":
+            break;
+          case this.book1:
+            this.inventory.pick(this.selectedItem, true, "", this.dialogue);
+            break;
+          case this.book2:
+            this.inventory.pick(this.selectedItem, true, "", this.dialogue);
+            break;
+          case this.drugs:
+            if (progress === 10) {
+              this.startProgress10MedsCutscene();
+            } else if (progress === 11) {
+              this.dialogue.dialogue("I need to use the bathroom", "docPort", null, "1", null, "Doctor");
+              if (this.tutorText) {
+                this.tutorText.destroy();
+              }
+              this.tutorText = this.add.text(20,10,"Go to bathroom",{fontFamily:"Moving", fontSize:"32px", color: "white"}).setOrigin(0).setScrollFactor(0);
+              this.tutorText.alpha = 0;
+              this.dialogue.fadeIn(this.tutorText);
+            }
+            break;
+          case this.lamp:
+            this.inventory.pick(this.selectedItem, false, "", this.dialogue);
+            break;
+          case this.window:
+            this.inventory.pick(this.selectedItem, false, "Brighter than ever!", this.dialogue);
+            break;
+          case this.shelf:
+            this.inventory.pick(this.selectedItem, false, "I lost my habbit of reading...", this.dialogue);
+            break;
+          case this.chair:
+            this.inventory.pick(this.selectedItem, false, "I wonder if there is anyone left I can host in my office.", this.dialogue);
+            break;
+        }
+      });
+      this.input.keyboard.on("keyup-A", this.stop.bind(this));
+      this.input.keyboard.on("keyup-D", this.stop.bind(this));
+      this.input.keyboard.on("keydown-ESC", this.pause.bind(this));
+      this.input.keyboard.on("keydown-SPACE", this.pause.bind(this));
+      return;
+    }
+    
+    // Walk right
+    this.player.setVelocityX(500);
+    this.player.play("docWalk", true);
+    this.player.flipX = false;
+    if (!this.isWalking) {
+      this.isWalking = true;
+      this.walkingSound = this.musicPlayer.playSfx("walk");
+    }
+    
+    this.time.delayedCall(2000, () => {
+      // Walk left
+      this.player.setVelocityX(-500);
+      this.player.play("docWalk", true);
+      this.player.flipX = true;
+      
+      this.time.delayedCall(2000, () => {
+        this.walkingLoopCount++;
+        this.startWalkingLoop();
+      });
+    });
+  }
+
+  startProgress14Cutscene() {
+    // Set up basic scene elements
+    this.scene.launch("dialogueOverlay");
+    this.scene.bringToTop("dialogueOverlay");
+    this.dialogue = this.scene.get('dialogueOverlay');
+    this.scene.launch("inventoryOverlay");
+    this.inventory = this.scene.get("inventoryOverlay", 1);
+    this.scene.bringToTop("inventoryOverlay");
+    
+    this.musicPlayer = this.scene.get("musicPlayer");
+    this.musicPlayer.playMusic("docsTheme");
+    
+    // Set up scene
+    this.bg1 = this.add.image(0,0,"testBg").setOrigin(0);
+    this.bg2 = this.add.image(0,0,"testBgObjects").setOrigin(0);
+    this.scaleFactor = this.scale.height/this.bg1.height;
+    this.bg1.setScale(this.scaleFactor);
+    this.bg2.setScale(this.scaleFactor);
+    
+    // Create player and objects
+    this.player = this.physics.add.sprite(1100,700,"doc").setDepth(99);
+    this.player.play("docIdle");
+    this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
+    
+    // Set up all interactive objects
+    this.lamp = this.physics.add.sprite(0,0,"lamp").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable();
+    this.lamp.setInteractive();
+    this.lamp.on("pointerdown", () => {
+      if (this.lamp.texture.key == "lamp") {
+        this.bg1.setTexture("testBg2");
+        this.lamp.setTexture("lamp2");
+      } else {
+        this.bg1.setTexture("testBg");
+        this.lamp.setTexture("lamp");
+      }
+    });
+
+    this.book1 = this.physics.add.sprite(0,0,"book1").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable();
+    this.book1.setInteractive();
+    this.book1.on("pointerdown", () => {this.inventory.pick(this.book1)});
+
+    this.book2 = this.physics.add.sprite(0,0,"book2").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable();
+    this.book2.setInteractive();
+    this.book2.on("pointerdown", () => {this.inventory.pick(this.book2)});
+
+    this.drugs = this.physics.add.sprite(0,0,"drugs").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable();
+    this.drugs.setInteractive();
+    this.drugs.on("pointerdown", () => {this.inventory.pick(this.drugs)});
+
+    this.chair = this.physics.add.sprite(0,0,"").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable().setVisible(false);
+    this.window = this.physics.add.sprite(0,0,"").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable().setVisible(false);
+    this.shelf = this.physics.add.sprite(0,0,"").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable().setVisible(false);
+
+    this.objects = [this.book1, this.book2, this.drugs, this.lamp, this.chair, this.window, this.shelf];
+    this.itemSelector();
+
+    // Load map and position objects
+    const map = this.make.tilemap({ key: 'room1' });
+    const intLayer = map.getObjectLayer('interactive');
+    intLayer.objects.forEach(obj => {
+      if (obj.name === 'lamp') {
+        this.lamp.x = obj.x*this.scaleFactor;
+        this.lamp.y = obj.y*this.scaleFactor;
+      } else if (obj.name === "book1") {
+        this.book1.x = obj.x*this.scaleFactor;
+        this.book1.y = obj.y*this.scaleFactor;
+      } else if (obj.name === "book2") {
+        this.book2.x = obj.x*this.scaleFactor;
+        this.book2.y = obj.y*this.scaleFactor;
+      } else if (obj.name === "drugs") {
+        this.drugs.x = obj.x*this.scaleFactor;
+        this.drugs.y = obj.y*this.scaleFactor;
+      } else if (obj.name === "window") {
+        this.window.x = obj.x*this.scaleFactor;
+        this.window.y = obj.y*this.scaleFactor;
+      } else if (obj.name === "chair") {
+        this.chair.x = obj.x*this.scaleFactor;
+        this.chair.y = obj.y*this.scaleFactor;
+      } else if (obj.name === "shelf") {
+        this.shelf.x = obj.x*this.scaleFactor;
+        this.shelf.y = obj.y*this.scaleFactor;
+      }
+    });
+    
+    // Show tutor text
+    this.tutorText = this.add.text(20,10,"TAKE. YOUR. MEDS.",{fontFamily:"Moving", fontSize:"32px", color: "white"}).setOrigin(0).setScrollFactor(0);
+    this.tutorText.alpha = 0;
+    this.tutorText.setVisible(true);
+    this.dialogue.fadeIn(this.tutorText);
+    
+    // Enable controls
+    this.input.keyboard.on("keydown-A", this.left.bind(this));
+    this.input.keyboard.on("keydown-D", this.right.bind(this));
+    this.input.keyboard.on("keydown-E", () => {
+      switch(this.selectedItem){
+        case "NaN":
+          break;
+        case this.book1:
+          this.inventory.pick(this.selectedItem, true, "", this.dialogue);
+          break;
+        case this.book2:
+          this.inventory.pick(this.selectedItem, true, "", this.dialogue);
+          break;
+        case this.drugs:
+          if (window.ending === "fix") {
+            this.startBadEndingTransition();
+          } else {
+            // Show "0 Days Left" and fade to black
+            this.overlayDark = this.add.graphics();
+            this.overlayDark.fillStyle(0x000000, 1);
+            this.overlayDark.fillRect(0, 0, this.scale.width, this.scale.height);
+            this.overlayDark.setScrollFactor(0);
+            this.overlayDark.setDepth(100);
+            this.overlayDark.alpha = 0;
+            
+            this.dialogue.fadeIn(this.overlayDark, 1000);
+            
+            this.time.delayedCall(1200, () => {
+              const bigText = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, "0 Days Left", {
+                fontFamily: "Moving",
+                fontSize: "96px",
+                color: "#ffffff",
+                stroke: "#000000",
+                strokeThickness: 8
+              }).setOrigin(0.5).setScrollFactor(0).setDepth(101);
+              
+              bigText.alpha = 0;
+              this.tweens.add({ targets: bigText, alpha: 1, duration: 800, ease: 'Linear' });
+              
+              this.time.delayedCall(2500, () => {
+                this.scene.start("goodEnding");
+              });
+            });
+          }
+          break;
+        case this.lamp:
+          this.inventory.pick(this.selectedItem, false, "", this.dialogue);
+          break;
+        case this.window:
+          this.inventory.pick(this.selectedItem, false, "Brighter than ever!", this.dialogue);
+          break;
+        case this.shelf:
+          this.inventory.pick(this.selectedItem, false, "I lost my habbit of reading...", this.dialogue);
+          break;
+        case this.chair:
+          this.inventory.pick(this.selectedItem, false, "I wonder if there is anyone left I can host in my office.", this.dialogue);
+          break;
+      }
+    });
+    this.input.keyboard.on("keyup-A", this.stop.bind(this));
+    this.input.keyboard.on("keyup-D", this.stop.bind(this));
+    this.input.keyboard.on("keydown-ESC", this.pause.bind(this));
+    this.input.keyboard.on("keydown-SPACE", this.pause.bind(this));
+  }
+
+  startBadEndingTransition() {
+    // Disable controls
+    this.input.keyboard.removeAllListeners();
+    
+    // Walk right
+    this.player.flipX = false;
+    this.player.setVelocityX(200);
+    this.player.play("docWalk");
+    this.musicPlayer.playSfx("walk");
+    
+    // After walking for a bit, transition to bad ending
+    this.time.delayedCall(2000, () => {
+      this.scene.start("badEnding");
+    });
+  }
+
+  startProgress13Cutscene() {
+    // Set up basic scene elements
+    this.scene.launch("dialogueOverlay");
+    this.scene.bringToTop("dialogueOverlay");
+    this.dialogue = this.scene.get('dialogueOverlay');
+    this.scene.launch("inventoryOverlay");
+    this.inventory = this.scene.get("inventoryOverlay", 1);
+    this.scene.bringToTop("inventoryOverlay");
+    
+    this.musicPlayer = this.scene.get("musicPlayer");
+    this.musicPlayer.playMusic("docsTheme");
+    
+    // Set up scene
+    this.bg1 = this.add.image(0,0,"testBg").setOrigin(0);
+    this.bg2 = this.add.image(0,0,"testBgObjects").setOrigin(0);
+    this.scaleFactor = this.scale.height/this.bg1.height;
+    this.bg1.setScale(this.scaleFactor);
+    this.bg2.setScale(this.scaleFactor);
+    
+    // Create player and objects
+    this.player = this.physics.add.sprite(1100,700,"doc").setDepth(99);
+    this.player.play("docIdle");
+    
+    // Set up all interactive objects
+    this.lamp = this.physics.add.sprite(0,0,"lamp").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable();
+    this.lamp.setInteractive();
+    this.lamp.on("pointerdown", () => {
+      if (this.lamp.texture.key == "lamp") {
+        this.bg1.setTexture("testBg2");
+        this.lamp.setTexture("lamp2");
+      } else {
+        this.bg1.setTexture("testBg");
+        this.lamp.setTexture("lamp");
+      }
+    });
+
+    this.book1 = this.physics.add.sprite(0,0,"book1").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable();
+    this.book1.setInteractive();
+    this.book1.on("pointerdown", () => {this.inventory.pick(this.book1)});
+
+    this.book2 = this.physics.add.sprite(0,0,"book2").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable();
+    this.book2.setInteractive();
+    this.book2.on("pointerdown", () => {this.inventory.pick(this.book2)});
+
+    this.drugs = this.physics.add.sprite(0,0,"drugs").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable();
+    this.drugs.setInteractive();
+    this.drugs.on("pointerdown", () => {this.inventory.pick(this.drugs)});
+
+    this.chair = this.physics.add.sprite(0,0,"").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable().setVisible(false);
+    this.window = this.physics.add.sprite(0,0,"").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable().setVisible(false);
+    this.shelf = this.physics.add.sprite(0,0,"").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable().setVisible(false);
+
+    this.objects = [this.book1, this.book2, this.drugs, this.lamp, this.chair, this.window, this.shelf];
+    this.itemSelector();
+
+    // Load map and position objects
+    const map = this.make.tilemap({ key: 'room1' });
+    const intLayer = map.getObjectLayer('interactive');
+    intLayer.objects.forEach(obj => {
+      if (obj.name === 'lamp') {
+        this.lamp.x = obj.x*this.scaleFactor;
+        this.lamp.y = obj.y*this.scaleFactor;
+      } else if (obj.name === "book1") {
+        this.book1.x = obj.x*this.scaleFactor;
+        this.book1.y = obj.y*this.scaleFactor;
+      } else if (obj.name === "book2") {
+        this.book2.x = obj.x*this.scaleFactor;
+        this.book2.y = obj.y*this.scaleFactor;
+      } else if (obj.name === "drugs") {
+        this.drugs.x = obj.x*this.scaleFactor;
+        this.drugs.y = obj.y*this.scaleFactor;
+      } else if (obj.name === "window") {
+        this.window.x = obj.x*this.scaleFactor;
+        this.window.y = obj.y*this.scaleFactor;
+      } else if (obj.name === "chair") {
+        this.chair.x = obj.x*this.scaleFactor;
+        this.chair.y = obj.y*this.scaleFactor;
+      } else if (obj.name === "shelf") {
+        this.shelf.x = obj.x*this.scaleFactor;
+        this.shelf.y = obj.y*this.scaleFactor;
+      }
+    });
+    
+    // Build inventory array
+    if(this.currentSlot === 1)
+      this.slot = "firstSlotItem"
+    else if(this.currentSlot === 2)
+      this.slot = "secondSlotItem"
+    else
+      this.slot = "thirdSlotItem"
+
+    this.inventoryArr = [];
+    const i1 = localStorage.getItem(this.slot+"1");
+    const i2 = localStorage.getItem(this.slot+"2");
+    const i3 = localStorage.getItem(this.slot+"3");
+    if (i1 && i1 !== "" && !this.inventoryArr.includes(i1)) this.inventoryArr.push(i1);
+    if (i2 && i2 !== "" && !this.inventoryArr.includes(i2)) this.inventoryArr.push(i2);
+    if (i3 && i3 !== "" && !this.inventoryArr.includes(i3)) this.inventoryArr.push(i3);
+
+    // Set up camera
+    this.mapWidth = this.bg1.width * this.bg1.scaleX;
+    this.mapHeight = this.bg1.height * this.bg1.scaleY;
+    this.cameras.main.setBounds(0, 0, this.mapWidth, this.mapHeight);
+    this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
+    
+    // Hide collected books
+    if (this.inventoryArr.includes("book1")) {
+      this.book1.setVisible(false);
+    }
+    if (this.inventoryArr.includes("book2")) {
+      this.book2.setVisible(false);
+    }
+    
+    // Create and show overlay
+    this.overlayDark = this.add.graphics();
+    this.overlayDark.fillStyle(0x000000, 1);
+    this.overlayDark.fillRect(0, 0, this.scale.width, this.scale.height);
+    this.overlayDark.setScrollFactor(0);
+    this.overlayDark.setDepth(100);
+    
+    // Show "1 Day Left" text
+    const bigText = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, "1 Day Left", {
+      fontFamily: "Moving",
+      fontSize: "96px",
+      color: "#ffffff",
+      stroke: "#000000",
+      strokeThickness: 8
+    }).setOrigin(0.5).setScrollFactor(0).setDepth(101);
+    
+    // After showing text, fade out and start walking sequence
+    this.time.delayedCall(2000, () => {
+      this.dialogue.fadeOut(this.overlayDark);
+      this.tweens.add({
+        targets: bigText,
+        alpha: 0,
+        duration: 1000,
+        onComplete: () => {
+          bigText.destroy();
+          // Start walking loop
+          this.walkingLoopCount = 0;
+          this.startWalkingLoop();
+        }
+      });
+    });
+  }
+
+  startProgress11Cutscene() {
+    // Set up basic scene elements
+    this.scene.launch("dialogueOverlay");
+    this.scene.bringToTop("dialogueOverlay");
+    this.dialogue = this.scene.get('dialogueOverlay');
+    this.scene.launch("inventoryOverlay");
+    this.inventory = this.scene.get("inventoryOverlay", 1);
+    this.scene.bringToTop("inventoryOverlay");
+    
+    this.musicPlayer = this.scene.get("musicPlayer");
+    this.musicPlayer.playMusic("docsTheme");
+    
+    // Set up scene
+    this.bg1 = this.add.image(0,0,"testBg").setOrigin(0);
+    this.bg2 = this.add.image(0,0,"testBgObjects").setOrigin(0);
+    this.scaleFactor = this.scale.height/this.bg1.height;
+    this.bg1.setScale(this.scaleFactor);
+    this.bg2.setScale(this.scaleFactor);
+    
+    // Create player and objects
+    this.player = this.physics.add.sprite(1100,700,"doc").setDepth(99);
+    this.player.play("docIdle");
+    
+    // Set up all interactive objects
+    this.lamp = this.physics.add.sprite(0,0,"lamp").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable();
+    this.lamp.setInteractive();
+    this.lamp.on("pointerdown", () => {
+      if (this.lamp.texture.key == "lamp") {
+        this.bg1.setTexture("testBg2");
+        this.lamp.setTexture("lamp2");
+      } else {
+        this.bg1.setTexture("testBg");
+        this.lamp.setTexture("lamp");
+      }
+    });
+
+    this.book1 = this.physics.add.sprite(0,0,"book1").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable();
+    this.book1.setInteractive();
+    this.book1.on("pointerdown", () => {this.inventory.pick(this.book1)});
+
+    this.book2 = this.physics.add.sprite(0,0,"book2").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable();
+    this.book2.setInteractive();
+    this.book2.on("pointerdown", () => {this.inventory.pick(this.book2)});
+
+    this.drugs = this.physics.add.sprite(0,0,"drugs").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable();
+    this.drugs.setInteractive();
+    this.drugs.on("pointerdown", () => {this.inventory.pick(this.drugs)});
+
+    this.chair = this.physics.add.sprite(0,0,"").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable().setVisible(false);
+    this.window = this.physics.add.sprite(0,0,"").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable().setVisible(false);
+    this.shelf = this.physics.add.sprite(0,0,"").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable().setVisible(false);
+
+    this.objects = [this.book1, this.book2, this.drugs, this.lamp, this.chair, this.window, this.shelf];
+    this.itemSelector();
+
+    // Load map and position objects
+    const map = this.make.tilemap({ key: 'room1' });
+    const intLayer = map.getObjectLayer('interactive');
+    intLayer.objects.forEach(obj => {
+      if (obj.name === 'lamp') {
+        this.lamp.x = obj.x*this.scaleFactor;
+        this.lamp.y = obj.y*this.scaleFactor;
+      } else if (obj.name === "book1") {
+        this.book1.x = obj.x*this.scaleFactor;
+        this.book1.y = obj.y*this.scaleFactor;
+      } else if (obj.name === "book2") {
+        this.book2.x = obj.x*this.scaleFactor;
+        this.book2.y = obj.y*this.scaleFactor;
+      } else if (obj.name === "drugs") {
+        this.drugs.x = obj.x*this.scaleFactor;
+        this.drugs.y = obj.y*this.scaleFactor;
+      } else if (obj.name === "window") {
+        this.window.x = obj.x*this.scaleFactor;
+        this.window.y = obj.y*this.scaleFactor;
+      } else if (obj.name === "chair") {
+        this.chair.x = obj.x*this.scaleFactor;
+        this.chair.y = obj.y*this.scaleFactor;
+      } else if (obj.name === "shelf") {
+        this.shelf.x = obj.x*this.scaleFactor;
+        this.shelf.y = obj.y*this.scaleFactor;
+      }
+    });
+    
+    // Set up camera
+    this.mapWidth = this.bg1.width * this.bg1.scaleX;
+    this.mapHeight = this.bg1.height * this.bg1.scaleY;
+    this.cameras.main.setBounds(0, 0, this.mapWidth, this.mapHeight);
+    this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
+    
+    // Start walking loop sequence
+    this.walkingLoopCount = 0;
+    this.startWalkingLoop();
+  }
+
+  startProgress10MedsCutscene() {
+    if (this.isTransitioning) return;
+    this.isTransitioning = true;
+    
+    // Create and fade in overlay
+    this.overlayDark = this.add.graphics();
+    this.overlayDark.fillStyle(0x000000, 1);
+    this.overlayDark.fillRect(0, 0, this.scale.width, this.scale.height);
+    this.overlayDark.setScrollFactor(0);
+    this.overlayDark.setDepth(100);
+    this.overlayDark.alpha = 0;
+    
+    // Fade to black
+    this.dialogue.fadeIn(this.overlayDark, 1000);
+    
+    // After fade, show bigText then restart
+    this.time.delayedCall(1200, () => {
+      const bigText = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, "2 days left", {
+        fontFamily: "Moving",
+        fontSize: "96px",
+        color: "#ffffff",
+        stroke: "#000000",
+        strokeThickness: 8
+      }).setOrigin(0.5).setScrollFactor(0).setDepth(101);
+      
+      bigText.alpha = 0;
+      this.tweens.add({ targets: bigText, alpha: 1, duration: 800, ease: 'Linear' });
+      
+      this.time.delayedCall(2500, () => {
+        // Clean overlays and restart scene1
+        this.scene.stop("inventoryOverlay");
+        this.scene.stop("dialogueOverlay");
+        progress = 11;
+        this.scene.start("scene1", { from: 0, currentSlot: currentSlot });
+      });
+    });
+  }
+
   startMedsCutscene(){
     if (this.isTransitioning) return;
     this.isTransitioning = true;
@@ -683,6 +1379,8 @@ class scene1 extends Phaser.Scene{
        }
        else {
          this.startDoorTransition();
+         if (progress == 11)
+          progress = 12
        }
      }
   }

@@ -140,7 +140,7 @@ class scene7 extends Phaser.Scene{
       return;
     }
     if (this.player.x < 50){
-      this.startTransitionToScene7();
+      this.startDoorTransition();
     }
   }
 }

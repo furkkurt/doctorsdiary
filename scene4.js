@@ -84,7 +84,13 @@ class scene4 extends Phaser.Scene{
     this.controlsLocked = false
 
     // Start the appropriate sequence
-    if (progress === 9) {
+    if (progress === 14) {
+      // Progress 14: Final choice sequence
+      this.startProgress14Sequence();
+    } else if (progress === 13) {
+      // Progress 13: Special dialogue sequence
+      this.startProgress13Sequence();
+    } else if (progress === 9) {
       // Progress 9: kids hidden, doctor walks in, says a line, then player can move
       if (this.kids) this.kids.setVisible(false);
       this.controlsLocked = true;
@@ -508,9 +514,278 @@ startDoorTransition() {
     });
   }
 
+  startProgress14Sequence() {
+    this.controlsLocked = true;
+    
+    // Start by walking left
+    this.doctor.flipX = true;
+    this.doctor.setVelocityX(-200);
+    this.doctor.play("docWalk");
+    this.musicPlayer.playSfx("walk");
+    
+    // After walking for a few seconds, stop and start dialogue
+    this.time.delayedCall(7000, () => {
+      this.doctor.setVelocityX(0);
+      this.doctor.play("docIdle");
+      this.musicPlayer.stopAllSfx();
+      
+      // Hide kids sprite for this sequence
+      if (this.kids) {
+        this.kids.setVisible(true);
+      }
+      
+      // Start dialogue sequence
+      const dialogueArray = [
+        { text: "g-good morning kids...", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "3", name: "Doctor" },
+        { text: "good caugh morning mister doctor..!", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "2", name: "Ayaz" },
+        { text: "...good morning...", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "3", name: "Aras" },
+        { text: "well... how, how are you... guys...?", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "3", name: "Doctor" },
+        { text: "we've been caugh better.", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "2", name: "Ayaz" },
+        { text: "yeah.......", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "3", name: "Doctor" },
+        { text: "i have to talk to you guys about something... something you already know.", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "3", name: "Doctor" },
+        { text: "you know... you guys both have just one heart. Yeah?", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "3", name: "Doctor" },
+        { text: "yeah.", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "2", name: "Ayaz" },
+        { text: "and... one heart is not enough to... keep you guys both... alive.", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "3", name: "Doctor" },
+        { text: "......yeah.", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "2", name: "Ayaz" },
+        { text: "and theres no energy to power any machine to keep you guys blood pomping anymore...", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "3", name: "Doctor" },
+        { text: "...............", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "2", name: "Ayaz" },
+        { text: "are... are we gonna die....?", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "2", name: "Ayaz" },
+        { text: "well.......... you guys have to decide... whos gonna live. Cause. One heart is enough for only one body....", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "3", name: "Doctor" },
+        { text: "we.... we cant do that... no........", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "2", name: "Ayaz" },
+        { text: "...we cant kill each other...", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "3", name: "Aras" },
+        { text: "can... can you decide.... mister doctor?", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "2", name: "Ayaz" },
+        { text: "me..?", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "3", name: "Doctor" },
+        { text: "no... no i cant do that.", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "3", name: "Doctor" },
+        { text: "we cant kill each other.", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "3", name: "Aras" },
+        { text: "...........", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "3", name: "Doctor" }
+      ];
+      
+      this.dialogue.startDialogueSequence(dialogueArray, () => {
+        // After dialogue, show choice buttons
+        const buttonStyle = {
+          fontFamily: "Moving",
+          fontSize: "48px",
+          color: "#ffffff",
+          stroke: "#000000",
+          strokeThickness: 4,
+          backgroundColor: "#000000",
+          padding: { x: 20, y: 10 }
+        };
+        
+        // Create buttons
+        const keepArasBtn = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY - 100, "Keep Aras alive", buttonStyle)
+          .setOrigin(0.5)
+          .setScrollFactor(0)
+          .setDepth(101)
+          .setInteractive();
+          
+        const keepAyazBtn = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, "Keep Ayaz alive", buttonStyle)
+          .setOrigin(0.5)
+          .setScrollFactor(0)
+          .setDepth(101)
+          .setInteractive();
+          
+        const fixBtn = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY + 100, "I can fix this", buttonStyle)
+          .setOrigin(0.5)
+          .setScrollFactor(0)
+          .setDepth(101)
+          .setInteractive();
+        
+        // Add click handlers
+        const startExitSequence = () => {
+          // Doctor walks right
+          this.doctor.flipX = false;
+          this.doctor.setVelocityX(200);
+          this.doctor.play("docWalk");
+          this.musicPlayer.playSfx("walk");
+          
+          // When reaching right edge, transition to scene1
+          this.time.addEvent({
+            delay: 100,
+            callback: () => {
+              if (this.doctor.x > this.mapWidth - 50) {
+                this.doctor.setVelocityX(0);
+                this.doctor.play("docIdle");
+                this.musicPlayer.stopAllSfx();
+                
+                // Transition to scene1
+                this.scene.stop("dialogueOverlay");
+                this.scene.stop("musicPlayer");
+                this.scene.start("scene1", {
+                  from: 4,
+                  currentSlot: currentSlot
+                });
+              }
+            },
+            loop: true
+          });
+        };
+
+        keepArasBtn.on('pointerdown', () => {
+          window.ending = "keepAras";
+          keepArasBtn.destroy();
+          keepAyazBtn.destroy();
+          fixBtn.destroy();
+          
+          // Show final dialogue then exit
+          this.dialogue.dialogue("...we wont blame you.", null, "kidsPort", null, "2", "Ayaz");
+          this.time.delayedCall(2000, () => {
+            this.dialogue.hideDialogue();
+            startExitSequence();
+          });
+        });
+        
+        keepAyazBtn.on('pointerdown', () => {
+          window.ending = "keepAyaz";
+          keepArasBtn.destroy();
+          keepAyazBtn.destroy();
+          fixBtn.destroy();
+          
+          // Show final dialogue then exit
+          this.dialogue.dialogue("...we wont blame you.", null, "kidsPort", null, "2", "Ayaz");
+          this.time.delayedCall(2000, () => {
+            this.dialogue.hideDialogue();
+            startExitSequence();
+          });
+        });
+        
+        fixBtn.on('pointerdown', () => {
+          window.ending = "fix";
+          keepArasBtn.destroy();
+          keepAyazBtn.destroy();
+          fixBtn.destroy();
+          
+          // Show final dialogue then exit
+          this.dialogue.dialogue("we trust you...", null, "kidsPort", null, "2", "Ayaz");
+          this.time.delayedCall(2000, () => {
+            this.dialogue.hideDialogue();
+            startExitSequence();
+          });
+        });
+      });
+    });
+  }
+
+  startProgress13Sequence() {
+    this.controlsLocked = true;
+    
+    // Start by walking left
+    this.doctor.flipX = true;
+    this.doctor.setVelocityX(-300);
+    this.doctor.play("docWalk");
+    this.musicPlayer.playSfx("walk");
+    
+    // After walking for a few seconds, stop and start dialogue
+    this.time.delayedCall(2000, () => {
+      this.doctor.setVelocityX(0);
+      this.doctor.play("docIdle");
+      this.musicPlayer.stopAllSfx();
+      
+      // Wait for dialogue system to be ready
+      const tryStartDialogue = () => {
+        if (this.dialogue && this.dialogue.dialogueText) {
+          // Start initial dialogue
+          this.dialogue.dialogue("how you guys feeling", "docPort", null, "1", null, "Doctor");
+          return true;
+        }
+        return false;
+      };
+
+      // Try to start dialogue, retry if not ready
+      if (!tryStartDialogue()) {
+        this.time.addEvent({
+          delay: 100,
+          callback: () => {
+            if (!tryStartDialogue()) {
+              this.time.addEvent({
+                delay: 100,
+                callback: tryStartDialogue
+              });
+            }
+          }
+        });
+      }
+    });
+    
+    this.time.delayedCall(2000, () => {
+      this.dialogue.hideDialogue();
+      this.time.delayedCall(100, () => {
+        this.dialogue.dialogue("good", null, "kidsPort", null, "5", "Ayaz");
+        
+        this.time.delayedCall(2000, () => {
+          this.dialogue.hideDialogue();
+          this.time.delayedCall(100, () => {
+            // Play coughing animation
+            this.kids.play("kidsCough");
+            this.dialogue.dialogue("caugh caugh", null, "kidsPort", null, null, "Ayaz");
+            
+            this.time.delayedCall(2000, () => {
+              this.dialogue.hideDialogue();
+              this.time.delayedCall(100, () => {
+                this.dialogue.dialogue("...", "docPort", null, "9", null, "Doctor");
+                
+                this.time.delayedCall(2000, () => {
+                  this.dialogue.hideDialogue();
+                  this.time.delayedCall(100, () => {
+                    this.dialogue.dialogue("... you guys- stay... here.", "docPort", null, "1", null, "Doctor");
+                    
+                    // Start walking right
+                    this.time.delayedCall(2000, () => {
+                      this.dialogue.hideDialogue();
+                      this.doctor.flipX = false;
+                      this.doctor.setVelocityX(200);
+                      this.doctor.play("docWalk");
+                      this.musicPlayer.playSfx("walk");
+                      
+                      // Stop after a bit and continue dialogue
+                      this.time.delayedCall(1000, () => {
+                        this.doctor.setVelocityX(0);
+                        this.doctor.play("docIdle");
+                        this.musicPlayer.stopAllSfx();
+                        
+                        this.time.delayedCall(500, () => {
+                          this.dialogue.dialogue("we will be better promise.", null, "kidsPort", null, "18", "Aras");
+                          
+                          this.time.delayedCall(2000, () => {
+                            this.dialogue.hideDialogue();
+                            this.time.delayedCall(100, () => {
+                              this.dialogue.dialogue("so we can go outside and play this time", null, "kidsPort", null, "16", "Ayaz");
+                              
+                              this.time.delayedCall(2000, () => {
+                                this.dialogue.hideDialogue();
+                                this.time.delayedCall(100, () => {
+                                  this.dialogue.dialogue(".............", "docPort", null, "9", null, "Doctor");
+                                  
+                                  // After final dialogue, transition to scene1
+                                  this.time.delayedCall(2000, () => {
+                                    this.dialogue.hideDialogue();
+                                    this.scene.stop("dialogueOverlay");
+                                    this.scene.stop("musicPlayer");
+                                    this.scene.start("scene1", {
+                                      from: 4,
+                                      currentSlot: currentSlot
+                                    });
+                                  });
+                                });
+                              });
+                            });
+                          });
+                        });
+                      });
+                    });
+                  });
+                });
+              });
+            });
+          });
+        });
+      });
+    });
+  }
+
   update(){
-  if ((this.doctor.x > this.mapWidth - 50 && !this.isTransitioning) && (this.controlsLocked == false && progress == 9)){
-       this.startDoorTransition();
+    if ((this.doctor.x > this.mapWidth - 50 && !this.isTransitioning) && (this.controlsLocked == false && progress == 9)){
+      this.startDoorTransition();
     }
   }
 }

@@ -31,12 +31,20 @@ class scene6 extends Phaser.Scene{
     this.logProgress("scene2 create")
 
     this.bg = this.add.image(0,0,"bg3").setOrigin(0)
+    if(progress === 12)
+      this.bg.setTexture("bg32")
     this.mapWidth = this.bg.width * this.bg.scaleX;
     this.mapHeight = this.bg.height * this.bg.scaleY;
     this.scaleFactor = this.mapWidth/this.bg.width
     this.player = this.physics.add.sprite(this.mapWidth - 300,800,"doc").setDepth(99).setScale(1.1)
     this.player.play("docIdle")
     this.player.flipX = true;
+
+    // Add nurse if progress is 12
+    if (progress === 12) {
+      this.nurse = this.add.sprite(0, 0, "nurse").setScale(this.scaleFactor).setDepth(98);
+      this.musicPlayer.playMusic("nursesTheme");
+    }
 
     this.toilet= this.physics.add.sprite(0,0,"toilet").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable().setVisible(false)
     this.garden= this.physics.add.sprite(0,0,"garden").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable().setVisible(false)
@@ -50,6 +58,10 @@ class scene6 extends Phaser.Scene{
       if (obj.name === 'toilet') {
         this.toilet.x = obj.x*this.scaleFactor
         this.toilet.y = obj.y*this.scaleFactor
+        if (progress === 12 && this.nurse) {
+          this.nurse.x = obj.x*this.scaleFactor+500
+          this.nurse.y = this.player.y
+        }
         console.log("toilet found")
       }else if(obj.name === "stairs2") {
         this.stairs2.x = obj.x*this.scaleFactor
@@ -84,14 +96,180 @@ class scene6 extends Phaser.Scene{
     this.input.keyboard.on("keyup-D", this.stop.bind(this));
     this.input.keyboard.on("keydown-ESC", this.pause.bind(this));
     this.input.keyboard.on("keydown-SPACE", this.pause.bind(this));
-  };
+
+    if(data.from === 8){
+      this.player.x = this.garden.x
+    }
+  };  
 
   toiletInteraction(){
-    this.musicPlayer.playSfx("toilet")
-    this.dialogue.fadeIn(this.overlayDark, 1000);
-    this.time.delayedCall(1000, () => {
-      this.dialogue.fadeOut(this.overlayDark, 1000);
-    })
+    if (progress === 12) {
+      this.musicPlayer.playSfx("toilet")
+      this.dialogue.fadeIn(this.overlayDark, 1000);
+      
+      this.time.delayedCall(1000, () => {
+        this.dialogue.fadeOut(this.overlayDark, 1000);
+        
+        // After fade out, spawn nurse and start dialogue
+        this.time.delayedCall(1000, () => {
+          // Create nurse if not exists
+          if (!this.nurse) {
+            this.nurse = this.add.sprite(this.player.x - 200, this.player.y, "nurse").setScale(this.scaleFactor).setDepth(98);
+          }
+          
+          // Disable player movement
+          this.input.keyboard.removeAllListeners();
+          this.player.setVelocityX(0);
+          this.player.play("docIdle");
+          this.musicPlayer.stopAllSfx();
+          
+          // Start dialogue sequence
+          this.dialogue.dialogue("you cant run this time?", null, "nursePort", null, null, "Nurse");
+          
+          this.time.delayedCall(2000, () => {
+            this.dialogue.hideDialogue();
+            this.time.delayedCall(100, () => {
+              this.dialogue.dialogue("shut up.", "docPort", null, "10", null, "Doctor");
+              
+              this.time.delayedCall(2000, () => {
+                this.dialogue.hideDialogue();
+                this.time.delayedCall(100, () => {
+                  this.dialogue.dialogue("is this an opurtunity to redeem yourself?", null, "nursePort", null, null, "Nurse");
+                  
+                  this.time.delayedCall(2000, () => {
+                    this.dialogue.hideDialogue();
+                    this.time.delayedCall(100, () => {
+                      this.dialogue.dialogue("or escape the pain? Again?", null, "nursePort", null, null, "Nurse");
+                      
+                      this.time.delayedCall(2000, () => {
+                        this.dialogue.hideDialogue();
+                        this.time.delayedCall(100, () => {
+                          this.dialogue.dialogue("sometimes we have to choose?", null, "nursePort", null, null, "Nurse");
+                          
+                          this.time.delayedCall(2000, () => {
+                            this.dialogue.hideDialogue();
+                            this.time.delayedCall(100, () => {
+                              this.dialogue.dialogue("one or another?", null, "nursePort", null, null, "Nurse");
+                              
+                              this.time.delayedCall(2000, () => {
+                                this.dialogue.hideDialogue();
+                                this.time.delayedCall(100, () => {
+                                  this.dialogue.dialogue("it cant be both?", null, "nursePort", null, null, "Nurse");
+                                  
+                                  this.time.delayedCall(2000, () => {
+                                    this.dialogue.hideDialogue();
+                                    this.time.delayedCall(100, () => {
+                                      this.dialogue.dialogue("SHUT UP", "docPort", null, "12", null, "Doctor");
+                                      
+                                      // After final dialogue, update progress and re-enable movement
+                                      this.time.delayedCall(2000, () => {
+                                        progress = 13;
+                                        
+                                        // Re-enable player movement
+                                        this.input.keyboard.on("keydown-A", this.left.bind(this));
+                                        this.input.keyboard.on("keydown-D", this.right.bind(this));
+                                        this.input.keyboard.on("keydown-E", () => {
+                                          switch(this.selectedItem){
+                                            case "NaN":
+                                              break;
+                                            case this.stairs2:
+                                              this.transitionToScene2();
+                                              break;
+                                            case this.toilet:
+                                              this.toiletInteraction();
+                                              break;
+                                            case this.garden:
+                                              this.transitionToScene8();
+                                              break;
+                                          }
+                                        });
+                                        this.input.keyboard.on("keyup-A", this.stop.bind(this));
+                                        this.input.keyboard.on("keyup-D", this.stop.bind(this));
+                                        this.input.keyboard.on("keydown-ESC", this.pause.bind(this));
+                                        this.input.keyboard.on("keydown-SPACE", this.pause.bind(this));
+                                      });
+                                    });
+                                  });
+                                });
+                              });
+                            });
+                          });
+                        });
+                      });
+                    });
+                  });
+                });
+              });
+            });
+          });
+        });
+      });
+    } else {
+      // Normal toilet interaction for other progress values
+      this.musicPlayer.playSfx("toilet")
+      this.dialogue.fadeIn(this.overlayDark, 1000);
+      this.time.delayedCall(1000, () => {
+        this.dialogue.fadeOut(this.overlayDark, 1000);
+      });
+    }
+  }
+
+  handleMatchClick() {
+    if (!this.isTransitioning) {
+      this.isTransitioning = true;
+      
+      // Disable player movement during transition
+      this.input.keyboard.removeAllListeners();
+      this.player.setVelocityX(0);
+      this.player.play("docIdle");
+      
+      // Fade out
+      this.dialogue.fadeIn(this.overlayDark, 1000);
+      
+      this.time.delayedCall(1000, () => {
+        // Teleport player
+        if (this.player.x < this.toilet.x) {
+          this.player.x = this.toilet.x;
+        } else {
+          this.player.x = this.toilet.x - 600;
+        }
+        
+        // Fade back in
+        this.dialogue.fadeOut(this.overlayDark, 1000);
+        this.time.delayedCall(1000, () => {
+          this.isTransitioning = false;
+          
+          // Re-enable player movement
+          this.input.keyboard.on("keydown-A", this.left.bind(this));
+          this.input.keyboard.on("keydown-D", this.right.bind(this));
+          this.input.keyboard.on("keydown-E", () => {
+            switch(this.selectedItem){
+              case "NaN":
+                break;
+              case this.stairs2:
+                this.transitionToScene2();
+                break;
+              case this.toilet:
+                this.toiletInteraction();
+                break;
+              case this.garden:
+                this.transitionToScene8();
+                break;
+            }
+          });
+          this.input.keyboard.on("keyup-A", this.stop.bind(this));
+          this.input.keyboard.on("keyup-D", this.stop.bind(this));
+          this.input.keyboard.on("keydown-ESC", this.pause.bind(this));
+          this.input.keyboard.on("keydown-SPACE", this.pause.bind(this));
+        });
+      });
+    }
+    
+    // Remove button
+    if (this.matchButton) {
+      this.matchButton.destroy();
+      this.matchButton = null;
+    }
   }
 
   pause(){
@@ -203,6 +381,24 @@ class scene6 extends Phaser.Scene{
     });
   }
   right() {
+    // Check if we're at teleport point
+    if (progress === 12 && !this.nurse && this.player.x > 3800 && this.player.x < 3900) {
+      this.stop();
+      // Show match button if not already shown
+      if (!this.matchButton) {
+        this.matchButton = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY - 100, "Click to use matches", {
+          fontFamily: "Moving",
+          fontSize: "64px",
+          color: "#ffffff",
+          stroke: "#000000",
+          strokeThickness: 4
+        }).setOrigin(0.5).setScrollFactor(0).setDepth(101).setInteractive();
+        
+        this.matchButton.on('pointerdown', () => this.handleMatchClick());
+      }
+      return;
+    }
+
     this.player.setVelocityX(500);
     this.player.play("docWalk", true)
     this.player.flipX = false
@@ -216,6 +412,23 @@ class scene6 extends Phaser.Scene{
   }
 
   left() {
+    // Check if we're at teleport point
+    if (progress === 12 && !this.nurse && this.player.x > 4900 && this.player.x < 5000) {
+      this.stop();
+      // Show match button if not already shown
+      if (!this.matchButton) {
+        this.matchButton = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY - 100, "Click to use matches", {
+          fontFamily: "Moving",
+          fontSize: "64px",
+          color: "#ffffff",
+          stroke: "#000000",
+          strokeThickness: 4
+        }).setOrigin(0.5).setScrollFactor(0).setDepth(101).setInteractive();
+        
+        this.matchButton.on('pointerdown', () => this.handleMatchClick());
+      }
+      return;
+    }
     this.player.setVelocityX(-500)
     this.player.play("docWalk", true)
     this.player.flipX = true
@@ -269,6 +482,169 @@ class scene6 extends Phaser.Scene{
     if (this.player.x < 0){
       this.stop();
       this.player.x += 10
+    }
+    console.log(this.player.x-this.toilet.x)
+      // Check distance to toilet for progress 12
+      if (progress === 12) {
+        if (this.nurse) this.nurse.y = this.player.y
+      const distanceToToilet = Math.abs(this.player.x - this.toilet.x);
+      
+      // Stop player at boundary and show match button
+      if (this.player.x > 4850 && this.player.x < 4900) {
+        console.log("toilet boundary reached")
+        this.stop();
+        this.player.setVelocityX(0);
+        
+          // Show match button if not already shown
+        if (!this.matchButton) {
+          this.matchButton = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY - 100, "Click to use matches", {
+            fontFamily: "Moving",
+            fontSize: "32px",
+            color: "#ffffff",
+            stroke: "#000000",
+            strokeThickness: 4
+          }).setOrigin(0.5).setScrollFactor(0).setDepth(101).setInteractive();
+          
+          this.matchButton.on('pointerdown', () => this.handleMatchClick());
+        }
+      } else if (this.matchButton) {
+        this.matchButton.destroy();
+        this.matchButton = null;
+      }
+    }
+    // Progress 12 nurse dialogue
+    if (progress === 12) {
+      // Update nurse position
+      if (this.nurse) this.nurse.y = this.player.y;
+      
+      // Show nurse dialogue when close
+      if (this.nurse && !this.nurseDialogueShown && this.player.x > 3500) {
+        this.nurseDialogueShown = true;
+        
+        // Disable player movement and stop sounds
+        this.input.keyboard.removeAllListeners();
+        this.player.setVelocityX(0);
+        this.player.play("docIdle");
+        this.musicPlayer.stopAllSfx();
+        
+        // Show nurse dialogue with nurse on right
+        this.dialogue.dialogue("are you planning to run again?", null, "nursePort", null, null, "Nurse");
+        
+        // After nurse dialogue, show doctor's response
+        this.time.delayedCall(2000, () => {
+          this.dialogue.hideDialogue();
+          this.time.delayedCall(100, () => {
+            this.dialogue.dialogue("ugh!", "docPort", null, "12", null, "Doctor");
+          });
+          
+          // Fade out nurse after dialogue
+          this.time.delayedCall(2000, () => {
+            this.tweens.add({
+              targets: this.nurse,
+              alpha: 0,
+              duration: 1000,
+              onComplete: () => {
+                this.nurse.destroy();
+                
+                // Re-enable player movement
+                this.input.keyboard.on("keydown-A", this.left.bind(this));
+                this.input.keyboard.on("keydown-D", this.right.bind(this));
+                this.input.keyboard.on("keydown-E", () => {
+                  switch(this.selectedItem){
+                    case "NaN":
+                      break;
+                    case this.stairs2:
+                      this.transitionToScene2();
+                      break;
+                    case this.toilet:
+                      this.toiletInteraction();
+                      break;
+                    case this.garden:
+                      this.transitionToScene8();
+                      break;
+                  }
+                });
+                this.input.keyboard.on("keyup-A", this.stop.bind(this));
+                this.input.keyboard.on("keyup-D", this.stop.bind(this));
+                this.input.keyboard.on("keydown-ESC", this.pause.bind(this));
+                this.input.keyboard.on("keydown-SPACE", this.pause.bind(this));
+              }
+            });
+          });
+        });
+      }
+      
+      // Match teleportation and boundary check
+      if (!this.nurse && !this.isTransitioning) {
+          
+          // Show match button if not already shown
+          if (!this.matchButton) {
+            this.matchButton = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY - 100, "Click to use matches", {
+              fontFamily: "Moving",
+              fontSize: "64px",
+              color: "#ffffff",
+              stroke: "#000000",
+              strokeThickness: 4
+            }).setOrigin(0.5).setScrollFactor(0).setDepth(101).setInteractive();
+            
+            this.matchButton.on('pointerdown', () => {
+              if (!this.isTransitioning) {
+                this.isTransitioning = true;
+                
+                // Disable player movement during transition
+                this.input.keyboard.removeAllListeners();
+                this.player.setVelocityX(0);
+                this.player.play("docIdle");
+                
+                // Fade out
+                this.dialogue.fadeIn(this.overlayDark, 1000);
+                
+                this.time.delayedCall(1000, () => {
+                  // Teleport player
+                  if (this.player.x < 4200) {
+                    this.player.x = 5000;
+                  } else {
+                    this.player.x = 4190;
+                  }
+                  
+                  // Fade back in
+                  this.dialogue.fadeOut(this.overlayDark, 1000);
+                  this.time.delayedCall(1000, () => {
+                    this.isTransitioning = false;
+                    
+                    // Re-enable player movement
+                    this.input.keyboard.on("keydown-A", this.left.bind(this));
+                    this.input.keyboard.on("keydown-D", this.right.bind(this));
+                    this.input.keyboard.on("keydown-E", () => {
+                      switch(this.selectedItem){
+                        case "NaN":
+                          break;
+                        case this.stairs2:
+                          this.transitionToScene2();
+                          break;
+                        case this.toilet:
+                          this.toiletInteraction();
+                          break;
+                        case this.garden:
+                          this.transitionToScene8();
+                          break;
+                      }
+                    });
+                    this.input.keyboard.on("keyup-A", this.stop.bind(this));
+                    this.input.keyboard.on("keyup-D", this.stop.bind(this));
+                    this.input.keyboard.on("keydown-ESC", this.pause.bind(this));
+                    this.input.keyboard.on("keydown-SPACE", this.pause.bind(this));
+                  });
+                });
+              }
+              
+              // Remove button
+              this.matchButton.destroy();
+              this.matchButton = null;
+            });
+          }
+          
+      }
     }
   }
 }

@@ -47,7 +47,9 @@ class scene2 extends Phaser.Scene{
     this.dialogue.fadeOut(this.overlayDark)
     this.logProgress("scene2 create")
     console.log("SAHNE İKİDEYİZ")
-    this.bg = this.add.image(0,0,"bg42").setOrigin(0)
+    this.bg = this.add.image(0,0,"bg4").setOrigin(0)
+    if(progress === 12)
+      this.bg.setTexture("bg42")
     this.mapWidth = this.bg.width * this.bg.scaleX;
     this.mapHeight = this.bg.height * this.bg.scaleY;
     this.scaleFactor = this.mapWidth/this.bg.width
@@ -88,16 +90,16 @@ class scene2 extends Phaser.Scene{
       }
     });
 
-    // Spawn nurse for progress 8
-    if (progress === 8) {
+    // Spawn nurse for progress 8 or 13
+    if (progress === 8 || progress === 13) {
       this.nurse = this.physics.add.sprite(nurseX, nurseY, "nurse").setDepth(98).setScale(1.0).setImmovable();
       this.nurse.play && this.nurse.play("nurseIdle");
     }
 
     this.cameras.main.setBounds(0, 0, this.mapWidth, this.mapHeight);
     this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
-    // Progress 8: enable dark flickering overlay
-    if (progress === 8 || progress === 9) {
+    // Progress 8/13: enable dark flickering overlay
+    if (progress === 8 || progress === 9 || progress === 13) {
       this.bg.setTexture("bg42")
     /*
       this.overlayDark.alpha = 0.8;
@@ -169,6 +171,19 @@ class scene2 extends Phaser.Scene{
     this.input.keyboard.on("keyup-D", this.stop.bind(this));
     this.input.keyboard.on("keydown-ESC", this.pause.bind(this));
     this.input.keyboard.on("keydown-SPACE", this.pause.bind(this));
+
+    // Show tutor text for progress 1
+    if (progress === 1) {
+      this.tutorText = this.add.text(20, 10, "see patient at room 3", {
+        fontFamily: "Moving",
+        fontSize: "32px",
+        color: "white"
+      }).setOrigin(0).setScrollFactor(0);
+      this.tutorText.alpha = 0;
+      this.time.delayedCall(500, () => {
+        this.dialogue.fadeIn(this.tutorText);
+      });
+    }
   };
 
 
@@ -337,29 +352,39 @@ class scene2 extends Phaser.Scene{
   }
 
   update() {
-    // Progress 8 scripted events
-    if (progress === 8) {
+    // Progress 8/13 scripted events
+    if (progress === 8 || progress === 13) {
       // Trigger nurse dialogue at x > 2000 once
       if (!this.p8NurseDialogueStarted && this.player.x > 2000) {
         this.p8NurseDialogueStarted = true;
         this.lockControlsFor(1000);
-        const seq = [
-          { text: "dark, darker yet darker?", leftPortrait: "docPort", rightPortrait: "nursePort", leftAnimation: "1", rightAnimation: null, name: "Nurse" },
-          { text: "dark like the asit that rain in their eyes?", leftPortrait: "docPort", rightPortrait: "nursePort", leftAnimation: "1", rightAnimation: null, name: "Nurse" },
-          { text: ".......", leftPortrait: "docPort", rightPortrait: null, leftAnimation: "11", rightAnimation: null, name: "Doctor" },
-          { text: "kids are outside?", leftPortrait: "docPort", rightPortrait: "nursePort", leftAnimation: "1", rightAnimation: null, name: "Nurse" }
-        ];
+        
+        let seq;
+        if (progress === 13) {
+          progress = 14
+          seq = [
+            { text: "still didnt decide who to kill?", leftPortrait: "docPort", rightPortrait: "nursePort", leftAnimation: "1", rightAnimation: null, name: "Nurse" },
+            { text: "you have to speak to them now?", leftPortrait: "docPort", rightPortrait: "nursePort", leftAnimation: "1", rightAnimation: null, name: "Nurse" }
+          ];
+        } else {
+          seq = [
+            { text: "dark, darker yet darker?", leftPortrait: "docPort", rightPortrait: "nursePort", leftAnimation: "1", rightAnimation: null, name: "Nurse" },
+            { text: "dark like the asit that rain in their eyes?", leftPortrait: "docPort", rightPortrait: "nursePort", leftAnimation: "1", rightAnimation: null, name: "Nurse" },
+            { text: ".......", leftPortrait: "docPort", rightPortrait: null, leftAnimation: "11", rightAnimation: null, name: "Doctor" },
+            { text: "kids are outside?", leftPortrait: "docPort", rightPortrait: "nursePort", leftAnimation: "1", rightAnimation: null, name: "Nurse" }
+          ];
+        }
+        
         this.dialogue.startDialogueSequence(seq, () => {
           if (this.nurse) {
             this.tweens.add({ targets: this.nurse, alpha: 0, duration: 500, onComplete: () => { this.nurse.destroy(); this.nurse = null; } });
           }
         });
       }
-
     }
 
-    // Progress 9 match usage
-    if (progress === 8 || progress === 9) {      // Block going beyond x > 2500 with warning (but only lock briefly)
+    // Progress 8/9/13 match usage
+    if (progress === 8 || progress === 9 || progress === 13) {      // Block going beyond x > 2500 with warning (but only lock briefly)
       if (this.player.x > 2500) {
         if (!this.inventoryArr.includes("matches")) {
           this.p8BoundaryWarned = true;

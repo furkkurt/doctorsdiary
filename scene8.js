@@ -4,6 +4,11 @@ class scene8 extends Phaser.Scene{
   }
 
   create(data){
+    // Check for progress 9 cutscene
+    if (progress === 9) {
+      this.startProgress9Cutscene();
+      return;
+    }
     // Set the current slot from the passed data
     if (data && data.currentSlot !== undefined) {
       currentSlot = data.currentSlot;
@@ -32,7 +37,7 @@ class scene8 extends Phaser.Scene{
     this.mapWidth = this.bg.width * this.bg.scaleX;
     this.mapHeight = this.bg.height * this.bg.scaleY;
     this.scaleFactor = this.mapWidth/this.bg.width
-    this.player = this.physics.add.sprite(100,800,"doc").setDepth(99).setScale(1.1)
+    this.player = this.physics.add.sprite(this.mapWidth - 400,1000,"doc").setDepth(99).setScale(1.1)
     this.player.play("docIdle")
 
 
@@ -88,7 +93,7 @@ class scene8 extends Phaser.Scene{
       this.scene.stop("inventoryOverlay");
       this.scene.stop("dialogueOverlay");
       this.scene.start("scene6", {
-        from: 7,
+        from: 8,
         currentSlot: currentSlot
       });
     });
@@ -132,15 +137,103 @@ class scene8 extends Phaser.Scene{
     }
   }
 
+  startProgress9Cutscene() {
+    // Set up basic scene elements
+    this.scene.launch("dialogueOverlay");
+    this.scene.bringToTop("dialogueOverlay");
+    this.dialogue = this.scene.get('dialogueOverlay');
+    
+    this.musicPlayer = this.scene.get("musicPlayer");
+    this.isWalking = false;
+    this.walkingSound = null;
+    this.isTransitioning = false;
+    
+    // Set up scene
+    this.bg = this.add.image(0,0,"bg8").setOrigin(0);
+    this.mapWidth = this.bg.width * this.bg.scaleX;
+    this.mapHeight = this.bg.height * this.bg.scaleY;
+    this.scaleFactor = this.mapWidth/this.bg.width;
+    
+    // Create kids sprite in the middle
+    this.kids = this.add.sprite(this.mapWidth/2, 1000, "kids").setDepth(98).setScale(this.scaleFactor);
+    this.kids.play("kids1");
+    
+    // Create doctor sprite
+    this.player = this.physics.add.sprite(this.mapWidth - 400, 1000, "doc").setDepth(99).setScale(1.1);
+    this.player.play("docIdle");
+    this.player.flipX = true;
+    
+    // Set up camera
+    this.cameras.main.setBounds(0, 0, this.mapWidth, this.mapHeight);
+    this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
+    
+    // Start the sequence
+    this.time.delayedCall(1000, () => {
+      // Doctor walks towards kids
+      this.player.play("docWalk");
+      this.player.setVelocityX(-300);
+      this.musicPlayer.playSfx("walk");
+      
+      // Stop after a bit and start dialogue
+      this.time.delayedCall(4000, () => {
+        this.player.setVelocityX(0);
+        this.player.play("docIdle");
+        this.musicPlayer.stopAllSfx();
+        this.startDialogueSequence();
+      });
+    });
+  }
+
+  startDialogueSequence() {
+    const dialogueArray = [
+      { text: "good morning kids.", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "4", rightAnimation: null, name: "Doctor" },
+      { text: "good morning mister doctor", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "4", rightAnimation: "13", name: "Ayaz" },
+      { text: "reconnecting with nature i see.", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "4", rightAnimation: null, name: "Doctor" },
+      { text: "yeah aras realy likes to go outside", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: null, rightAnimation: "3", name: "Ayaz" },
+      { text: "does he now?", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "4", rightAnimation: null, name: "Doctor" },
+      { text: "...yeah.", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: null, rightAnimation: "16", name: "Aras" },
+      { text: "im so glad to hear you talk, boy.", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "4", rightAnimation: null, name: "Doctor" },
+      { text: "...", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: null, rightAnimation: "15", name: "Aras" },
+      { text: "well... it used to be better. I mean the nature.", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "4", rightAnimation: null, name: "Doctor" },
+      { text: "...realy?", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: null, rightAnimation: "17", name: "Aras" },
+      { text: "yeah... the grass was greener, the air was more clear.", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "4", rightAnimation: null, name: "Doctor" },
+      { text: "...before the war heartache...", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "4", rightAnimation: null, name: "Doctor" },
+      { text: "...", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: null, rightAnimation: "1", name: "Aras" },
+      { text: "kids start to caugh", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: null, rightAnimation: null },
+      { text: "okay better go inside kids. Its cold out here.", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "6", rightAnimation: null, name: "Doctor" },
+      { text: "...okay.", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: null, rightAnimation: "6", name: "Ayaz" }
+    ];
+    
+    this.dialogue.startDialogueSequence(dialogueArray, () => {
+      // After dialogue ends, fade to black and transition to scene1
+      this.overlayDark = this.add.graphics();
+      this.overlayDark.fillStyle(0x000000, 1);
+      this.overlayDark.fillRect(0, 0, this.scale.width, this.scale.height);
+      this.overlayDark.setScrollFactor(0);
+      this.overlayDark.setDepth(100);
+      this.overlayDark.alpha = 0;
+      
+      this.dialogue.fadeIn(this.overlayDark, 1000);
+      this.time.delayedCall(1500, () => {
+        this.scene.stop("dialogueOverlay");
+        progress = 10;
+        this.scene.start("scene1", {
+          from: 8,
+          currentSlot: currentSlot
+        });
+      });
+    });
+  }
+
   update() {
     // Transition to scene3 when reaching the right edge
-    if (this.player.x > this.mapWidth - 50 && !this.isTransitioning) {
+    if (this.player.x > this.mapWidth - 300 && !this.isTransitioning) {
+      this.startDoorTransition();
+    }
+    if (this.player.x < 50){
       this.stop();
       this.player.x -= 10
       return;
-    }
-    if (this.player.x < 50){
-      this.startTransitionToScene7();
     }
   }
 }
