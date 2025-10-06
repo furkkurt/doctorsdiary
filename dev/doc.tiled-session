@@ -1,0 +1,124 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "corridorDown.tmx",
+    "expandedProjectPaths": [
+        "."
+    ],
+    "fileStates": {
+        "corridor.tmx": {
+            "scale": 0.1402,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 2902.9957203994295,
+                "y": 638.3737517831669
+            }
+        },
+        "corridor2.tmx": {
+            "expandedObjectLayers": [
+                3
+            ],
+            "scale": 0.1274,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 2213.500784929356,
+                "y": 867.3469387755099
+            }
+        },
+        "corridorDown.tmx": {
+            "expandedObjectLayers": [
+                3
+            ],
+            "scale": 0.1989,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 1855.2036199095025,
+                "y": 686.2745098039215
+            }
+        },
+        "corridorDown2.tmx": {
+            "scale": 0.0528,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 3049.242424242424,
+                "y": 2073.863636363638
+            }
+        },
+        "corridorUp.tmx": {
+            "expandedObjectLayers": [
+                3
+            ],
+            "scale": 0.0918,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 283.2244008714597,
+                "y": 1225.4901960784314
+            }
+        },
+        "garden.tmx": {
+            "scale": 0.0484,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": -578.5123966942137,
+                "y": 3088.842975206612
+            }
+        },
+        "kidsRoom.tmx": {
+            "expandedObjectLayers": [
+                3
+            ],
+            "scale": 0.4032,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 1277.281746031746,
+                "y": 980.9027777777778
+            }
+        },
+        "room1.tmx": {
+            "scale": 0.1797,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 2031.1630495269897,
+                "y": 737.3400111296605
+            }
+        },
+        "untitled.tmx": {
+            "scale": 0.1937,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 1140.9395973154362,
+                "y": 415.5911202891068
+            }
+        }
+    },
+    "last.exportedFilePath": "/home/furkan/projects/phaser/gamecem/assets",
+    "map.fixedSize": true,
+    "map.height": 742,
+    "map.lastUsedExportFilter": "All Files (*)",
+    "map.lastUsedFormat": "tmx",
+    "map.tileHeight": 2,
+    "map.tileWidth": 2,
+    "map.width": 2049,
+    "openFiles": [
+        "room1.tmx",
+        "corridor.tmx",
+        "corridor2.tmx",
+        "corridorUp.tmx",
+        "corridorDown.tmx",
+        "corridorDown2.tmx",
+        "garden.tmx"
+    ],
+    "project": "doc.tiled-project",
+    "property.type": "bool",
+    "recentFiles": [
+        "room1.tmx",
+        "corridor.tmx",
+        "corridor2.tmx",
+        "corridorUp.tmx",
+        "garden.tmx",
+        "corridorDown2.tmx",
+        "corridorDown.tmx"
+    ]
+}

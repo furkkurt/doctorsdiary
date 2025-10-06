@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="1452" height="320" tilewidth="2" tileheight="2" infinite="0" nextlayerid="4" nextobjectid="4">
+ <editorsettings>
+  <export target="../assets/corridorUp.json" format="json"/>
+ </editorsettings>
+ <objectgroup id="3" name="interactive">
+  <object id="1" name="kidsRoom" x="2196.59" y="312.216" width="109.8" height="93.412"/>
+  <object id="3" name="nurse" x="2444.94" y="378.189" width="109.8" height="93.412"/>
+ </objectgroup>
+ <imagelayer id="2" name="bg">
+  <image source="../assets/bg5.png" width="2905" height="639"/>
+ </imagelayer>
+</map>

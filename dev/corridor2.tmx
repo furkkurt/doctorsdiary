@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="1452" height="320" tilewidth="2" tileheight="2" infinite="0" nextlayerid="4" nextobjectid="9">
+ <editorsettings>
+  <export target="../assets/corridor2.json" format="json"/>
+ </editorsettings>
+ <objectgroup id="3" name="interactive">
+  <object id="2" name="desk" x="1651.4" y="367.229" width="165.211" height="103.578"/>
+  <object id="3" name="power" x="2135.46" y="242.174" width="130.252" height="117.647"/>
+  <object id="4" name="ofis2" x="929.497" y="275.049" width="142.857" height="155.462"/>
+  <object id="5" name="ofis1" x="308.893" y="303.352" width="172.269" height="147.059"/>
+  <object id="6" name="stairs" x="2474.89" y="282.344" width="243.697" height="180.672"/>
+  <object id="7" name="nurse" x="1387.38" y="269.134" width="109.8" height="93.412"/>
+ </objectgroup>
+ <imagelayer id="2" name="bg">
+  <image source="../assets/bg4.png" width="2905" height="639"/>
+ </imagelayer>
+</map>

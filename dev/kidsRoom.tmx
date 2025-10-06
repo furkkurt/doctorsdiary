@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="2030" height="740" tilewidth="2" tileheight="2" infinite="0" nextlayerid="4" nextobjectid="4">
+ <editorsettings>
+  <export target="../assets/kidsRoom.json" format="json"/>
+ </editorsettings>
+ <objectgroup id="3" name="interactive">
+  <object id="1" name="kids" x="2099.08" y="1211.21" width="46.4321" height="41.5445"/>
+  <object id="3" name="kids2" x="787.796" y="777.839" width="46.4321" height="41.5445"/>
+ </objectgroup>
+ <imagelayer id="2" name="bg">
+  <image source="../assets/bg6.png" width="4060" height="1480"/>
+ </imagelayer>
+</map>
