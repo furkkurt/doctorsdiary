@@ -56,7 +56,7 @@ class baseScene extends Phaser.Scene {
         this.updateTutorText();
 
         // For progress 1, start flickering between two messages
-        if (progress === 1) {
+        if (progress === 1 || progress === 0) {
             this.startTutorTextFlicker();
         }
 
@@ -86,34 +86,13 @@ class baseScene extends Phaser.Scene {
             13: "Go back to your office and face the consuqences of your choice"
         };
 
-        if (progress == 0 || progress == 1)
-            this.tutorTextHandleMultipleMessages(messages[progress]);
-
         const message = messages[progress] || "";
-        if (progress !== 1) {
+        if (progress !== 1 && progress !== 0) {
             this.tutorText.setText(message);
             if (message) {
                 this.fadeInTutorText();
             }
         }
-    }
-
-    tutorTextHandleMultipleMessages(messages) {
-        let i = 0
-        this.tutorText.setText(messages[i]);
-        this.fadeInTutorText();
-        this.time.addEvent({
-            delay: 3000,
-            callback: () => {
-                if (i == 0)
-                    i = 1
-                else
-                    i = 0
-                this.tutorText.setText(messages[i]);
-                this.fadeInTutorText();
-            },
-            loop: true
-        });
     }
 
 
@@ -126,14 +105,21 @@ class baseScene extends Phaser.Scene {
         this.tutorFlickerTimer = this.time.addEvent({
             delay: 3000,
             callback: () => {
-                if (progress !== 1) {
+                if (progress !== 1 && progress !== 0) {
                     this.tutorFlickerTimer.destroy();
                     return;
                 }
-                this.tutorText.setText(showingFirst ? 
-                    "Read the documents about the test subject" : 
-                    "Press E to interact with objects"
-                );
+                if (progress === 0) {
+                    this.tutorText.setText(showingFirst ? 
+                        "Read the documents about the test subject" : 
+                        "Press E to interact with objects"
+                    );
+                } else {
+                    this.tutorText.setText(showingFirst ? 
+                        "See patient at room 3" : 
+                        "Press E to interact with objects"
+                    );
+                }
                 this.fadeInTutorText();
                 showingFirst = !showingFirst;
             },

@@ -198,6 +198,7 @@ class scene1 extends baseScene {
         case this.book2:
           this.inventory.pick(this.selectedItem, true, "", this.dialogue);
           this.dialogue.dialogue("Interesting case for sure...", "docPort", null, "1", null, "Doctor");
+          progress = 1
           break;
         case this.drugs:
             if (progress == 5) {
@@ -401,7 +402,7 @@ class scene1 extends baseScene {
           .setBlendMode(sprite.originalBlendMode || Phaser.BlendModes.NORMAL);
   }
 
-  startProgress2Cutscene() {
+  startProgress3Cutscene() {
     console.log("Starting progress 3 cutscene");
     
     // Set up overlays for cutscene
@@ -548,7 +549,7 @@ class scene1 extends baseScene {
         
         // After fade out, show text
         this.time.delayedCall(2000, () => {
-          this.showProgress2Text();
+          this.showProgress3Text();
         });
       });
     });
@@ -1375,7 +1376,6 @@ class scene1 extends baseScene {
         const hasItems = this.hasRequiredItems();
         console.log("[scene1 exit check] hasRequiredItems=", hasItems, "inventoryArr=", this.inventoryArr);
         if(hasItems){
-          progress = 1
            // Do not change progress here automatically; keep author-controlled
            this.startDoorTransition();
          } else {
