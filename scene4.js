@@ -4,6 +4,7 @@ class scene4 extends baseScene{
   }
 
   create(data){
+    this.tutorText.setVisible(false)
     console.log("Scene4 created");
     // Set the current slot from the passed data
     if (data && data.currentSlot !== undefined) {
@@ -424,7 +425,7 @@ class scene4 extends baseScene{
     this.kids.setVisible(false)
     this.bg.setTexture("bg62")
     // Move doctor to +300 x from kids position, same y
-    const doctorNewX = 1400;
+    const doctorNewX = 1200;
     this.doctor.setPosition(doctorNewX, this.doctor.y);
     console.log("Doctor moved to:", this.doctor.x, this.doctor.y);
   }

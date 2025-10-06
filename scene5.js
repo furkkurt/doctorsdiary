@@ -145,7 +145,7 @@ class scene5 extends baseScene{
     this.dialogue.fadeIn(this.overlayDark, 1000);
     
     // After 1 second delay, transition to scene2
-    this.startSceneWithFade("scene2", {
+    this.startScene("scene2", {
       from: 5,
       currentSlot: currentSlot
     }, 1000);

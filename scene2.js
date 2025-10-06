@@ -209,8 +209,6 @@ class scene2 extends baseScene{
     this.dialogue.fadeIn(this.overlayDark, 1000);
     
     // Use baseScene's startSceneWithFade
-    if(progress == 2)
-      progress = 3;
     this.startScene("scene1", {
       from: 2,
       currentSlot: currentSlot

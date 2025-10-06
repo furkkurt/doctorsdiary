@@ -35,8 +35,9 @@ class scene1 extends baseScene {
       this.musicPlayer.playMusic("docsTheme")
     
     // Check for progress 3 cutscene
-    if (progress == 3) {
-      this.startProgress3Cutscene();
+    if (progress == 2) {
+      this.tutorText.setVisible(false)
+      this.startProgress2Cutscene();
       return; // Exit early to prevent normal scene setup
     }
     
@@ -402,7 +403,8 @@ class scene1 extends baseScene {
           .setBlendMode(sprite.originalBlendMode || Phaser.BlendModes.NORMAL);
   }
 
-  startProgress3Cutscene() {
+  startProgress2Cutscene() {
+    progress = 3
     console.log("Starting progress 3 cutscene");
     
     // Set up overlays for cutscene
@@ -549,7 +551,7 @@ class scene1 extends baseScene {
         
         // After fade out, show text
         this.time.delayedCall(2000, () => {
-          this.showProgress3Text();
+          this.showProgress2Text();
         });
       });
     });
@@ -1273,7 +1275,7 @@ class scene1 extends baseScene {
     });
   }
 
-  showProgress3Text() {
+  showProgress2Text() {
     // Create big text like in scene0
     const bigText = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, "4 days left", {
       fontFamily: "Moving",

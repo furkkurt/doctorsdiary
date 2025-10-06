@@ -5,12 +5,13 @@ var favNum = parseInt(localStorage.getItem("favNum")) ?? 5
 var currentMusic = ""
 var currentSlot = 0
 
-class scene0 extends Phaser.Scene{
+class scene0 extends baseScene{
   constructor(){
     super("scene0")
   }
 
   create(){
+    this.tutorText.setVisible(false)
     //diyalog sahnesi başladı diğer sahnelerde sadece get dicen galiba
     this.scene.launch("dialogueOverlay")
     this.scene.bringToTop("dialogueOverlay")
