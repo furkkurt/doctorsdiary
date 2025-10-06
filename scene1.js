@@ -206,17 +206,17 @@ class scene1 extends Phaser.Scene{
     if (progress === 7) {
     const tryPrompt = () => {
       if (this.dialogue && this.dialogue.dialogueText) {
-        this.dialogue.dialogue("I need to take my meds", "docPort", null, "1", null, "Doctor");
+        //this.dialogue.dialogue("I need to take my meds", "docPort", null, "1", null, "Doctor");
         this.tutorText = this.add.text(20,10,"Take your meds",{fontFamily:"Moving", fontSize:"32px", color: "white"}).setOrigin(0).setScrollFactor(0)
         this.tutorText.alpha = 0
         this.time.delayedCall(500, () => { this.dialogue.fadeIn(this.tutorText) })
         return true;
       }
       return false;
-    }
+    }/**
     if (!tryPrompt()) {
       this.time.addEvent({ delay: 100, callback: () => { if (!tryPrompt()) this.time.addEvent({ delay: 100, callback: tryPrompt }) } })
-    }
+    }*/
     }
 
     this.input.keyboard.on("keydown-A", this.left.bind(this));
@@ -1302,6 +1302,7 @@ class scene1 extends Phaser.Scene{
 
       // Show second text
       this.time.delayedCall(1000, () => {
+        progress = 5;
         const secondText = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, "When did world became this... hell of a hole. I dont even remember", {
           fontFamily: "Moving",
           fontSize: "64px",

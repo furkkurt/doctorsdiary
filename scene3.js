@@ -120,14 +120,12 @@ class scene3 extends Phaser.Scene{
             if (!this.cut5NurseDialogueStarted) {
               this.startNurseDialogue();
             }
-          } else if (progress === 2) {
+          } else if (progress === 2 || progress === 3) {
+            progress = 3;
             // Special dialogue for progress 2
             this.dialogue.dialogue("Wouldn't wanna tire them too much...", "docPort", null, "1", null, "Doctor");
-            this.time.delayedCall(2000, () => {
-              this.startDoorTransition();
-            });
           } else {
-          this.startDoorTransition();
+            this.startDoorTransition();
           }
           break;
           case this.stairs:
@@ -257,7 +255,7 @@ class scene3 extends Phaser.Scene{
 
   update() {
     // Transition to scene2 when reaching the left edge (outside cutscenes)
-    if (!this.controlsLocked && this.player && this.player.x < 50 && !this.isTransitioning && progress !== 5 && progress !== 7) {
+    if (!this.controlsLocked && this.player && this.player.x < 50 && !this.isTransitioning) {
       this.startTransitionToScene2();
       return;
     }
@@ -398,9 +396,13 @@ class scene3 extends Phaser.Scene{
         case this.kidsRoom:
           this.inventory.pick(this.selectedItem, false, "", this.dialogue);
           if (progress === 5) {
+            progress = 6;
             if (!this.cut5NurseDialogueStarted) {
               this.startNurseDialogue();
+            } else {
+              this.startDoorTransition();
             }
+            this.startDoorTransition();
           } else {
             this.startDoorTransition();
           }
