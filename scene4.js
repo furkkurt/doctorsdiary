@@ -439,6 +439,8 @@ class scene4 extends Phaser.Scene{
   }
 
   exitToScene3() {
+    if(progress = 1)
+      progress = 2
     // Flip doctor to face left (towards door)
     this.doctor.flipX = false;
     

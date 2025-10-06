@@ -3,7 +3,7 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "corridorUp.tmx",
+    "activeFile": "corridorDown.tmx",
     "expandedProjectPaths": [
         "."
     ],
@@ -34,8 +34,8 @@
             "scale": 0.1953125,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 2723.84,
-                "y": 734.72
+                "x": 3717.12,
+                "y": 729.6000000000001
             }
         },
         "corridorDown2.tmx": {
@@ -105,7 +105,10 @@
         "room1.tmx",
         "corridor.tmx",
         "corridor2.tmx",
-        "corridorUp.tmx"
+        "corridorUp.tmx",
+        "corridorDown.tmx",
+        "corridorDown2.tmx",
+        "garden.tmx"
     ],
     "project": "doc.tiled-project",
     "property.type": "bool",
@@ -113,6 +116,9 @@
         "room1.tmx",
         "corridor.tmx",
         "corridor2.tmx",
-        "corridorUp.tmx"
+        "corridorUp.tmx",
+        "garden.tmx",
+        "corridorDown2.tmx",
+        "corridorDown.tmx"
     ]
 }
