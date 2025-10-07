@@ -599,12 +599,18 @@ class scene3 extends baseScene{
     // Background setup
     this.musicPlayer.stopTheMusic()
     this.musicPlayer.playMusic("nursesTheme")
-    if(!this.bg)
-      this.bg = this.add.image(0,0,"bg5").setOrigin(0)
-    this.bg.setTexture("bg52")
+    
+    // Create or update background
+    if (!this.bg) {
+      this.bg = this.add.image(0,0,"bg52").setOrigin(0)
+      this.scaleFactor = this.scale.height/this.bg.height
+      this.bg.setScale(this.scaleFactor)
+    } else {
+      this.bg.setTexture("bg52")
+    }
+    
     this.mapWidth = this.bg.width * this.bg.scaleX;
     this.mapHeight = this.bg.height * this.bg.scaleY;
-    this.scaleFactor = this.mapWidth/this.bg.width
 
     // Load map and place nurse & kidsRoom
     const map = this.make.tilemap({ key: 'corridorUp' });
