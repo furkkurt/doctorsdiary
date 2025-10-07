@@ -74,12 +74,44 @@ class badEnding extends Phaser.Scene {
                 if (index < textObjects.length - 1) {
                   animateLine(textObjects[index + 1], index + 1);
                 } else {
-                  // Last line finished, wait a bit then end
-                  this.time.delayedCall(10000, () => {
-                    // Transition to credits
-                    //bad ending bittiğinde progress 13 yaptık
-                    progress = 13;
-                    this.scene.start('credits');
+                  // Last line finished, show final text
+                  const finalText = 
+                    "We unfortunately have to inform you about the lost of our only doctor in our town doctor Arif. " +
+                    "He was discovered in his tent at 06.59 AM; a firearm was present.\n\n" +
+                    "Without a physician to care for them, we face painful decisions. For those with injuries that cannot " +
+                    "be treated or are incompatible with life, we may be forced to consider euthanasia as a last resort. " +
+                    "We do not take this lightly and extend our deepest condolences and apologies to the families affected.\n\n" +
+                    "In sympathy,\n\n" +
+                    "The Mayor\n" +
+                    "weylibn";
+
+                  const finalTextStyle = {
+                    fontFamily: "Moving",
+                    fontSize: "32px",
+                    color: "#ffffff",
+                    align: "center",
+                    wordWrap: { width: this.scale.width * 0.8 }
+                  };
+
+                  const finalTextObj = this.add.text(
+                    this.cameras.main.centerX,
+                    this.cameras.main.centerY,
+                    finalText,
+                    finalTextStyle
+                  ).setOrigin(0.5).setAlpha(0);
+
+                  // Fade in final text
+                  this.tweens.add({
+                    targets: finalTextObj,
+                    alpha: 1,
+                    duration: 2000,
+                    onComplete: () => {
+                      // Wait before transitioning to credits
+                      this.time.delayedCall(15000, () => {
+                        //bad ending bittiğinde progress 13 yaptık
+                        this.scene.start('credits');
+                      });
+                    }
                   });
                 }
               }

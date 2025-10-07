@@ -144,17 +144,6 @@ class goodEnding extends Phaser.Scene {
       alpha: 1,
       duration: 1000,
       onComplete: () => {
-        // Show final text
-        const finalText = 
-          "We unfortunately have to inform you about the lost of our only doctor in our town doctor Arif. " +
-          "He was discovered in his tent at 06.59 AM; a firearm was present.\n\n" +
-          "Without a physician to care for them, we face painful decisions. For those with injuries that cannot " +
-          "be treated or are incompatible with life, we may be forced to consider euthanasia as a last resort. " +
-          "We do not take this lightly and extend our deepest condolences and apologies to the families affected.\n\n" +
-          "In sympathy,\n\n" +
-          "The Mayor\n" +
-          "weylibn";
-
         const textStyle = {
           fontFamily: "Moving",
           fontSize: "32px",
@@ -166,7 +155,7 @@ class goodEnding extends Phaser.Scene {
         const text = this.add.text(
           this.cameras.main.centerX,
           this.cameras.main.centerY,
-          finalText,
+          "THE END",
           textStyle
         ).setOrigin(0.5).setAlpha(0);
 
@@ -179,7 +168,6 @@ class goodEnding extends Phaser.Scene {
             // Wait 5 seconds before transitioning to credits
             this.time.delayedCall(15000, () => {
               //bad ending bittiğinde progress 13 yaptık
-              progress = 13;
               this.scene.start('credits');
             });
           }
