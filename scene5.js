@@ -29,6 +29,7 @@ class scene5 extends baseScene{
     this.musicPlayer.playMusic("docsTheme")
     if(this.musicPlayer.currentMusic == "")
       this.musicPlayer.playMusic("docsTheme")
+    this.scene.bringToTop("musicPlayer")
 
     if(this.currentSlot === 1)
       this.slot = "firstSlotItem"

@@ -598,6 +598,8 @@ class scene3 extends baseScene{
     // Background setup
     this.musicPlayer.stopTheMusic()
     this.musicPlayer.playMusic("nursesTheme")
+    if(!this.bg)
+      this.bg = this.add.image(0,0,"bg5").setOrigin(0)
     this.bg.setTexture("bg52")
     this.mapWidth = this.bg.width * this.bg.scaleX;
     this.mapHeight = this.bg.height * this.bg.scaleY;
