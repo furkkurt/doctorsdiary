@@ -1,12 +1,75 @@
 class musicPlayer extends Phaser.Scene{
+  // Track info mapping as static property
+  static trackInfo = {
+    'docsTheme': { artist: 'Creakywaffle', name: "Doctor's Theme" },
+    'nursesTheme': { artist: 'Creakywaffle', name: "Nurse's Theme" },
+    'goodEnding': { artist: 'Creakywaffle', name: 'Untitled' },
+    'ong': { artist: 'Kurt Clawhammer', name: 'Something' }
+  };
+
   constructor(){
     super("musicPlayer")
   }
   create(){
     console.log("BEHOLD THE MUSIC PLAYER!");
-    currentMusic = ""
-
+    currentMusic = "";
+    
+    // Create track display text
+    this.trackDisplay = this.add.text(
+      this.game.config.width - 20,
+      20,
+      '',
+      {
+        fontFamily: 'Moving',
+        fontSize: '32px',
+        color: '#ffffff',
+        stroke: '#000000',
+        strokeThickness: 4
+      }
+    )
+    .setOrigin(1, 0)
+    .setScrollFactor(0)
+    .setDepth(Number.MAX_SAFE_INTEGER)
+    .setAlpha(0);
   };
+
+  showTrackInfo(key) {
+    try {
+      if (!musicPlayer.trackInfo[key]) return;
+
+      const { artist, name } = musicPlayer.trackInfo[key];
+      const text = `Current Track: ${artist} - ${name}`;
+
+      if (this.trackDisplay && this.trackDisplay.setText) {
+        this.trackDisplay.setText(text);
+        
+        // Only try animation if the text update worked
+        if (this.displayTween) {
+          this.displayTween.stop();
+        }
+
+        this.displayTween = this.tweens.add({
+          targets: this.trackDisplay,
+          alpha: { from: 0, to: 1 },
+          duration: 500,
+          ease: 'Linear',
+          onComplete: () => {
+            this.time.delayedCall(5000, () => {
+              this.tweens.add({
+                targets: this.trackDisplay,
+                alpha: 0,
+                duration: 500,
+                ease: 'Linear'
+              });
+            });
+          }
+        });
+      }
+    } catch (e) {
+      // Silently ignore any errors - track info is nice to have but not critical
+    }
+  }
+  
 
   playMusic(key) {
     currentMusic = key
@@ -17,6 +80,7 @@ class musicPlayer extends Phaser.Scene{
       }
     });
     music.play();
+    this.showTrackInfo(key);
     return music;
   }
 
@@ -67,5 +131,10 @@ class musicPlayer extends Phaser.Scene{
   }
 
   update(){
+    // Keep track display in fixed position on screen
+    if (this.trackDisplay) {
+      this.scene.bringToTop();
+      this.trackDisplay.setPosition(this.game.config.width - 20, 20);
+    }
   }
 }

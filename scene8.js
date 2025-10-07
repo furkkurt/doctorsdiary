@@ -24,6 +24,9 @@ class scene8 extends baseScene{
     this.dialogue = this.scene.get('dialogueOverlay');
 
     this.musicPlayer = this.scene.get("musicPlayer")
+    if(this.musicPlayer.currentMusic == "")
+      this.musicPlayer.playMusic("docsTheme")
+    this.scene.bringToTop("musicPlayer")
     this.isWalking = false
     this.walkingSound = null
     this.isTransitioning = false
@@ -41,8 +44,12 @@ class scene8 extends baseScene{
     this.bg.setScale(this.scaleFactor)
     this.mapWidth = this.bg.width * this.bg.scaleX;
     this.mapHeight = this.bg.height * this.bg.scaleY;
-    this.player = this.physics.add.sprite(this.mapWidth - 400,1000,"doc").setDepth(99).setScale(1.1)
+    this.player = this.physics.add.sprite(this.mapWidth - 400,650,"doc").setDepth(99).setScale(1.1)
     this.player.play("docIdle")
+    this.player.flipX = true
+
+    this.tree = this.physics.add.sprite(0,0,"tree").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable().setVisible(false)
+    this.objects = [this.tree]
 
 
     const map = this.make.tilemap({ key: 'garden' });
@@ -55,6 +62,9 @@ class scene8 extends baseScene{
     this.input.keyboard.on("keydown-E", () => {
       switch(this.selectedItem){
         case "NaN":
+          break;
+        case this.tree:
+          this.dialogue.dialogue("I wonder how old the tree is...", "docPort", null, "1", null, "Doctor");
           break;
       }
     });
@@ -230,7 +240,7 @@ class scene8 extends baseScene{
     }
     if (this.player.x < 50){
       this.stop();
-      this.player.x -= 10
+      this.player.x += 10
       return;
     }
   }

@@ -9,6 +9,7 @@ class badEnding extends Phaser.Scene {
     this.musicPlayer.stopAllSfx();
     this.musicPlayer.playSfx("monitor");
     this.musicPlayer.playMusic("goodEnding");
+    this.scene.bringToTop("musicPlayer")
     // Create black background
     this.add.graphics()
       .fillStyle(0x000000, 1)

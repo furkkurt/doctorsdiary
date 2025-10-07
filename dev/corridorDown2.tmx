@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="1200" height="320" tilewidth="2" tileheight="2" infinite="0" nextlayerid="4" nextobjectid="1">
- <objectgroup id="2" name="interactive"/>
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="1200" height="320" tilewidth="2" tileheight="2" infinite="0" nextlayerid="4" nextobjectid="4">
+ <editorsettings>
+  <export target="../assets/corridorDown2.json" format="json"/>
+ </editorsettings>
+ <objectgroup id="2" name="interactive">
+  <object id="1" name="door" x="1015.36" y="728.123" width="200.401" height="146.961"/>
+  <object id="2" name="door2" x="2805.61" y="681.363" width="233.801" height="193.721"/>
+  <object id="3" name="babies" x="3936.55" y="580.494" width="227.967" height="173.913"/>
+ </objectgroup>
  <imagelayer id="3" name="bg">
-  <image source="../assets/bg2.png" width="2396" height="639"/>
+  <image source="../assets/bg2.png" width="4791" height="1278"/>
  </imagelayer>
 </map>

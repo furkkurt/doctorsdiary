@@ -4,7 +4,9 @@ class scene2 extends baseScene{
   }
 
   create(data){
-    const playerY = 650;
+    this.playerY = 700;
+    if(progress == 6)
+      this.tutorText.setVisible(false)
     // Set the current slot from the passed data
     if (data && data.currentSlot !== undefined) {
       currentSlot = data.currentSlot;
@@ -22,6 +24,9 @@ class scene2 extends baseScene{
     console.log(data.from)
 
     this.musicPlayer = this.scene.get("musicPlayer")
+    if(this.musicPlayer.currentMusic == "")
+      this.musicPlayer.playMusic("docsTheme")
+    this.scene.bringToTop("musicPlayer")
     this.isWalking = false
     this.walkingSound = null
     this.isTransitioning = false
@@ -58,7 +63,7 @@ class scene2 extends baseScene{
     this.bg.setScale(this.scaleFactor)
     this.mapWidth = this.bg.width * this.bg.scaleX;
     this.mapHeight = this.bg.height * this.bg.scaleY;
-    this.player = this.physics.add.sprite(900,playerY,"doc").setDepth(99).setScale(1.1)
+    this.player = this.physics.add.sprite(900,this.playerY,"doc").setDepth(99).setScale(1.05)
     this.player.play("docIdle")
 
     this.ofis1= this.physics.add.sprite(0,0,"ofis1").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable().setVisible(false)
@@ -89,14 +94,14 @@ class scene2 extends baseScene{
       } else if (obj.name === 'nurse') {
         nurseX = obj.x*this.scaleFactor
         nurseY = obj.y*this.scaleFactor
-      } else {
+      } else if(obj.name === "desk") {
         this.desk.x = obj.x*this.scaleFactor
         this.desk.y = obj.y*this.scaleFactor
       }
     });
 
     // Spawn nurse for progress 8 or 13
-    if (progress == 6 || progress == 11) {
+    if (progress == 6 || progress == 13) {
       this.nurse = this.physics.add.sprite(nurseX, nurseY, "nurse").setDepth(98).setScale(1.0).setImmovable();
       this.nurse.play && this.nurse.play("nurseIdle");
     }
@@ -104,7 +109,9 @@ class scene2 extends baseScene{
     this.cameras.main.setBounds(0, 0, this.mapWidth, this.mapHeight);
     this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
     // Progress 8/13: enable dark flickering overlay
-    if (progress == 6 || progress === 7 || progress == 11) {
+    if (progress == 6 || progress === 7 || progress == 13) {
+      this.musicPlayer.stopTheMusic()
+      this.musicPlayer.playMusic("nursesTheme")
       this.bg.setTexture("bg42")
     /*
       this.overlayDark.alpha = 0.8;
@@ -125,23 +132,23 @@ class scene2 extends baseScene{
         }
       });
     */
-      // Flags for progress 8 events
-      this.p8NurseDialogueStarted = false;
-      this.p8BoundaryWarned = false;
+      // Flags for progress 6 events
+      this.p6NurseDialogueStarted = false;
+      this.p6BoundaryWarned = false;
     }
     // If coming from scene3, spawn at right edge facing left
     if (data && data.from === 3) {
-      this.player.setPosition(this.mapWidth - 50, playerY);
+      this.player.setPosition(this.mapWidth - 50, this.playerY);
       this.player.flipX = true;
     }
     // If coming from scene5, spawn at position 1800
     if (data && data.from === 5) {
-      this.player.setPosition(1800, playerY);
+      this.player.setPosition(1800, this.playerY);
       this.player.flipX = true;
     }
     // If coming from scene6, spawn at right edge facing left
     if (data && data.from === 6) {
-      this.player.setPosition(this.mapWidth - 300, playerY);
+      this.player.setPosition(this.mapWidth - 300, this.playerY);
       this.player.flipX = true;
     }
 
@@ -162,13 +169,17 @@ class scene2 extends baseScene{
           this.inventory.pick(this.selectedItem, false, "", this.dialogue);
           if (progress == 6 || progress == 9) {
             this.startTransitionToScene5();
+          } else {
+            this.dialogue.dialogue("That's not my office... Better not enter.", "docPort", null, "1", null, "Doctor");
           }
           break;
         case this.power:
-          this.inventory.pick(this.selectedItem, false, "I wonder how long this power will last...", this.dialogue);
+          //this.inventory.pick(this.selectedItem, false, "I wonder how long this power will last...", this.dialogue);
+          this.dialogue.dialogue("I wonder how long this power will last...", "docPort", null, "1", null, "Doctor");
           break;
         case this.desk:
-          this.inventory.pick(this.selectedItem, false, "I can't even say 'Strange... no one's here'.", this.dialogue);
+          //this.inventory.pick(this.selectedItem, false, "I can't even say 'Strange... no one's here'.", this.dialogue);
+          this.dialogue.dialogue("I can't even say 'Strange... no one's here'.", "docPort", null, "1", null, "Doctor");
           break;
       }
     });
@@ -337,18 +348,18 @@ class scene2 extends baseScene{
 
   update() {
     // Progress 8/13 scripted events
-    if (progress == 6 || progress == 11) {
+    if (progress == 6 || progress == 13) {
       // Trigger nurse dialogue at x > 2000 once
       if (!this.p6NurseDialogueStarted && this.player.x > 2000) {
         this.p6NurseDialogueStarted = true;
         this.lockControlsFor(1000);
         
         let seq;
-        //nurese son diyalog başlayınca 12 yaptık
-        if (progress == 11) {
-          progress = 13
+        //nurese son diyalog başlayınca 13 yaptık
+        if (progress == 13) {
+          progress = 14
           seq = [
-            { text: "still didnt decide who to kill?", leftPortrait: "docPort", rightPortrait: "nursePort", leftAnimation: "1", rightAnimation: null, name: "Nurse" },
+            { text: "still haven't decided who to kill?", leftPortrait: "docPort", rightPortrait: "nursePort", leftAnimation: "1", rightAnimation: null, name: "Nurse" },
             { text: "you have to speak to them now?", leftPortrait: "docPort", rightPortrait: "nursePort", leftAnimation: "1", rightAnimation: null, name: "Nurse" }
           ];
         } else {
@@ -369,14 +380,15 @@ class scene2 extends baseScene{
     }
 
     // Progress 8/9/13 match usage
-    if (progress == 6 || progress == 7 || progress == 11) {      // Block going beyond x > 2500 with warning (but only lock briefly)
+    if (progress == 6 || progress == 7 || progress == 13) {      // Block going beyond x > 2500 with warning (but only lock briefly)
       if (this.player.x > 2500) {
         if (!this.inventoryArr.includes("matches")) {
-          this.p8BoundaryWarned = true;
+          this.tutorText.setVisible(true)
+          this.p6BoundaryWarned = true;
           this.player.x = 2450;
           this.lockControlsFor(3000);
           this.dialogue.dialogue("I dont want to walk into dark, i need to find a source of light", "docPort", null, "1", null, "Doctor");
-          this.time.delayedCall(2000, () => { this.p8BoundaryWarned = false; });
+          this.time.delayedCall(2000, () => { this.p6BoundaryWarned = false; });
         }
       }
       // Going forward past 2500

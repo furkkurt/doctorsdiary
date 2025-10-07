@@ -56,7 +56,7 @@ class baseScene extends Phaser.Scene {
         this.updateTutorText();
 
         // For progress 1, start flickering between two messages
-        if (progress === 1 || progress === 0) {
+        if (progress === 0) {
             this.startTutorTextFlicker();
         }
 
@@ -71,7 +71,7 @@ class baseScene extends Phaser.Scene {
     updateTutorText() {
         const messages = {
             0: ["Read the documents about the test subject", "Press E to interact with objects"],
-            1: ["See patient at room 3", "Press E to interact with objects"],
+            1: "See patient at room 3",
             2: "Return to your office and take notes",
             3: "Visit your patient again",
             4: "",
@@ -81,13 +81,15 @@ class baseScene extends Phaser.Scene {
             8: "Take your meds",
             9: "Use restroom",
             10: "Use restroom",
-            11: "",
-            12: "Visit kids",
-            13: "Go back to your office and face the consuqences of your choice"
+            11: "Visit kids",
+            12: "Go to your office",
+            13: "See the kids",
+            14: "See the kids",
+            15: "Go back to your office and face the consuqences of your choice"
         };
 
         const message = messages[progress] || "";
-        if (progress !== 1 && progress !== 0) {
+        if (progress !== 0) {
             this.tutorText.setText(message);
             if (message) {
                 this.fadeInTutorText();
@@ -105,7 +107,7 @@ class baseScene extends Phaser.Scene {
         this.tutorFlickerTimer = this.time.addEvent({
             delay: 3000,
             callback: () => {
-                if (progress !== 1 && progress !== 0) {
+                if (progress !== 0) {
                     this.tutorFlickerTimer.destroy();
                     return;
                 }
@@ -114,12 +116,7 @@ class baseScene extends Phaser.Scene {
                         "Read the documents about the test subject" : 
                         "Press E to interact with objects"
                     );
-                } else {
-                    this.tutorText.setText(showingFirst ? 
-                        "See patient at room 3" : 
-                        "Press E to interact with objects"
-                    );
-                }
+                }  
                 this.fadeInTutorText();
                 showingFirst = !showingFirst;
             },

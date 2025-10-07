@@ -1,5 +1,5 @@
 { "compressionlevel":-1,
- "height":639,
+ "height":320,
  "infinite":false,
  "layers":[
         {
@@ -27,19 +27,19 @@
                  "type":"",
                  "visible":true,
                  "width":107.52,
-                 "x":1182.72,
-                 "y":793.6
+                 "x":1195.73027144408,
+                 "y":711.688662323561
                 }, 
                 {
-                 "height":93.412,
+                 "height":142.073800486618,
                  "id":2,
                  "name":"stairs2",
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":109.8,
-                 "x":5213.58,
-                 "y":787.854
+                 "width":182.792700729927,
+                 "x":4921.22851533956,
+                 "y":726.549715526602
                 }, 
                 {
                  "height":112.64,
@@ -49,8 +49,19 @@
                  "type":"",
                  "visible":true,
                  "width":107.52,
-                 "x":3765.76,
-                 "y":814.08
+                 "x":3721.86745928339,
+                 "y":791.174005428882
+                }, 
+                {
+                 "height":112.64,
+                 "id":4,
+                 "name":"toilet2",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":107.52,
+                 "x":2514.10102062975,
+                 "y":720.010076004343
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -59,7 +70,7 @@
          "y":0
         }],
  "nextlayerid":4,
- "nextobjectid":4,
+ "nextobjectid":5,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",
@@ -68,5 +79,5 @@
  "tilewidth":2,
  "type":"map",
  "version":"1.10",
- "width":2904
+ "width":1452
 }

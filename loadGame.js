@@ -8,6 +8,15 @@ class loadGame extends Phaser.Scene{
     this.menuBg = this.add.image(0,0,"mainMenuBg").setOrigin(0)
     this.menuBg.setScale(this.scale.height/this.menuBg.height)
 
+    // Initialize ending values for each slot if they don't exist
+    for (let i = 1; i <= 3; i++) {
+      const slotPrefix = i === 1 ? "first" : i === 2 ? "second" : "third";
+      const endingKey = `${slotPrefix}SlotEnding`;
+      if (!localStorage.getItem(endingKey)) {
+        localStorage.setItem(endingKey, "undetermined");
+      }
+    }
+
     // Slots layout similar to settings
     const yBase = 620
     const yGap = 100
@@ -86,12 +95,14 @@ class loadGame extends Phaser.Scene{
   deleteSlot(label, sceneKey, item1Key, item2Key, item3Key) {
     const slotPrefix = sceneKey.replace("SlotScene", "");
     const roomKey = `${slotPrefix}SlotLastRoom`;
+    const endingKey = `${slotPrefix}SlotEnding`;
     
     localStorage.setItem(sceneKey, "")
     localStorage.setItem(item1Key, "")
     localStorage.setItem(item2Key, "")
     localStorage.setItem(item3Key, "")
     localStorage.setItem(roomKey, "")
+    localStorage.setItem(endingKey, "undetermined")
     label.text = label.text.replace(/Progress:.*/, "Empty")
   }
 

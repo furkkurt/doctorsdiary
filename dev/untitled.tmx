@@ -4,9 +4,9 @@
   <export target="../assets/ofis2.json" format="json"/>
  </editorsettings>
  <objectgroup id="3" name="interactive">
-  <object id="1" name="matches" x="199.461" y="544.597" width="111.879" height="102.007"/>
+  <object id="1" name="matches" x="545.357" y="1138.3" width="111.879" height="102.007"/>
  </objectgroup>
  <imagelayer id="2" name="bg">
-  <image source="../assets/bg7.png" width="2030" height="740"/>
+  <image source="../assets/bg7.png" width="4060" height="1480"/>
  </imagelayer>
 </map>

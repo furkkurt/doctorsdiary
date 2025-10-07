@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="1452" height="320" tilewidth="2" tileheight="2" infinite="0" nextlayerid="4" nextobjectid="4">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="1452" height="320" tilewidth="2" tileheight="2" infinite="0" nextlayerid="4" nextobjectid="5">
  <editorsettings>
   <export target="../assets/corridorDown.json" format="json"/>
  </editorsettings>
  <imagelayer id="2" name="bg">
-  <image source="../assets/bg3.png" width="2905" height="639"/>
+  <image source="../assets/bg3.png" width="5809" height="1278"/>
  </imagelayer>
  <objectgroup id="3" name="interactive">
-  <object id="1" name="garden" x="565.98" y="375.098" width="107.52" height="112.64"/>
-  <object id="2" name="stairs2" x="2572.94" y="346.528" width="109.8" height="93.412"/>
-  <object id="3" name="toilet" x="1816.33" y="378.579" width="107.52" height="112.64"/>
+  <object id="1" name="garden" x="1195.73" y="711.689" width="107.52" height="112.64"/>
+  <object id="2" name="stairs2" x="4921.23" y="726.55" width="182.793" height="142.074"/>
+  <object id="3" name="toilet" x="3721.87" y="791.174" width="107.52" height="112.64"/>
+  <object id="4" name="toilet2" x="2514.1" y="720.01" width="107.52" height="112.64"/>
  </objectgroup>
 </map>

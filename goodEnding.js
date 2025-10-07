@@ -8,6 +8,7 @@ class goodEnding extends Phaser.Scene {
     this.musicPlayer = this.scene.get("musicPlayer")
     this.musicPlayer.stopAllSfx();
     this.musicPlayer.playMusic("goodEnding");
+    this.scene.bringToTop("musicPlayer")
     // Set up scene like scene1
     this.bg1 = this.add.image(0,0,"testBg").setOrigin(0);
     this.bg2 = this.add.image(0,0,"testBgObjects").setOrigin(0);

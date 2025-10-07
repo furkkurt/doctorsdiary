@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="1452" height="320" tilewidth="2" tileheight="2" infinite="0" nextlayerid="4" nextobjectid="4">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="1452" height="320" tilewidth="2" tileheight="2" infinite="0" nextlayerid="4" nextobjectid="7">
  <editorsettings>
   <export target="../assets/corridorUp.json" format="json"/>
  </editorsettings>
  <objectgroup id="3" name="interactive">
-  <object id="1" name="kidsRoom" x="2196.59" y="312.216" width="109.8" height="93.412"/>
-  <object id="3" name="nurse" x="2444.94" y="378.189" width="109.8" height="93.412"/>
+  <object id="1" name="kidsRoom" x="4415.22" y="678.398" width="170.884" height="145.379"/>
+  <object id="3" name="nurse" x="4904.05" y="797.228" width="170.884" height="145.379"/>
+  <object id="4" name="door2" x="2773.29" y="630.048" width="166.936" height="172.321"/>
+  <object id="5" name="door" x="1163.17" y="613.893" width="161.551" height="161.551"/>
  </objectgroup>
  <imagelayer id="2" name="bg">
-  <image source="../assets/bg5.png" width="2905" height="639"/>
+  <image source="../assets/bg5.png" width="5809" height="1278"/>
  </imagelayer>
 </map>

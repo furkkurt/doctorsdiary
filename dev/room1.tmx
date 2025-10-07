@@ -4,16 +4,16 @@
   <export target="../assets/room1.json" format="json"/>
  </editorsettings>
  <objectgroup id="7" name="interactive">
-  <object id="3" name="drugs" x="1327.91" y="471.369" width="10.3989" height="15.5983"/>
-  <object id="8" name="book2" x="1241.76" y="493.589" width="23.0261" height="22.2833"/>
-  <object id="9" name="book1" x="1040.15" y="471.807" width="20.055" height="20.055"/>
-  <object id="10" name="lamp" x="1447.46" y="688.527" width="25.2545" height="21.5406"/>
-  <object id="11" name="window" x="600.591" y="306.319" width="20.055" height="20.055"/>
-  <object id="12" name="shelf" x="149.561" y="579.741" width="20.055" height="20.055"/>
-  <object id="13" name="chair" x="1611.9" y="549.981" width="20.055" height="20.055"/>
+  <object id="3" name="drugs" x="2615.44" y="972.195" width="17.386" height="26.0788"/>
+  <object id="8" name="book2" x="2471.4" y="1009.34" width="38.4974" height="37.2555"/>
+  <object id="9" name="book1" x="2134.33" y="972.927" width="33.53" height="33.53"/>
+  <object id="10" name="lamp" x="2860.93" y="1367.44" width="25.2545" height="21.5406"/>
+  <object id="11" name="window" x="1335.15" y="706.987" width="20.055" height="20.055"/>
+  <object id="12" name="shelf" x="527.969" y="1091.71" width="103.527" height="86.833"/>
+  <object id="13" name="chair" x="3181.18" y="1123.16" width="20.055" height="20.055"/>
  </objectgroup>
  <imagelayer id="2" name="bg">
-  <image source="../assets/roombg1.webp" width="2030" height="740"/>
+  <image source="../assets/roombg1.webp" width="4060" height="1480"/>
  </imagelayer>
  <imagelayer id="8" name="objects">
   <image source="../assets/room1objects.webp" width="4060" height="1480"/>

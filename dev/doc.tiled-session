@@ -24,45 +24,51 @@
             "selectedLayer": 0,
             "viewCenter": {
                 "x": 2213.500784929356,
-                "y": 867.3469387755099
+                "y": 129.51334379905802
             }
         },
         "corridorDown.tmx": {
             "expandedObjectLayers": [
                 3
             ],
-            "scale": 0.1989,
+            "scale": 0.1233,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 1855.2036199095025,
-                "y": 686.2745098039215
+                "x": 2538.5239253852396,
+                "y": 2331.711273317113
             }
         },
         "corridorDown2.tmx": {
-            "scale": 0.0528,
-            "selectedLayer": 1,
+            "expandedObjectLayers": [
+                2
+            ],
+            "scale": 0.1884,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 3049.242424242424,
-                "y": 2073.863636363638
+                "x": 3269.6390658174096,
+                "y": 968.6836518046712
             }
         },
         "corridorUp.tmx": {
             "expandedObjectLayers": [
                 3
             ],
-            "scale": 0.0918,
+            "scale": 0.1857,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 283.2244008714597,
-                "y": 1225.4901960784314
+                "x": 3161.0123855681204,
+                "y": 1262.7894453419494
             }
         },
         "garden.tmx": {
-            "scale": 0.0484,
+            "expandedObjectLayers": [
+                3
+            ],
+            "scale": 0.1723,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": -578.5123966942137,
-                "y": 3088.842975206612
+                "x": 1950.0870574579224,
+                "y": 931.5147997678464
             }
         },
         "kidsRoom.tmx": {
@@ -77,19 +83,25 @@
             }
         },
         "room1.tmx": {
-            "scale": 0.1797,
+            "expandedObjectLayers": [
+                7
+            ],
+            "scale": 0.3834,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 2031.1630495269897,
-                "y": 737.3400111296605
+                "x": 2503.9123630672925,
+                "y": 755.0860719874804
             }
         },
         "untitled.tmx": {
-            "scale": 0.1937,
+            "expandedObjectLayers": [
+                3
+            ],
+            "scale": 0.1228,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 1140.9395973154362,
-                "y": 415.5911202891068
+                "x": 2296.4169381107486,
+                "y": 85.50488599348546
             }
         }
     },
@@ -113,8 +125,8 @@
     "project": "doc.tiled-project",
     "property.type": "bool",
     "recentFiles": [
-        "room1.tmx",
         "corridor.tmx",
+        "room1.tmx",
         "corridor2.tmx",
         "corridorUp.tmx",
         "garden.tmx",

@@ -8,6 +8,7 @@ class credits extends Phaser.Scene {
     this.musicPlayer = this.scene.get("musicPlayer")
     this.musicPlayer.stopAllSfx();
     this.musicPlayer.playMusic("ong");
+    this.scene.bringToTop("musicPlayer")
     // Set up black background
     this.cameras.main.setBackgroundColor('#000000');
 

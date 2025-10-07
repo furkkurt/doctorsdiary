@@ -150,9 +150,15 @@ class preloader extends Phaser.Scene {
         this.load.atlas("kids", "./assets/t1-sheet.webp", "./assets/kids1.json");
         //doldurma
         this.load.image("stairs", "./assets/stairs.png");
+        this.load.image("tree", "./assets/stairs.png");
         this.load.image("stairs2", "./assets/stairs.png");
         this.load.image("toilet", "./assets/stairs.png");
+        this.load.image("desk", "./assets/stairs.png");
         this.load.image("matches", "./assets/stairs.png");
+        this.load.image("door", "./assets/stairs.png");
+        this.load.image("door2", "./assets/stairs.png");
+        this.load.image("babies", "./assets/stairs.png");
+        this.load.image("toilet2", "./assets/stairs.png");
         this.load.image("ofis1", "./assets/stairs.png");
         this.load.image("kidsRoomDoor", "./assets/stairs.png");
 

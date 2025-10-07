@@ -19,6 +19,9 @@ class scene7 extends baseScene{
     this.dialogue = this.scene.get('dialogueOverlay');
 
     this.musicPlayer = this.scene.get("musicPlayer")
+    if(this.musicPlayer.currentMusic == "")
+      this.musicPlayer.playMusic("docsTheme")
+    this.scene.bringToTop("musicPlayer")
     this.isWalking = false
     this.walkingSound = null
     this.isTransitioning = false
@@ -36,9 +39,13 @@ class scene7 extends baseScene{
     this.bg.setScale(this.scaleFactor)
     this.mapWidth = this.bg.width * this.bg.scaleX;
     this.mapHeight = this.bg.height * this.bg.scaleY;
-    this.player = this.physics.add.sprite(100,800,"doc").setDepth(99).setScale(1.1)
+    this.player = this.physics.add.sprite(100,670,"doc").setDepth(99).setScale(1.05)
     this.player.play("docIdle")
 
+    this.door = this.physics.add.sprite(0,0,"door").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable().setVisible(false)
+    this.door2 = this.physics.add.sprite(0,0,"door2").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable().setVisible(false)
+    this.babies= this.physics.add.sprite(0,0,"babies").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable().setVisible(false)
+    this.objects = [this.door, this.door2, this.babies]
 
     const map = this.make.tilemap({ key: 'corridorDown2' });
 
@@ -50,6 +57,15 @@ class scene7 extends baseScene{
     this.input.keyboard.on("keydown-E", () => {
       switch(this.selectedItem){
         case "NaN":
+          break;
+        case this.door:
+          this.dialogue.dialogue("Seems to be locked...", "docPort", null, "1", null, "Doctor");
+          break;
+        case this.door2:
+          this.dialogue.dialogue("Seems to be locked...", "docPort", null, "1", null, "Doctor");
+          break;
+        case this.babies:
+          this.dialogue.dialogue("I wonder if they're okay...", "docPort", null, "1", null, "Doctor");
           break;
       }
     });

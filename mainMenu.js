@@ -24,9 +24,11 @@ class mainMenu extends Phaser.Scene{
     //müzik açma işi
     this.scene.launch("musicPlayer")
     this.musicPlayer = this.scene.get("musicPlayer")
-    this.musicPlayer.playMusic("ong")
+    if(this.musicPlayer.currentMusic != "ong")
+      this.musicPlayer.playMusic("ong")
     this.scene.launch("brightnessOverlay")
     this.scene.bringToTop("brightnessOverlay")
+    this.scene.bringToTop("musicPlayer")
 
     this.menuBg = this.add.image(0,0,"mainMenuBg").setOrigin(0)
     this.menuBg.setScale(this.scale.height/this.menuBg.height)

@@ -33,6 +33,7 @@ class scene0 extends baseScene{
     this.scene.launch("brightnessOverlay")
     this.brightness = this.scene.get("brightnessOverlay")
     this.scene.bringToTop("brightnessOverlay")
+    this.scene.bringToTop("musicPlayer")
 
 
     this.bg1 = this.add.image(0,0,"testBg").setOrigin(0)

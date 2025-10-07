@@ -1,5 +1,5 @@
 { "compressionlevel":-1,
- "height":742,
+ "height":360,
  "infinite":false,
  "layers":[
         {
@@ -18,7 +18,18 @@
          "draworder":"topdown",
          "id":3,
          "name":"interactive",
-         "objects":[],
+         "objects":[
+                {
+                 "height":124.688279301746,
+                 "id":1,
+                 "name":"tree",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":127.805486284289,
+                 "x":1109.72568578554,
+                 "y":810.473815461347
+                }],
          "opacity":1,
          "type":"objectgroup",
          "visible":true,
@@ -26,7 +37,7 @@
          "y":0
         }],
  "nextlayerid":4,
- "nextobjectid":1,
+ "nextobjectid":2,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",
@@ -35,5 +46,5 @@
  "tilewidth":2,
  "type":"map",
  "version":"1.10",
- "width":2049
+ "width":1025
 }

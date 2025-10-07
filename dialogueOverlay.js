@@ -7,7 +7,7 @@ class dialogueOverlay extends Phaser.Scene{
 
     this.dialogueBox = this.add.sprite(this.cameras.main.centerX, 920, "textbg").setOrigin(0.5).setScrollFactor(0).setDepth(100)
     this.dialogueBox.alpha = 0
-    this.dialogueText = this.add.text(this.dialogueBox.x, this.dialogueBox.y-80, "", {fontFamily:"Moving", fontSize: "48px", color: "black"}).setScrollFactor(0).setDepth(100)
+    this.dialogueText = this.add.text(this.dialogueBox.x, this.dialogueBox.y-90, "", {fontFamily:"Moving", fontSize: "48px", color: "black"}).setScrollFactor(0).setDepth(100)
     this.dialogueText.setOrigin(0.5, 0)
     this.dialogueText.alpha = 0
 
@@ -139,13 +139,12 @@ class dialogueOverlay extends Phaser.Scene{
     // Create portrait sprite with scaling
     let portrait = this.add.sprite(0, this.scale.height, actualTextureKey)
       .setScrollFactor(0)
-      .setScale(0.25)    // Scale down portraits
+      .setScale(0.5)    // Scale down portraits
       .setDepth(99)     // Set depth between dialogue box and name tag
     
     // Always put doctor on left, others on right
     const isDoctor = textureKey.includes('docPort');
     if (isDoctor || side === "left") {
-      portrait.setScale(0.5)
       portrait.setOrigin(0, 1);  // Bottom-left corner
       portrait.setPosition(0, this.scale.height);  // Bottom-left of screen
       this.leftPortrait = portrait;

@@ -21,22 +21,24 @@ class scene3 extends baseScene{
 
     this.scene.launch("musicPlayer");
     this.musicPlayer = this.scene.get("musicPlayer")
-    
+    if(this.musicPlayer.currentMusic == "")
+      this.musicPlayer.playMusic("docsTheme")
+    this.scene.bringToTop("musicPlayer")
     // Start playing docsTheme music
     this.musicPlayer.playMusic("docsTheme");
     
     // Check for progress 3 cutscene
     if (progress == 3) {
-      this.startProgress3Cutscene();
+      this.startProgress3Sequence();
       return; // Exit early to prevent normal scene setup
     }
     // Check for progress 7 sequence (return after scene4)
-    if (progress == 5) {
+    if (progress == 5 && data.from == 4) {
       this.startProgress5Sequence();
       return; // Exit early to prevent normal scene setup
     }
     
-    const playerY = 650;
+    this.playerY = 650;
     this.isWalking = false
     this.walkingSound = null
     this.isTransitioning = false
@@ -47,7 +49,6 @@ class scene3 extends baseScene{
     this.overlayDark.setScrollFactor(0);
     this.overlayDark.setDepth(100)
     this.dialogue.fadeOut(this.overlayDark)
-    this.logProgress("scene3 create")
 
     // Use bg5 and corridorUp map
     this.bg = this.add.image(0,0,"bg5").setOrigin(0)
@@ -64,21 +65,22 @@ class scene3 extends baseScene{
       if (intLayer && intLayer.objects) {
         intLayer.objects.forEach(obj => {
           if (obj.name === 'kidsRoom') {
-            this.player = this.physics.add.sprite(obj.x * this.scaleFactor, playerY, "doc").setDepth(99).setScale(1.1);
+            this.player = this.physics.add.sprite(obj.x * this.scaleFactor, this.playerY, "doc").setDepth(99).setScale(1.05);
             this.player.play("docIdle");
           }
         });
       }
     } else {
       // Default position
-      this.player = this.physics.add.sprite(900,playerY,"doc").setDepth(99).setScale(1.1);
+      this.player = this.physics.add.sprite(900,this.playerY,"doc").setDepth(99).setScale(1.05);
       this.player.play("docIdle");
     }
 
     // Only one interactive object - kidsRoom (invisible)
     this.kidsRoom = this.physics.add.sprite(0,0,"kidsRoomDoor").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable().setVisible(false)
-    this.stairs= this.physics.add.sprite(0,0,"stairs2").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable().setVisible(false)
-    this.objects = [this.kidsRoom, this.stairs]
+    this.door1= this.physics.add.sprite(0,0,"door").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable().setVisible(false)
+    this.door2= this.physics.add.sprite(0,0,"door2").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable().setVisible(false)
+    this.objects = [this.kidsRoom, this.door1, this.door2]
 
     // Load corridorUp map and position kidsRoom
     const map = this.make.tilemap({ key: 'corridorUp' });
@@ -96,9 +98,14 @@ class scene3 extends baseScene{
           this.kidsRoom.x = obj.x*this.scaleFactor
           this.kidsRoom.y = obj.y*this.scaleFactor
         }
-        if (obj.name === 'stairs') {
-        this.stairs.x = obj.x*this.scaleFactor
-        this.stairs.y = obj.y*this.scaleFactor
+        if (obj.name === 'door') {
+          console.log("door found")
+        this.door1.x = obj.x*this.scaleFactor
+        this.door1.y = obj.y*this.scaleFactor
+        }
+        if (obj.name === 'door2') {
+        this.door2.x = obj.x*this.scaleFactor
+        this.door2.y = obj.y*this.scaleFactor
         }
       });
     } else {
@@ -110,7 +117,7 @@ class scene3 extends baseScene{
 
     // If coming from scene2, spawn at left edge facing right
     if (data && data.from === 2) {
-      this.player.setPosition(50, playerY);
+      this.player.setPosition(50, this.playerY);
       this.player.flipX = false;
     }
 
@@ -125,18 +132,25 @@ class scene3 extends baseScene{
           if (progress == 3) {
             if (!this.cut3NurseDialogueStarted) {
               this.startNurseDialogue();
+            } else if (this.cut3NurseDialogueDone && !this.dialogue.isInSequence) {
+              progress = 4;
+              this.startDoorTransition();
             }
-          }
-          //çocuklarla zaten konuşmuşuz
-           else if (progress == 2) {
-            // Special dialogue for progress 2
-            this.dialogue.dialogue("Wouldn't wanna tire them too much...", "docPort", null, "1", null, "Doctor");
-          } else {
+          } else if ([1, 4, 7, 11, 14].includes(progress)) {
             this.startDoorTransition();
+          } else {
+            // Any other progress value shows "Wouldn't wanna tire them too much..."
+            this.dialogue.dialogue("Wouldn't wanna tire them too much...", "docPort", null, "1", null, "Doctor");
           }
           break;
           case this.stairs:
           this.inventory.pick(this.selectedItem, false, "", this.dialogue);
+          break;
+        case this.door1:
+          this.dialogue.dialogue("Seems to be locked...", "docPort", null, "1", null, "Doctor");
+          break;
+        case this.door2:
+          this.dialogue.dialogue("Seems to be locked...", "docPort", null, "1", null, "Doctor");
           break;
       }
     });
@@ -253,8 +267,14 @@ class scene3 extends baseScene{
 
 
   update() {
+    if(this.cut3NurseDialogueDone) {
+      this.nurse.setVisible(false);
+    }
+    
     // Transition to scene2 when reaching the left edge (outside cutscenes)
-    if (!this.controlsLocked && this.player && this.player.x < 50 && !this.isTransitioning) {
+    if (!this.controlsLocked && this.player && this.player.x < 50 && !this.isTransitioning && 
+        (progress !== 5 || (progress === 5 && this.cut5DialogueDone))) {
+      console.log("transitioning to scene2");
       this.startTransitionToScene2();
       return;
     }
@@ -307,10 +327,9 @@ class scene3 extends baseScene{
   }
 
   startProgress3Cutscene() {
-    console.log("Starting progress 5 cutscene - creepy corridor");
-    
+    console.log("Starting progress 3 cutscene - creepy corridor");
     // Set up basic scene elements for cutscene
-    this.bg = this.add.image(0,0,"bg5").setOrigin(0)
+    this.bg.setTexture("bg52")
     this.mapWidth = this.bg.width * this.bg.scaleX;
     this.mapHeight = this.bg.height * this.bg.scaleY;
     this.scaleFactor = this.mapWidth/this.bg.width
@@ -321,7 +340,7 @@ class scene3 extends baseScene{
     this.overlayDark.fillRect(0, 0, this.scale.width, this.scale.height);
     this.overlayDark.setScrollFactor(0);
     this.overlayDark.setDepth(100);
-    this.overlayDark.alpha = 0.8; // Set initial alpha to 80% darkness (darker overall)
+    this.overlayDark.alpha = 0.4; // Set initial alpha to 80% darkness (darker overall)
     
     // Create subtle flickering light effect (easier on eyes)
     /*
@@ -369,7 +388,9 @@ class scene3 extends baseScene{
     this.kidsRoom = this.physics.add.sprite(doorX, doorY, "kidsRoomDoor").setOrigin(0.5,1).setImmovable().setVisible(false)
     
     // Create player for cutscene
-    this.player = this.physics.add.sprite(100, playerY, "doc").setDepth(99).setScale(1.1);
+    console.log("PlayerY:", this.playerY);
+    this.playerY = 870;
+    this.player = this.physics.add.sprite(100, this.playerY, "doc").setDepth(99).setScale(1.05);
     console.log("Player positioned at:", this.player.x, this.player.y);
     this.player.play("docIdle");
     
@@ -397,14 +418,14 @@ class scene3 extends baseScene{
           this.inventory.pick(this.selectedItem, false, "", this.dialogue);
           //nurse diyaloğundan sonra çocuklara girince progress 4
           if (progress == 3) {
-            progress = 4;
+            console.log(this.cut3NurseDialogueStarted);
             if (!this.cut3NurseDialogueStarted) {
               this.startNurseDialogue();
             } else {
+              progress = 4;
               this.startDoorTransition();
             }
-            this.startDoorTransition();
-          } else {
+          } else if (progress == 1 || progress == 4 || progress == 7 || progress == 11 || progress == 14) {
             this.startDoorTransition();
           }
           break;
@@ -437,10 +458,16 @@ class scene3 extends baseScene{
 
   startProgress5Sequence() {
     // Background
-    this.bg = this.add.image(0,0,"bg52").setOrigin(0)
+    this.musicPlayer.stopTheMusic()
+    this.musicPlayer.playMusic("nursesTheme")
+    this.bg.setTexture("bg52")
     this.mapWidth = this.bg.width * this.bg.scaleX;
     this.mapHeight = this.bg.height * this.bg.scaleY;
     this.scaleFactor = this.mapWidth/this.bg.width
+    
+    // Initialize flags
+    this.isTransitioning = false;
+    this.cut5DialogueDone = false;
     
     // Dark overlay with flicker (reuse progress 5 style)
     /*
@@ -449,7 +476,7 @@ class scene3 extends baseScene{
     this.overlayDark.fillRect(0, 0, this.scale.width, this.scale.height);
     this.overlayDark.setScrollFactor(0);
     this.overlayDark.setDepth(100);
-    this.overlayDark.alpha = 0.8;
+    this.overlayDark.alpha = 0.4;
     this.flickerTween = this.tweens.add({
       targets: this.overlayDark,
       alpha: { from: 0.6, to: 1.0 },
@@ -493,15 +520,16 @@ class scene3 extends baseScene{
     }
 
     // Nurse sprite
-    this.nurse = this.physics.add.sprite(nurseX, nurseY, "nurse").setDepth(98).setScale(1.0).setImmovable();
-    this.nurse.play && this.nurse.play("nurseIdle");
+    this.nurse = this.physics.add.sprite(nurseX, nurseY, "nurse").setDepth(98).setScale(1.0).setImmovable().setVisible(true);
+    this.nurse.play("nurseIdle");
 
     // Invisible interaction objects
     this.kidsRoom = this.physics.add.sprite(doorX, doorY, "kidsRoomDoor").setOrigin(0.5,1).setImmovable().setVisible(false)
     this.stairs = this.physics.add.sprite(this.stairsX || 0, this.stairsY || 0, "stairs2").setOrigin(0.5,1).setImmovable().setVisible(false)
 
-    // Player at kidsRoom door
-    this.player = this.physics.add.sprite(doorX, playerY, "doc").setDepth(99).setScale(1.1);
+    // Player setup
+    this.playerY = 870;
+    this.player = this.physics.add.sprite(doorX, this.playerY, "doc").setDepth(99).setScale(1.05);
     this.player.play("docIdle");
 
     // Camera
@@ -527,7 +555,8 @@ class scene3 extends baseScene{
           break;
         case this.kidsRoom:
           this.inventory.pick(this.selectedItem, false, "", this.dialogue);
-          this.startDoorTransition();
+          if(progress == 1 || progress == 3 || progress == 4 || progress == 7 || progress == 11 || progress == 14) 
+            this.startDoorTransition();
           break;
         case this.stairs:
           this.inventory.pick(this.selectedItem, false, "", this.dialogue);
@@ -546,6 +575,8 @@ class scene3 extends baseScene{
     ];
     this.startDialogueWhenReady(seq, () => {
       this.controlsLocked = false;
+      this.cut5DialogueDone = true;
+      this.nurse.setVisible(false);
     });
   }
 
@@ -563,30 +594,92 @@ class scene3 extends baseScene{
     }
   }
 
+  startProgress3Sequence() {
+    // Background setup
+    this.musicPlayer.stopTheMusic()
+    this.musicPlayer.playMusic("nursesTheme")
+    this.bg.setTexture("bg52")
+    this.mapWidth = this.bg.width * this.bg.scaleX;
+    this.mapHeight = this.bg.height * this.bg.scaleY;
+    this.scaleFactor = this.mapWidth/this.bg.width
+
+    // Load map and place nurse & kidsRoom
+    const map = this.make.tilemap({ key: 'corridorUp' });
+    const intLayer = map.getObjectLayer('interactive');
+    let nurseX = 1400;
+    let nurseY = 800;
+    let doorX = 1800;
+    let doorY = 800;
+    if (intLayer && intLayer.objects) {
+      intLayer.objects.forEach(obj => {
+        if (obj.name === 'nurse') {
+          nurseX = obj.x * this.scaleFactor;
+          nurseY = obj.y * this.scaleFactor;
+        }
+        if (obj.name === 'kidsRoom') {
+          doorX = obj.x * this.scaleFactor;
+          doorY = obj.y * this.scaleFactor;
+        }
+      });
+    }
+
+    // Create nurse and door sprites
+    this.nurse = this.physics.add.sprite(nurseX, nurseY, "nurse").setDepth(98).setScale(1.0).setImmovable();
+    this.nurse.play("nurseIdle");
+    this.kidsRoom = this.physics.add.sprite(doorX, doorY, "kidsRoomDoor").setOrigin(0.5,1).setImmovable().setVisible(false);
+
+    // Player setup
+    this.playerY = 870;
+    this.player = this.physics.add.sprite(100, this.playerY, "doc").setDepth(99).setScale(1.05);
+    this.player.play("docIdle");
+
+    // Camera setup
+    this.cameras.main.setBounds(0, 0, this.mapWidth, this.mapHeight);
+    this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
+
+    // Controls setup
+    this.isWalking = false;
+    this.controlsLocked = false;
+    this.input.keyboard.on("keydown-A", this.left.bind(this));
+    this.input.keyboard.on("keydown-D", this.right.bind(this));
+    this.input.keyboard.on("keyup-A", this.stop.bind(this));
+    this.input.keyboard.on("keyup-D", this.stop.bind(this));
+    this.input.keyboard.on("keydown-ESC", this.pause.bind(this));
+    this.input.keyboard.on("keydown-SPACE", this.pause.bind(this));
+
+    // Interaction setup
+    this.objects = [this.kidsRoom];
+    this.itemSelector();
+    this.input.keyboard.on("keydown-E", () => {
+      if (this.selectedItem === this.kidsRoom) {
+        this.inventory.pick(this.selectedItem, false, "", this.dialogue);
+        if (!this.cut3NurseDialogueStarted) {
+          this.startNurseDialogue();
+        } else if (this.cut3NurseDialogueDone && !this.dialogue.isInSequence) {
+          progress = 4;
+          this.startDoorTransition();
+        }
+      }
+    });
+
+    // Initialize flags
+    this.cut3NurseDialogueStarted = false;
+    this.cut3NurseDialogueDone = false;
+  }
+
   startNurseDialogue() {
     this.cut3NurseDialogueStarted = true;
     this.lockControlsFor(1000);
-    // Doctor portrait on the left only; Nurse has no portrait
     const seq = [
-      { text: "Don't be scared...", leftPortrait: "docPort", rightPortrait: "nursePort", leftAnimation: "1", rightAnimation: null, name: "Nurse" },
-      { text: "Sometimes stepping in and embracing your fears is better?", leftPortrait: "docPort", rightPortrait: "nursePort", leftAnimation: "1", rightAnimation: null, name: "Nurse" },
+      { text: "Don't be scared...", leftPortrait: null, rightPortrait: "nursePort", leftAnimation: null, rightAnimation: null, name: "Nurse" },
+      { text: "", leftPortrait: null, rightPortrait: null, leftAnimation: null, rightAnimation: null, name: "" },
+      { text: "Sometimes stepping in and embracing your fears is better?", leftPortrait: null, rightPortrait: "nursePort", leftAnimation: null, rightAnimation: null, name: "Nurse" },
       { text: "What?", leftPortrait: "docPort", rightPortrait: null, leftAnimation: "1", rightAnimation: null, name: "Doctor" },
-      { text: "...?", leftPortrait: "docPort", rightPortrait: "nursePort", leftAnimation: "1", rightAnimation: null, name: "Nurse" },
+      { text: "...?", leftPortrait: null, rightPortrait: "nursePort", leftAnimation: null, rightAnimation: null, name: "Nurse" },
       { text: "Hello? Nurse Ayşa? Is that you?", leftPortrait: "docPort", rightPortrait: null, leftAnimation: "1", rightAnimation: null, name: "Doctor" },
     ];
-    this.dialogue.startDialogueSequence(seq, () => {
+    this.startDialogueWhenReady(seq, () => {
       this.cut3NurseDialogueDone = true;
-      // Do not change progress here; caller will decide when to advance
     });
-  }
-
-  saveProgressToSlot(){
-    const key = currentSlot === 1 ? "firstSlotScene" : (currentSlot === 2 ? "secondSlotScene" : "thirdSlotScene")
-    try{ localStorage.setItem(key, String(progress)) } catch(e) {}
-  }
-
-  logProgress(where){
-    const key = currentSlot === 1 ? "firstSlotScene" : (currentSlot === 2 ? "secondSlotScene" : "thirdSlotScene")
-    console.log(`[${where}] currentSlot=`, currentSlot, "progress=", progress, key, "=", localStorage.getItem(key))
   }
 }

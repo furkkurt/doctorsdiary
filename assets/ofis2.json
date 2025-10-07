@@ -1,5 +1,5 @@
 { "compressionlevel":-1,
- "height":740,
+ "height":360,
  "infinite":false,
  "layers":[
         {
@@ -8,15 +8,15 @@
          "name":"interactive",
          "objects":[
                 {
-                 "height":102.007239223429,
+                 "height":102.007,
                  "id":1,
                  "name":"matches",
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":111.878907535374,
-                 "x":506.745640013162,
-                 "y":1122.07963145772
+                 "width":111.879,
+                 "x":545.356715023232,
+                 "y":1138.29860041301
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -46,5 +46,5 @@
  "tilewidth":2,
  "type":"map",
  "version":"1.10",
- "width":2030
+ "width":1015
 }

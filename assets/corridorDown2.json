@@ -1,12 +1,45 @@
 { "compressionlevel":-1,
- "height":639,
+ "height":320,
  "infinite":false,
  "layers":[
         {
          "draworder":"topdown",
          "id":2,
          "name":"interactive",
-         "objects":[],
+         "objects":[
+                {
+                 "height":146.960587842351,
+                 "id":1,
+                 "name":"door",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":200.400801603206,
+                 "x":1015.36406145625,
+                 "y":728.12291249165
+                }, 
+                {
+                 "height":193.720774883099,
+                 "id":2,
+                 "name":"door2",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":233.800935203741,
+                 "x":2805.61122244489,
+                 "y":681.362725450902
+                }, 
+                {
+                 "height":173.913043478261,
+                 "id":3,
+                 "name":"babies",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":227.967097532315,
+                 "x":3936.54524089307,
+                 "y":580.493537015276
+                }],
          "opacity":1,
          "type":"objectgroup",
          "visible":true,
@@ -26,7 +59,7 @@
          "y":0
         }],
  "nextlayerid":4,
- "nextobjectid":1,
+ "nextobjectid":4,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",
@@ -35,5 +68,5 @@
  "tilewidth":2,
  "type":"map",
  "version":"1.10",
- "width":1895
+ "width":1200
 }

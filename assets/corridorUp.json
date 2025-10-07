@@ -1,5 +1,5 @@
 { "compressionlevel":-1,
- "height":639,
+ "height":320,
  "infinite":false,
  "layers":[
         {
@@ -8,26 +8,48 @@
          "name":"interactive",
          "objects":[
                 {
-                 "height":93.412,
+                 "height":145.378986753789,
                  "id":1,
                  "name":"kidsRoom",
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":109.8,
-                 "x":4437.89,
-                 "y":663.717
+                 "width":170.883962933735,
+                 "x":4415.22220247711,
+                 "y":678.398014001077
                 }, 
                 {
-                 "height":93.412,
+                 "height":145.378986753789,
                  "id":3,
                  "name":"nurse",
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":109.8,
-                 "x":4999.65,
-                 "y":769.195
+                 "width":170.883962933735,
+                 "x":4904.0498981325,
+                 "y":797.22821839712
+                }, 
+                {
+                 "height":172.320947765213,
+                 "id":4,
+                 "name":"door2",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":166.93591814755,
+                 "x":2773.29025309639,
+                 "y":630.048465266559
+                }, 
+                {
+                 "height":161.550888529887,
+                 "id":5,
+                 "name":"door",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":161.550888529887,
+                 "x":1163.16639741519,
+                 "y":613.89337641357
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -48,7 +70,7 @@
          "y":0
         }],
  "nextlayerid":4,
- "nextobjectid":4,
+ "nextobjectid":7,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",
@@ -57,5 +79,5 @@
  "tilewidth":2,
  "type":"map",
  "version":"1.10",
- "width":2904
+ "width":1452
 }

@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="1025" height="360" tilewidth="2" tileheight="2" infinite="0" nextlayerid="4" nextobjectid="1">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="1025" height="360" tilewidth="2" tileheight="2" infinite="0" nextlayerid="4" nextobjectid="2">
  <imagelayer id="2" name="bg">
-  <image source="../assets/bg8.png" width="2049" height="743"/>
+  <image source="../assets/bg8.png" width="4098" height="1485"/>
  </imagelayer>
- <objectgroup id="3" name="interactive"/>
+ <objectgroup id="3" name="interactive">
+  <object id="1" name="tree" x="1109.73" y="810.474" width="127.805" height="124.688"/>
+ </objectgroup>
 </map>

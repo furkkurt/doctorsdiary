@@ -4,6 +4,9 @@ class scene1 extends baseScene {
   }
 
   create(data){
+    this.controlsLocked = false;
+    if(progress == 6)
+      this.tutorText.setVisible(false)
     //parlaklık şeysi (BUNA GEREK VAR MI BİLMİYORUM)
     this.scene.launch("brightnessOverlay")
     this.brightness = this.scene.get("brightnessOverlay")
@@ -54,12 +57,12 @@ class scene1 extends baseScene {
     }
 
     // Check for progress 13/14 cutscene
-    if (progress == 11) {
-      this.startProgress11Cutscene();
-      return; // Exit early to prevent normal scene setup
-    }
     if (progress == 12) {
       this.startProgress12Cutscene();
+      return; // Exit early to prevent normal scene setup
+    }
+    if (progress == 15) {
+      this.startProgress15Cutscene();
       return; // Exit early to prevent normal scene setup
     }
 
@@ -208,14 +211,16 @@ class scene1 extends baseScene {
               this.startProgress8MedsCutscene();
             } else if (progress == 9) {
               //ilaç aldık tuvalete gideceğiz progress 10
+              /** bura ne? 
               progress = 10;
+              this.tutorText.text = "Go to the restroom"
               this.dialogue.dialogue("I need to use the bathroom", "docPort", null, "1", null, "Doctor");
               if (this.tutorText) {
                 this.tutorText.destroy();
               }
               this.tutorText = this.add.text(20,10,"Go to bathroom",{fontFamily:"Moving", fontSize:"32px", color: "white"}).setOrigin(0).setScrollFactor(0);
               this.tutorText.alpha = 0;
-              this.dialogue.fadeIn(this.tutorText);
+              this.dialogue.fadeIn(this.tutorText);*/
             } else {
               this.inventory.pick(this.selectedItem, false, "I don't need them right now.", this.dialogue);
             }
@@ -256,6 +261,12 @@ class scene1 extends baseScene {
     this.input.keyboard.on("keydown-SPACE", this.pause.bind(this));
   };
 
+lockControlsFor(ms) {
+    this.controlsLocked = true;
+    this.player.setVelocity(0);
+    this.player.play("docIdle");
+    this.time.delayedCall(ms, () => { this.controlsLocked = false; });
+  }
 
   pause(){
     this.scene.launch("menu", {from: this.scene.key})
@@ -291,19 +302,21 @@ class scene1 extends baseScene {
     });
   }
   right() {
+    if(this.controlsLocked) return;
     this.player.setVelocityX(500);
     this.player.play("docWalk", true)
     this.player.flipX = false
     this.dialogue.hideDialogue()
     
     // Play walking sound only when starting to walk
-    if (!this.isWalking) {
+      if (!this.isWalking) {
       this.isWalking = true
       this.walkingSound = this.musicPlayer.playSfx("walk")
     }
   }
 
   left() {
+    if(this.controlsLocked) return;
     this.player.setVelocityX(-500)
     this.player.play("docWalk", true)
     this.player.flipX = true
@@ -342,7 +355,7 @@ class scene1 extends baseScene {
         
         if(minDistance < 200){
           let nearestObject = this.objects[index]
-          if (index < 3) { //that means its a pickable :)
+          if (index < 2) { //that means its a pickable :)
             // Remove glow from previously glowing object if it's different
             if (this.glowingObject && this.glowingObject !== nearestObject) {
               this.removeGlowEffect(this.glowingObject);
@@ -524,7 +537,7 @@ class scene1 extends baseScene {
     this.overlayDark.alpha = 0; // Start transparent
 
     // Doctor starts off-screen on the right
-    this.player = this.physics.add.sprite(this.mapWidth + 100, 700, "doc").setDepth(99).setScale(this.scaleFactor).setScale(1.1)
+    this.player = this.physics.add.sprite(this.mapWidth-50, 700, "doc").setDepth(99).setScale(this.scaleFactor).setScale(1.1)
     this.player.play("docIdle")
     this.player.flipX = true; // Face left (toward the room)
 
@@ -592,15 +605,8 @@ class scene1 extends baseScene {
         this.lamp.setTexture("lamp");
       }
     });
-
-    this.book1 = this.physics.add.sprite(0,0,"book1").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable();
-    this.book1.setInteractive();
-    this.book1.on("pointerdown", () => {this.inventory.pick(this.book1)});
-
-    this.book2 = this.physics.add.sprite(0,0,"book2").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable();
-    this.book2.setInteractive();
-    this.book2.on("pointerdown", () => {this.inventory.pick(this.book2)});
-
+    this.book1 = this.physics.add.sprite(0,0,"book1").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable().setVisible(false);
+    this.book2 = this.physics.add.sprite(0,0,"book2").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable().setVisible(false);
     this.drugs = this.physics.add.sprite(0,0,"drugs").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable();
     this.drugs.setInteractive();
     this.drugs.on("pointerdown", () => {this.inventory.pick(this.drugs)});
@@ -619,12 +625,6 @@ class scene1 extends baseScene {
       if (obj.name === 'lamp') {
         this.lamp.x = obj.x*this.scaleFactor;
         this.lamp.y = obj.y*this.scaleFactor;
-      } else if (obj.name === "book1") {
-        this.book1.x = obj.x*this.scaleFactor;
-        this.book1.y = obj.y*this.scaleFactor;
-      } else if (obj.name === "book2") {
-        this.book2.x = obj.x*this.scaleFactor;
-        this.book2.y = obj.y*this.scaleFactor;
       } else if (obj.name === "drugs") {
         this.drugs.x = obj.x*this.scaleFactor;
         this.drugs.y = obj.y*this.scaleFactor;
@@ -652,90 +652,29 @@ class scene1 extends baseScene {
   }
 
   startWalkingLoop() {
-    if (this.walkingLoopCount >= 3) {
+    if (this.walkingLoopCount >= 2) {
       // After 3 loops, stop and show tutor text
       this.player.setVelocityX(0);
       this.player.play("docIdle");
       this.musicPlayer.stopAllSfx();
       
       // Show tutor text
-      if (this.tutorText) {
-        this.tutorText.destroy();
-      }
-      this.tutorText = this.add.text(20,10,"Take your meds",{fontFamily:"Moving", fontSize:"32px", color: "white"}).setOrigin(0).setScrollFactor(0);
-      this.tutorText.alpha = 0;
-      this.dialogue.fadeIn(this.tutorText);
-      
+      this.tutorText.setVisible(true)
+     
       // Enable controls
       this.input.keyboard.on("keydown-A", this.left.bind(this));
       this.input.keyboard.on("keydown-D", this.right.bind(this));
       this.input.keyboard.on("keydown-E", () => {
         switch(this.selectedItem){
           case "NaN":
-            break;
-          case this.book1:
-            this.inventory.pick(this.selectedItem, true, "", this.dialogue);
-            break;
-          case this.book2:
-            this.inventory.pick(this.selectedItem, true, "", this.dialogue);
-            break;
-          case this.drugs:
-            if (progress == 11) {
-              this.startDoorTransition();
-            } else {
-              this.inventory.pick(this.selectedItem, false, "I don't need them right now.", this.dialogue);
-              console.log("drugs")
-            }
-            break;
-          case this.lamp:
-            if (this.lamp.texture.key == "lamp") {
-              this.bg1.setTexture("testBg2");
-              this.lamp.setTexture("lamp2");
-            } else {
-              this.bg1.setTexture("testBg");
-              this.lamp.setTexture("lamp");
-            }
-            break;
-          case this.window:
-            this.inventory.pick(this.selectedItem, false, "Brighter than ever!", this.dialogue);
-            break;
-          case this.shelf:
-            this.inventory.pick(this.selectedItem, false, "I lost my habbit of reading...", this.dialogue);
-            break;
-          case this.chair:
-            this.inventory.pick(this.selectedItem, false, "I wonder if there is anyone left I can host in my office.", this.dialogue);
-            break;
-        }
-      });
-      this.input.keyboard.on("keyup-A", this.stop.bind(this));
-      this.input.keyboard.on("keyup-D", this.stop.bind(this));
-      this.input.keyboard.on("keydown-ESC", this.pause.bind(this));
-      this.input.keyboard.on("keydown-SPACE", this.pause.bind(this));
-      
-      // Enable controls
-      this.input.keyboard.on("keydown-A", this.left.bind(this));
-      this.input.keyboard.on("keydown-D", this.right.bind(this));
-      this.input.keyboard.on("keydown-E", () => {
-        switch(this.selectedItem){
-          case "NaN":
-            break;
-          case this.book1:
-            this.inventory.pick(this.selectedItem, true, "", this.dialogue);
-            break;
-          case this.book2:
-            this.inventory.pick(this.selectedItem, true, "", this.dialogue);
             break;
           case this.drugs:
             if (progress == 8) {
               this.startProgress8MedsCutscene();
             } else if (progress == 9) {
+              progress = 10;
+              this.tutorText.text = "Go to the restroom"
               this.dialogue.dialogue("I need to use the bathroom", "docPort", null, "1", null, "Doctor");
-              if (this.tutorText) {
-                this.tutorText.destroy();
-              }
-              this.tutorText = this.add.text(20,10,"Go to bathroom",{fontFamily:"Moving", fontSize:"32px", color: "white"}).setOrigin(0).setScrollFactor(0);
-              this.tutorText.alpha = 0;
-              this.dialogue.fadeIn(this.tutorText);
             }
             break;
           case this.lamp:
@@ -787,7 +726,8 @@ class scene1 extends baseScene {
     });
   }
 
-  startProgress12Cutscene() {
+  startProgress15Cutscene() {
+    this.tutorText.text="Take. Your. Meds."
     // Set up basic scene elements
     this.scene.launch("dialogueOverlay");
     this.scene.bringToTop("dialogueOverlay");
@@ -806,8 +746,12 @@ class scene1 extends baseScene {
     this.bg1.setScale(this.scaleFactor);
     this.bg2.setScale(this.scaleFactor);
     
+    this.mapWidth = this.bg1.width * this.bg1.scaleX;
+    this.mapHeight = this.bg1.height * this.bg1.scaleY;
+    this.cameras.main.setBounds(0, 0, this.mapWidth, this.mapHeight);
     // Create player and objects
-    this.player = this.physics.add.sprite(1100,700,"doc").setDepth(99);
+    this.player = this.physics.add.sprite(this.mapWidth-100,700,"doc").setDepth(99);
+    this.player.flipX = true;
     this.player.play("docIdle");
     this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
     
@@ -824,11 +768,11 @@ class scene1 extends baseScene {
       }
     });
 
-    this.book1 = this.physics.add.sprite(0,0,"book1").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable();
+    this.book1 = this.physics.add.sprite(0,0,"book1").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable().setVisible(false);
     this.book1.setInteractive();
     this.book1.on("pointerdown", () => {this.inventory.pick(this.book1)});
 
-    this.book2 = this.physics.add.sprite(0,0,"book2").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable();
+    this.book2 = this.physics.add.sprite(0,0,"book2").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable().setVisible(false);
     this.book2.setInteractive();
     this.book2.on("pointerdown", () => {this.inventory.pick(this.book2)});
 
@@ -871,12 +815,6 @@ class scene1 extends baseScene {
       }
     });
     
-    // Show tutor text
-    this.tutorText = this.add.text(20,10,"TAKE. YOUR. MEDS.",{fontFamily:"Moving", fontSize:"32px", color: "white"}).setOrigin(0).setScrollFactor(0);
-    this.tutorText.alpha = 0;
-    this.tutorText.setVisible(true);
-    this.dialogue.fadeIn(this.tutorText);
-    
     // Enable controls
     this.input.keyboard.on("keydown-A", this.left.bind(this));
     this.input.keyboard.on("keydown-D", this.right.bind(this));
@@ -891,9 +829,11 @@ class scene1 extends baseScene {
           this.inventory.pick(this.selectedItem, true, "", this.dialogue);
           break;
         case this.drugs:
+          this.tutorText.setVisible(false);
           if (window.ending === "fix") {
             this.startBadEndingTransition();
           } else {
+            this.musicPlayer.playSfx("writing")
             // Show "0 Days Left" and fade to black
             this.overlayDark = this.add.graphics();
             this.overlayDark.fillStyle(0x000000, 1);
@@ -966,7 +906,8 @@ class scene1 extends baseScene {
     });
   }
 
-  startProgress11Cutscene() {
+  startProgress12Cutscene() {
+    progress = 13;
     // Set up basic scene elements
     this.scene.launch("dialogueOverlay");
     this.scene.bringToTop("dialogueOverlay");
@@ -977,7 +918,7 @@ class scene1 extends baseScene {
     
     this.musicPlayer = this.scene.get("musicPlayer");
     this.musicPlayer.playMusic("docsTheme");
-    
+    this.scene.bringToTop("musicPlayer")
     // Set up scene
     this.bg1 = this.add.image(0,0,"testBg").setOrigin(0);
     this.bg2 = this.add.image(0,0,"testBgObjects").setOrigin(0);
@@ -1087,6 +1028,7 @@ class scene1 extends baseScene {
     this.overlayDark.setDepth(100);
     
     // Show "1 Day Left" text
+    this.musicPlayer.playSfx("writing")
     const bigText = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, "1 Day Left", {
       fontFamily: "Moving",
       fontSize: "96px",
@@ -1110,6 +1052,23 @@ class scene1 extends baseScene {
         }
       });
     });
+
+    //enable controlls
+    this.input.keyboard.on("keydown-A", this.left.bind(this));
+    this.input.keyboard.on("keydown-D", this.right.bind(this));
+    this.input.keyboard.on("keydown-E", () => {
+      switch(this.selectedItem){
+        case "NaN":
+          break;
+        case this.drugs:
+          this.tutorText.text = "See the kids"
+          break;
+      }
+    });
+    this.input.keyboard.on("keyup-A", this.stop.bind(this));
+    this.input.keyboard.on("keyup-D", this.stop.bind(this));
+    this.input.keyboard.on("keydown-ESC", this.pause.bind(this));
+    this.input.keyboard.on("keydown-SPACE", this.pause.bind(this));
   }
 
   startProgress9Cutscene() {
@@ -1148,13 +1107,8 @@ class scene1 extends baseScene {
       }
     });
 
-    this.book1 = this.physics.add.sprite(0,0,"book1").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable();
-    this.book1.setInteractive();
-    this.book1.on("pointerdown", () => {this.inventory.pick(this.book1)});
-
-    this.book2 = this.physics.add.sprite(0,0,"book2").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable();
-    this.book2.setInteractive();
-    this.book2.on("pointerdown", () => {this.inventory.pick(this.book2)});
+    this.book1 = this.physics.add.sprite(0,0,"book1").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable().setVisible(false);
+    this.book2 = this.physics.add.sprite(0,0,"book2").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable().setVisible(false);
 
     this.drugs = this.physics.add.sprite(0,0,"drugs").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable();
     this.drugs.setInteractive();
@@ -1225,6 +1179,7 @@ class scene1 extends baseScene {
     
     // After fade, show bigText then restart
     this.time.delayedCall(1200, () => {
+      this.musicPlayer.playSfx("writing")
       const bigText = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, "2 days left", {
         fontFamily: "Moving",
         fontSize: "96px",
@@ -1255,6 +1210,7 @@ class scene1 extends baseScene {
     this.dialogue.fadeIn(this.overlayDark, 1000);
     // After fade, show bigText then restart
     this.time.delayedCall(1200, () => {
+      this.musicPlayer.playSfx("writing")
       const bigText = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, "3 days left", {
         fontFamily: "Moving",
         fontSize: "96px",
@@ -1276,6 +1232,7 @@ class scene1 extends baseScene {
   }
 
   showProgress2Text() {
+    this.musicPlayer.playSfx("writing")
     // Create big text like in scene0
     const bigText = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, "4 days left", {
       fontFamily: "Moving",
@@ -1373,7 +1330,7 @@ class scene1 extends baseScene {
       this.player.x += 10
     }
 
-    if ((this.player.x > this.mapWidth - 50 && !this.isTransitioning) && progress != 3){
+    if ((this.player.x > this.mapWidth - 50 && !this.isTransitioning)){
        if (progress == 0) {
         const hasItems = this.hasRequiredItems();
         console.log("[scene1 exit check] hasRequiredItems=", hasItems, "inventoryArr=", this.inventoryArr);

@@ -18,7 +18,9 @@ class scene4 extends baseScene{
 
     this.scene.launch("musicPlayer");
     this.musicPlayer = this.scene.get("musicPlayer");
-    
+    if(this.musicPlayer.currentMusic == "")
+      this.musicPlayer.playMusic("docsTheme")
+    this.scene.bringToTop("musicPlayer")
     // Start playing docsTheme music
     this.musicPlayer.playMusic("docsTheme");
 
@@ -74,7 +76,7 @@ class scene4 extends baseScene{
 
     // Movement input bindings
 
-    if(progress == 9){
+    if(progress == 7){
     this.input.keyboard.on("keydown-A", this.left.bind(this));
     this.input.keyboard.on("keydown-D", this.right.bind(this));
     this.input.keyboard.on("keyup-A", this.stop.bind(this));
@@ -88,11 +90,11 @@ class scene4 extends baseScene{
     this.controlsLocked = false
 
     // Start the appropriate sequence
-    if (progress == 12) {
+    if (progress == 14) {
       // Progress 14: Final choice sequence
-      this.startProgress12Sequence();
+      this.startProgress14Sequence();
     } else if (progress == 11) {
-      // Progress 13: Special dialogue sequence
+      // Progress 11: Special dialogue sequence
       this.startProgress11Sequence();
     } else if (progress == 7) {
       // Progress 7: kids hidden, doctor walks in, says a line, then player can move
@@ -518,7 +520,7 @@ startDoorTransition() {
     });
   }
 
-  startProgress12Sequence() {
+  startProgress14Sequence() {
     this.controlsLocked = true;
     
     // Start by walking left
@@ -528,7 +530,7 @@ startDoorTransition() {
     this.musicPlayer.playSfx("walk");
     
     // After walking for a few seconds, stop and start dialogue
-    this.time.delayedCall(7000, () => {
+    this.time.delayedCall(5000, () => {
       this.doctor.setVelocityX(0);
       this.doctor.play("docIdle");
       this.musicPlayer.stopAllSfx();
@@ -595,37 +597,47 @@ startDoorTransition() {
           .setDepth(101)
           .setInteractive();
         
-        // Add click handlers
-        const startExitSequence = () => {
-          // Doctor walks right
-          this.doctor.flipX = false;
-          this.doctor.setVelocityX(200);
-          this.doctor.play("docWalk");
-          this.musicPlayer.playSfx("walk");
-          
-          // When reaching right edge, transition to scene1
-          this.time.addEvent({
-            delay: 100,
-            callback: () => {
-              if (this.doctor.x > this.mapWidth - 50) {
-                this.doctor.setVelocityX(0);
-                this.doctor.play("docIdle");
-                this.musicPlayer.stopAllSfx();
-                
-                // Transition to scene1
-                this.scene.stop("dialogueOverlay");
-                this.scene.stop("musicPlayer");
-                this.scene.start("scene1", {
-                  from: 4,
-                  currentSlot: currentSlot
-                });
-              }
-            },
-            loop: true
-          });
+         // Add click handlers
+         const startExitSequence = () => {
+           // Stand still for a second
+           this.time.delayedCall(1000, () => {
+             // Update progress to 13
+             progress = 15;
+
+             // Doctor walks right
+             this.doctor.flipX = false;
+             this.doctor.setVelocityX(200);
+             this.doctor.play("docWalk");
+             this.musicPlayer.playSfx("walk");
+             
+             // When reaching right edge, transition to scene1
+             this.time.addEvent({
+               delay: 100,
+               callback: () => {
+                 if (this.doctor.x > this.mapWidth - 50) {
+                   this.doctor.setVelocityX(0);
+                   this.doctor.play("docIdle");
+                   this.musicPlayer.stopAllSfx();
+                   
+                   // Play door sound and transition
+                   this.musicPlayer.playDoorSfx("door");
+                   this.scene.stop("dialogueOverlay");
+                   this.scene.stop("musicPlayer");
+                   this.scene.start("scene3", {
+                     from: 4,
+                     currentSlot: currentSlot
+                   });
+                 }
+               },
+               loop: true
+             });
+           });
         };
 
         keepArasBtn.on('pointerdown', () => {
+          // Save ending to localStorage based on current slot
+          const slotPrefix = currentSlot === 1 ? "first" : (currentSlot === 2 ? "second" : "third");
+          localStorage.setItem(`${slotPrefix}SlotEnding`, "keepAras");
           window.ending = "keepAras";
           keepArasBtn.destroy();
           keepAyazBtn.destroy();
@@ -640,6 +652,9 @@ startDoorTransition() {
         });
         
         keepAyazBtn.on('pointerdown', () => {
+          // Save ending to localStorage based on current slot
+          const slotPrefix = currentSlot === 1 ? "first" : (currentSlot === 2 ? "second" : "third");
+          localStorage.setItem(`${slotPrefix}SlotEnding`, "keepAyaz");
           window.ending = "keepAyaz";
           keepArasBtn.destroy();
           keepAyazBtn.destroy();
@@ -654,6 +669,9 @@ startDoorTransition() {
         });
         
         fixBtn.on('pointerdown', () => {
+          // Save ending to localStorage based on current slot
+          const slotPrefix = currentSlot === 1 ? "first" : (currentSlot === 2 ? "second" : "third");
+          localStorage.setItem(`${slotPrefix}SlotEnding`, "fix");
           window.ending = "fix";
           keepArasBtn.destroy();
           keepAyazBtn.destroy();
@@ -685,110 +703,85 @@ startDoorTransition() {
       this.doctor.play("docIdle");
       this.musicPlayer.stopAllSfx();
       
-      // Wait for dialogue system to be ready
-      const tryStartDialogue = () => {
-        if (this.dialogue && this.dialogue.dialogueText) {
-          // Start initial dialogue
-          this.dialogue.dialogue("how you guys feeling", "docPort", null, "1", null, "Doctor");
-          return true;
-        }
-        return false;
-      };
+      // Start dialogue sequence
+      const seq = [
+        { text: "how you guys feeling", leftPortrait: "docPort", rightPortrait: null, leftAnimation: "1", rightAnimation: null, name: "Doctor" },
+        { text: "good", leftPortrait: null, rightPortrait: "kidsPort", leftAnimation: null, rightAnimation: "5", name: "Ayaz" },
+        { text: "caugh caugh", leftPortrait: null, rightPortrait: "kidsPort", leftAnimation: null, rightAnimation: null, name: "Ayaz", onStart: () => this.kids.play("kidsCough") },
+        { text: "...", leftPortrait: "docPort", rightPortrait: null, leftAnimation: "9", rightAnimation: null, name: "Doctor" },
+        { text: "... you guys- stay... here.", leftPortrait: "docPort", rightPortrait: null, leftAnimation: "1", rightAnimation: null, name: "Doctor", onComplete: () => {
+          // After this line, make doctor walk right
+          this.doctor.flipX = false;
+          this.doctor.setVelocityX(200);
+          this.doctor.play("docWalk");
+          this.musicPlayer.playSfx("walk");
+          
+          // Stop after a bit
+          this.time.delayedCall(1000, () => {
+            this.doctor.setVelocityX(0);
+            this.doctor.play("docIdle");
+            this.musicPlayer.stopAllSfx();
+          });
+        }},
+        { text: "we will be better promise.", leftPortrait: null, rightPortrait: "kidsPort", leftAnimation: null, rightAnimation: "18", name: "Aras" },
+        { text: "so we can go outside and play this time", leftPortrait: null, rightPortrait: "kidsPort", leftAnimation: null, rightAnimation: "16", name: "Ayaz" },
+        { text: ".............", leftPortrait: "docPort", rightPortrait: null, leftAnimation: "9", rightAnimation: null, name: "Doctor" }
+      ];
+      
+      this.startDialogueWhenReady(seq, () => {
+        // Stand still for a second
+        this.time.delayedCall(1000, () => {
+          // Start walking right
+          this.doctor.flipX = false;
+          this.doctor.setVelocityX(200);
+          this.doctor.play("docWalk");
+          this.musicPlayer.playSfx("walk");
 
-      // Try to start dialogue, retry if not ready
-      if (!tryStartDialogue()) {
-        this.time.addEvent({
-          delay: 100,
-          callback: () => {
-            if (!tryStartDialogue()) {
-              this.time.addEvent({
-                delay: 100,
-                callback: tryStartDialogue
-              });
-            }
-          }
-        });
-      }
-    });
-    
-    this.time.delayedCall(2000, () => {
-      this.dialogue.hideDialogue();
-      this.time.delayedCall(100, () => {
-        this.dialogue.dialogue("good", null, "kidsPort", null, "5", "Ayaz");
-        
-        this.time.delayedCall(2000, () => {
-          this.dialogue.hideDialogue();
-          this.time.delayedCall(100, () => {
-            // Play coughing animation
-            this.kids.play("kidsCough");
-            this.dialogue.dialogue("caugh caugh", null, "kidsPort", null, null, "Ayaz");
-            
-            this.time.delayedCall(2000, () => {
-              this.dialogue.hideDialogue();
-              this.time.delayedCall(100, () => {
-                this.dialogue.dialogue("...", "docPort", null, "9", null, "Doctor");
+          // Update progress to 12
+          progress = 12;
+
+          // Check for reaching the right edge
+          this.time.addEvent({
+            delay: 100,
+            callback: () => {
+              if (this.doctor.x > this.mapWidth - 50) {
+                this.doctor.setVelocityX(0);
+                this.doctor.play("docIdle");
+                this.musicPlayer.stopAllSfx();
                 
-                this.time.delayedCall(2000, () => {
-                  this.dialogue.hideDialogue();
-                  this.time.delayedCall(100, () => {
-                    this.dialogue.dialogue("... you guys- stay... here.", "docPort", null, "1", null, "Doctor");
-                    
-                    // Start walking right
-                    this.time.delayedCall(2000, () => {
-                      this.dialogue.hideDialogue();
-                      this.doctor.flipX = false;
-                      this.doctor.setVelocityX(200);
-                      this.doctor.play("docWalk");
-                      this.musicPlayer.playSfx("walk");
-                      
-                      // Stop after a bit and continue dialogue
-                      this.time.delayedCall(1000, () => {
-                        this.doctor.setVelocityX(0);
-                        this.doctor.play("docIdle");
-                        this.musicPlayer.stopAllSfx();
-                        
-                        this.time.delayedCall(500, () => {
-                          this.dialogue.dialogue("we will be better promise.", null, "kidsPort", null, "18", "Aras");
-                          
-                          this.time.delayedCall(2000, () => {
-                            this.dialogue.hideDialogue();
-                            this.time.delayedCall(100, () => {
-                              this.dialogue.dialogue("so we can go outside and play this time", null, "kidsPort", null, "16", "Ayaz");
-                              
-                              this.time.delayedCall(2000, () => {
-                                this.dialogue.hideDialogue();
-                                this.time.delayedCall(100, () => {
-                                  this.dialogue.dialogue(".............", "docPort", null, "9", null, "Doctor");
-                                  
-                                  // After final dialogue, transition to scene1
-                                  this.time.delayedCall(2000, () => {
-                                    this.dialogue.hideDialogue();
-                                    this.scene.stop("dialogueOverlay");
-                                    this.scene.stop("musicPlayer");
-                                    this.scene.start("scene1", {
-                                      from: 4,
-                                      currentSlot: currentSlot
-                                    });
-                                  });
-                                });
-                              });
-                            });
-                          });
-                        });
-                      });
-                    });
-                  });
+                // Play door sound and transition
+                this.musicPlayer.playDoorSfx("door");
+                this.scene.stop("dialogueOverlay");
+                this.scene.stop("musicPlayer");
+                this.scene.start("scene3", {
+                  from: 4,
+                  currentSlot: currentSlot
                 });
-              });
-            });
+              }
+            },
+            loop: true
           });
         });
       });
     });
   }
 
+  startDialogueWhenReady(seq, onDone) {
+    const tryStart = () => {
+      if (this.dialogue && this.dialogue.dialogueBox && this.dialogue.dialogueText && this.dialogue.scene.isActive()) {
+        this.dialogue.startDialogueSequence(seq, onDone);
+        return true;
+      }
+      return false;
+    };
+    
+    if (!tryStart()) {
+      this.time.addEvent({ delay: 100, callback: () => { if (!tryStart()) this.time.addEvent({ delay: 100, callback: tryStart }) } });
+    }
+  }
+
   update(){
-    if ((this.doctor.x > this.mapWidth - 50 && !this.isTransitioning) && (this.controlsLocked == false && progress == 9)){
+    if ((this.doctor.x > this.mapWidth - 50 && !this.isTransitioning) && (this.controlsLocked == false && progress == 7)){
       this.startDoorTransition();
     }
   }
