@@ -170,6 +170,7 @@ class scene3 extends baseScene{
   }
 
   startDoorTransition() {
+    console.log("HEYEYYEYY DoOROOROROOR")
     // Prevent multiple transitions
     if (this.isTransitioning) return;
     this.isTransitioning = true;
@@ -269,6 +270,8 @@ class scene3 extends baseScene{
   update() {
     console.log(this.player.scale)
     if(this.cut3NurseDialogueDone) {
+      this.startDoorTransition();
+      progress = 4;
       this.nurse.setVisible(false);
     }
     
