@@ -262,7 +262,7 @@ class preloader extends Phaser.Scene {
         })
         // Portraits are now static images, no animations needed
 
-        this.scene.start("demo")
+        this.scene.start("mainMenu")
 
     }
 }
