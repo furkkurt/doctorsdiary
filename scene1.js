@@ -202,7 +202,8 @@ class scene1 extends baseScene {
         case this.book2:
           this.inventory.pick(this.selectedItem, true, "", this.dialogue);
           this.dialogue.dialogue("Interesting case for sure...", "docPort", null, "1", null, "Doctor");
-          progress = 1
+          if (progress === 0)
+            progress = 1
           break;
         case this.drugs:
             if (progress == 5) {
