@@ -353,7 +353,9 @@ class scene3 extends baseScene{
   startProgress3Cutscene() {
     console.log("Starting progress 3 cutscene - creepy corridor");
     // Set up basic scene elements for cutscene
-    this.bg.setTexture("bg52")
+    this.bg = this.add.image(0,0,"bg52").setOrigin(0)
+    this.scaleFactor = this.scale.height/this.bg.height
+    this.bg.setScale(this.scaleFactor)
     this.mapWidth = this.bg.width * this.bg.scaleX;
     this.mapHeight = this.bg.height * this.bg.scaleY;
     this.scaleFactor = this.mapWidth/this.bg.width
@@ -484,7 +486,9 @@ class scene3 extends baseScene{
     // Background
     this.musicPlayer.stopTheMusic()
     this.musicPlayer.playMusic("nursesTheme")
-    this.bg.setTexture("bg52")
+    this.bg = this.add.image(0,0,"bg52").setOrigin(0)
+    this.scaleFactor = this.scale.height/this.bg.height
+    this.bg.setScale(this.scaleFactor)
     this.mapWidth = this.bg.width * this.bg.scaleX;
     this.mapHeight = this.bg.height * this.bg.scaleY;
     this.scaleFactor = this.mapWidth/this.bg.width
