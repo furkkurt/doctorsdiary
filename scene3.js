@@ -38,7 +38,7 @@ class scene3 extends baseScene{
       return; // Exit early to prevent normal scene setup
     }
     
-    this.playerY = 650;
+    this.playerY = 700;
     this.isWalking = false
     this.walkingSound = null
     this.isTransitioning = false
@@ -65,14 +65,14 @@ class scene3 extends baseScene{
       if (intLayer && intLayer.objects) {
         intLayer.objects.forEach(obj => {
           if (obj.name === 'kidsRoom') {
-            this.player = this.physics.add.sprite(obj.x * this.scaleFactor, this.playerY, "doc").setDepth(99).setScale(1.05);
+            this.player = this.physics.add.sprite(obj.x * this.scaleFactor, this.playerY, "doc").setDepth(99).setScale(1);
             this.player.play("docIdle");
           }
         });
       }
     } else {
       // Default position
-      this.player = this.physics.add.sprite(900,this.playerY,"doc").setDepth(99).setScale(1.05);
+      this.player = this.physics.add.sprite(900,this.playerY,"doc").setDepth(99).setScale(1);
       this.player.play("docIdle");
     }
 
@@ -267,6 +267,7 @@ class scene3 extends baseScene{
 
 
   update() {
+    console.log(this.player.scale)
     if(this.cut3NurseDialogueDone) {
       this.nurse.setVisible(false);
     }
@@ -389,8 +390,8 @@ class scene3 extends baseScene{
     
     // Create player for cutscene
     console.log("PlayerY:", this.playerY);
-    this.playerY = 870;
-    this.player = this.physics.add.sprite(100, this.playerY, "doc").setDepth(99).setScale(1.05);
+    this.playerY = 700;
+    this.player = this.physics.add.sprite(100, this.playerY, "doc").setDepth(99).setScale(1);
     console.log("Player positioned at:", this.player.x, this.player.y);
     this.player.play("docIdle");
     
@@ -528,8 +529,8 @@ class scene3 extends baseScene{
     this.stairs = this.physics.add.sprite(this.stairsX || 0, this.stairsY || 0, "stairs2").setOrigin(0.5,1).setImmovable().setVisible(false)
 
     // Player setup
-    this.playerY = 870;
-    this.player = this.physics.add.sprite(doorX, this.playerY, "doc").setDepth(99).setScale(1.05);
+    this.playerY = 700;
+    this.player = this.physics.add.sprite(doorX, this.playerY, "doc").setDepth(99).setScale(1);
     this.player.play("docIdle");
 
     // Camera
@@ -631,8 +632,8 @@ class scene3 extends baseScene{
     this.kidsRoom = this.physics.add.sprite(doorX, doorY, "kidsRoomDoor").setOrigin(0.5,1).setImmovable().setVisible(false);
 
     // Player setup
-    this.playerY = 870;
-    this.player = this.physics.add.sprite(100, this.playerY, "doc").setDepth(99).setScale(1.05);
+    this.playerY = 700;
+    this.player = this.physics.add.sprite(100, this.playerY, "doc").setDepth(99).setScale(1);
     this.player.play("docIdle");
 
     // Camera setup

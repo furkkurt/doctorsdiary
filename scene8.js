@@ -13,6 +13,7 @@ class scene8 extends baseScene{
     if (data && data.currentSlot !== undefined) {
       currentSlot = data.currentSlot;
     }
+    this.itemSelector()
     
     this.scene.launch("dialogueOverlay");
     this.scene.bringToTop("dialogueOverlay");
@@ -44,7 +45,7 @@ class scene8 extends baseScene{
     this.bg.setScale(this.scaleFactor)
     this.mapWidth = this.bg.width * this.bg.scaleX;
     this.mapHeight = this.bg.height * this.bg.scaleY;
-    this.player = this.physics.add.sprite(this.mapWidth - 400,650,"doc").setDepth(99).setScale(1.1)
+    this.player = this.physics.add.sprite(this.mapWidth - 400,650,"doc").setDepth(99).setScale(1)
     this.player.play("docIdle")
     this.player.flipX = true
 
@@ -53,6 +54,15 @@ class scene8 extends baseScene{
 
 
     const map = this.make.tilemap({ key: 'garden' });
+    const intLayer = map.getObjectLayer('interactive');
+    if (intLayer && intLayer.objects) {
+      intLayer.objects.forEach(obj => {
+        if (obj.name === 'tree') {
+          this.tree.x = obj.x * this.scaleFactor;
+          this.tree.y = obj.y * this.scaleFactor;
+        }
+      });
+    }
 
     this.cameras.main.setBounds(0, 0, this.mapWidth, this.mapHeight);
     this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
@@ -87,6 +97,24 @@ class scene8 extends baseScene{
     console.log(`[${where}] currentSlot=`, currentSlot, "progress=", progress, key, "=", localStorage.getItem(key))
   }
 
+  itemSelector() {
+    this.time.addEvent({
+      delay: 100,
+      callback: () => {
+        let distances = []
+        this.objects.forEach(obj => {
+          distances.push(Math.abs(this.player.x-obj.x))
+        })
+        let index = distances.indexOf(Math.min(...distances))
+        if(Math.min(...distances) < 200){
+          let nearestObject = this.objects[index]
+          this.selectedItem = nearestObject
+        } else {
+          this.selectedItem = "NaN"
+        }
+      }, loop: true
+    })
+  }
   startDoorTransition() {
     // Prevent multiple transitions
     if (this.isTransitioning) return;
@@ -169,7 +197,7 @@ class scene8 extends baseScene{
     this.kids.play("kids1");
     
     // Create doctor sprite
-    this.player = this.physics.add.sprite(this.mapWidth - 400, 1000, "doc").setDepth(99).setScale(1.1);
+    this.player = this.physics.add.sprite(this.mapWidth - 400, 1000, "doc").setDepth(99).setScale(1);
     this.player.play("docIdle");
     this.player.flipX = true;
     
@@ -209,7 +237,7 @@ class scene8 extends baseScene{
       { text: "yeah... the grass was greener, the air was more clear.", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "4", rightAnimation: null, name: "Doctor" },
       { text: "...before the war heartache...", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "4", rightAnimation: null, name: "Doctor" },
       { text: "...", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: null, rightAnimation: "1", name: "Aras" },
-      { text: "kids start to caugh", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: null, rightAnimation: null },
+      { text: "*kids start to caugh*", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: null, rightAnimation: null },
       { text: "okay better go inside kids. Its cold out here.", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "6", rightAnimation: null, name: "Doctor" },
       { text: "...okay.", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: null, rightAnimation: "6", name: "Ayaz" }
     ];

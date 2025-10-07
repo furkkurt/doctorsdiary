@@ -5,7 +5,7 @@ class scene6 extends baseScene{
 
   create(data){
     this.controlsLocked = false;
-    this.playerY = 650;
+    this.playerY = 700;
     // Set the current slot from the passed data
     if (data && data.currentSlot !== undefined) {
       currentSlot = data.currentSlot;
@@ -59,7 +59,7 @@ class scene6 extends baseScene{
     this.bg.setScale(this.scaleFactor)
     this.mapWidth = this.bg.width * this.bg.scaleX;
     this.mapHeight = this.bg.height * this.bg.scaleY;
-    this.player = this.physics.add.sprite(this.mapWidth - 300,this.playerY,"doc").setDepth(99).setScale(1.1)
+    this.player = this.physics.add.sprite(this.mapWidth - 300,this.playerY,"doc").setDepth(99).setScale(1.01)
     this.player.play("docIdle")
     this.player.flipX = true;
 

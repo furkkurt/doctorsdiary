@@ -4,6 +4,7 @@ class dialogueOverlay extends Phaser.Scene{
   }
   create(){
     console.log("BEHOLD THE DIALOGS!!!");
+    this.text = "";
 
     this.dialogueBox = this.add.sprite(this.cameras.main.centerX, 920, "textbg").setOrigin(0.5).setScrollFactor(0).setDepth(100)
     this.dialogueBox.alpha = 0
@@ -33,7 +34,6 @@ class dialogueOverlay extends Phaser.Scene{
   dialogue(text, leftPortrait = null, rightPortrait = null, leftAnimation = null, rightAnimation = null, name = null) {
     // Emit dialogue started event
     this.events.emit('dialogue-started');
-
     // Hide existing portraits
     this.hidePortraits()
     //bi dursun
@@ -157,16 +157,23 @@ class dialogueOverlay extends Phaser.Scene{
     console.log("Portrait positioned at:", portrait.x, portrait.y, "Scale:", portrait.scaleX);
     console.log("Portrait created successfully, fading in...");
 
-    // Set initial alpha based on who will be speaking next
+    // Set initial alpha based on who is speaking
     portrait.alpha = 0;
-    if (this.leftPortrait && this.rightPortrait && this.isInSequence) {
-      // Look at the next dialogue in sequence
-      const nextDialogue = this.dialogueSequence[this.currentDialogueIndex];
-      if (nextDialogue) {
-        const isDoctor = nextDialogue.name === "Doctor";
-        const targetAlpha = (isDoctor && portrait === this.leftPortrait) || (!isDoctor && portrait === this.rightPortrait) ? 1 : 0.6;
+    
+    // Get current dialogue (whether in sequence or single dialogue)
+    const currentDialogue = this.isInSequence ? this.dialogueSequence[this.currentDialogueIndex] : { name: this.nameText.text };
+    
+    if (currentDialogue) {
+      // If only one portrait is present, show it at full alpha
+      if (!this.leftPortrait || !this.rightPortrait) {
+        this.fadeIn(portrait, 200);
+      } else {
+        // If both portraits are present, dim the non-speaking one
+        const isDoctor = currentDialogue.name === "Doctor";
+        const isSpeaking = (isDoctor && portrait === this.leftPortrait) || (!isDoctor && portrait === this.rightPortrait);
+        const targetAlpha = isSpeaking ? 1 : 0.6;
         
-        console.log("Next speaker:", nextDialogue.name);
+        console.log("Current speaker:", currentDialogue.name);
         console.log("Setting alpha for", side, "portrait to", targetAlpha);
         
         // Fade in to the target alpha
@@ -176,11 +183,9 @@ class dialogueOverlay extends Phaser.Scene{
           duration: 200,
           ease: 'Linear'
         });
-      } else {
-        this.fadeIn(portrait, 200);
       }
     } else {
-      // If not in sequence or only one portrait, fade in to full alpha
+      // If no dialogue info available, fade in to full alpha
       this.fadeIn(portrait, 200);
     }
   }
@@ -248,6 +253,7 @@ class dialogueOverlay extends Phaser.Scene{
     }
     
     const currentDialogue = this.dialogueSequence[this.currentDialogueIndex]
+    this.text = currentDialogue.text
     const isLastEntry = this.currentDialogueIndex === this.dialogueSequence.length - 1
     
     // Clear previous text
@@ -370,15 +376,18 @@ class dialogueOverlay extends Phaser.Scene{
     if (this.currentTypingEvent) {
       this.currentTypingEvent.destroy();
       this.currentTypingEvent = null;
-    }
-    
-    this.currentDialogueIndex++
-    
-    if (this.currentDialogueIndex >= this.dialogueSequence.length) {
-      this.endDialogueSequence()
+      this.dialogueText.text = this.text
     } else {
-      this.showCurrentDialogue()
+      this.currentDialogueIndex++
+      
+      if (this.currentDialogueIndex >= this.dialogueSequence.length) {
+        this.endDialogueSequence()
+      } else {
+        this.showCurrentDialogue()
     }
+
+    }
+    
   }
 
   // End the dialogue sequence

@@ -39,15 +39,42 @@ class scene7 extends baseScene{
     this.bg.setScale(this.scaleFactor)
     this.mapWidth = this.bg.width * this.bg.scaleX;
     this.mapHeight = this.bg.height * this.bg.scaleY;
-    this.player = this.physics.add.sprite(100,670,"doc").setDepth(99).setScale(1.05)
+    this.player = this.physics.add.sprite(100,700,"doc").setDepth(99).setScale(1)
     this.player.play("docIdle")
 
-    this.door = this.physics.add.sprite(0,0,"door").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable().setVisible(false)
-    this.door2 = this.physics.add.sprite(0,0,"door2").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable().setVisible(false)
-    this.babies= this.physics.add.sprite(0,0,"babies").setScale(this.scaleFactor).setOrigin(0.5,1).setImmovable().setVisible(false)
-    this.objects = [this.door, this.door2, this.babies]
-
     const map = this.make.tilemap({ key: 'corridorDown2' });
+    const intLayer = map.getObjectLayer('interactive');
+    
+    // Create objects with correct positions from the map
+    if (intLayer && intLayer.objects) {
+      intLayer.objects.forEach(obj => {
+        const x = obj.x * this.scaleFactor;
+        const y = obj.y * this.scaleFactor;
+        
+        if (obj.name === 'door') {
+          this.door = this.physics.add.sprite(x, y, "door")
+            .setScale(this.scaleFactor)
+            .setOrigin(0.5, 1)
+            .setImmovable()
+            .setVisible(true);
+        } else if (obj.name === 'door2') {
+          this.door2 = this.physics.add.sprite(x, y, "door2")
+            .setScale(this.scaleFactor)
+            .setOrigin(0.5, 1)
+            .setImmovable()
+            .setVisible(false);
+        } else if (obj.name === 'babies') {
+          this.babies = this.physics.add.sprite(x, y, "babies")
+            .setScale(this.scaleFactor)
+            .setOrigin(0.5, 1)
+            .setImmovable()
+            .setVisible(false);
+        }
+      });
+    }
+    
+    this.objects = [this.door, this.door2, this.babies];
+    this.itemSelector();
 
     this.cameras.main.setBounds(0, 0, this.mapWidth, this.mapHeight);
     this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
@@ -152,6 +179,27 @@ class scene7 extends baseScene{
     }
   }
 
+  itemSelector() {
+    this.time.addEvent({
+      delay: 100,
+      callback: () => {
+
+        let distances = []
+        this.objects.forEach(obj => {
+          distances.push(Math.abs(this.player.x-obj.x))
+        })
+        let index = distances.indexOf(Math.min(...distances))
+        if(Math.min(...distances) < 200){
+          let nearestObject = this.objects[index]
+          this.selectedItem = nearestObject
+        } else {
+          this.selectedItem = "NaN"
+        }
+      }, loop: true
+    })
+  }
+
+ 
   update() {
     // Transition to scene3 when reaching the right edge
     if (this.player.x > this.mapWidth - 50 && !this.isTransitioning) {
