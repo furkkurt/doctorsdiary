@@ -29,6 +29,7 @@ class scene3 extends baseScene{
     
     // Check for progress 3 cutscene
     if (progress == 3) {
+      this.startedWithProgress3 = true;  // Flag to track if we started with progress 3
       this.startProgress3Sequence();
       return; // Exit early to prevent normal scene setup
     }
@@ -170,9 +171,18 @@ class scene3 extends baseScene{
   }
 
   startDoorTransition() {
-    console.log("HEYEYYEYY DoOROOROROOR")
+    console.log("DOOR TRANSITION:", {
+      progress,
+      startedWithProgress3: this.startedWithProgress3,
+      isTransitioning: this.isTransitioning,
+      nurseDialogueDone: this.cut3NurseDialogueDone
+    });
+    
     // Prevent multiple transitions
-    if (this.isTransitioning) return;
+    if (this.isTransitioning) {
+      console.log("ALREADY TRANSITIONING, SKIPPING");
+      return;
+    }
     this.isTransitioning = true;
     
     // Disable player movement
@@ -268,11 +278,21 @@ class scene3 extends baseScene{
 
 
   update() {
-    console.log(this.player.scale)
-    if(this.cut3NurseDialogueDone) {
+    // Debug info
+    console.log("UPDATE CHECK:", {
+      startedWithProgress3: this.startedWithProgress3,
+      currentProgress: progress,
+      isTransitioning: this.isTransitioning,
+      nurseDialogueStarted: this.cut3NurseDialogueStarted,
+      nurseDialogueDone: this.cut3NurseDialogueDone,
+      dialogueInSequence: this.dialogue?.isInSequence
+    });
+    
+    // If we started with progress 3 and it changed to 4, transition to scene4
+    if (this.startedWithProgress3 && progress === 4 && !this.isTransitioning) {
+      console.log("SHOULD START SCENE 4 NOW!");
       this.startDoorTransition();
-      progress = 4;
-      this.nurse.setVisible(false);
+      return;
     }
     
     // Transition to scene2 when reaching the left edge (outside cutscenes)
@@ -582,6 +602,7 @@ class scene3 extends baseScene{
       this.cut5DialogueDone = true;
       this.nurse.setVisible(false);
     });
+
   }
 
   startDialogueWhenReady(seq, onDone){
@@ -602,6 +623,7 @@ class scene3 extends baseScene{
     // Background setup
     this.musicPlayer.stopTheMusic()
     this.musicPlayer.playMusic("nursesTheme")
+    this.isTransitioning = false; // Reset transition flag at sequence start
     
     // Create or update background
     this.bg = this.add.image(0,0,"bg52").setOrigin(0)
@@ -676,7 +698,9 @@ class scene3 extends baseScene{
   }
 
   startNurseDialogue() {
+    console.log("STARTING NURSE DIALOGUE");
     this.cut3NurseDialogueStarted = true;
+    this.isTransitioning = false; // Reset transition flag when starting dialogue
     this.lockControlsFor(1000);
     const seq = [
       { text: "Don't be scared...", leftPortrait: null, rightPortrait: "nursePort", leftAnimation: null, rightAnimation: null, name: "Nurse" },
@@ -687,7 +711,13 @@ class scene3 extends baseScene{
       { text: "Hello? Nurse Ayşa? Is that you?", leftPortrait: "docPort", rightPortrait: null, leftAnimation: "1", rightAnimation: null, name: "Doctor" },
     ];
     this.startDialogueWhenReady(seq, () => {
+      console.log("NURSE DIALOGUE COMPLETED");
       this.cut3NurseDialogueDone = true;
+      this.nurse.setVisible(false);
+      if (this.startedWithProgress3) {
+        console.log("SETTING PROGRESS TO 4");
+        progress = 4;
+      }
     });
   }
 }
