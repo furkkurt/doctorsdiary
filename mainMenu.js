@@ -24,11 +24,37 @@ class mainMenu extends Phaser.Scene{
     //müzik açma işi
     this.scene.launch("musicPlayer")
     this.musicPlayer = this.scene.get("musicPlayer")
-    if(this.musicPlayer.currentMusic != "ong")
-      this.musicPlayer.playMusic("ong")
     this.scene.launch("brightnessOverlay")
     this.scene.bringToTop("brightnessOverlay")
     this.scene.bringToTop("musicPlayer")
+
+    // Create music text display
+    this.musicText = this.add.text(
+      this.scale.width - 20,
+      20,
+      '',
+      {
+        fontFamily: 'Moving',
+        fontSize: '24px',
+        color: '#ffffff',
+        align: 'right'
+      }
+    ).setOrigin(1, 0).setScrollFactor(0).setDepth(101);
+
+    // Update music text when track changes
+    this.musicPlayer.events.on('trackChanged', (trackInfo) => {
+      this.musicText.setText(`Current Track: ${trackInfo}`);
+    });
+    if(this.musicPlayer.currentMusic != "ong")
+      this.musicPlayer.playMusic("ong")
+    this.time.delayedCall(4000, () => {
+      this.time.addEvent({
+        delay: 10,
+        callback: () => {
+          this.musicText.alpha -= 0.01
+        }, repeat: 100
+      })
+    });
 
     this.menuBg = this.add.image(0,0,"mainMenuBg").setOrigin(0)
     this.menuBg.setScale(this.scale.height/this.menuBg.height)

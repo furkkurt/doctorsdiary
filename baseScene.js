@@ -79,7 +79,7 @@ class baseScene extends Phaser.Scene {
             6: "Find a light source",
             7: "Visit your patient",
             8: "Take your meds",
-            9: "Use restroom",
+            9: "Take. Your. Meds.",
             10: "Use restroom",
             11: "Visit kids",
             12: "Go to your office",

@@ -378,7 +378,7 @@ class scene6 extends baseScene{
   right() {
     if(this.controlsLocked) return;
     // Check if we're at teleport point
-    if (progress == 10 && !this.nurse && this.player.x > 3800 && this.player.x < 3900) {
+    if (progress == 10 && !this.nurse && this.player.x > 3900 && this.player.x < 4000) {
       this.stop();
       this.lockControlsFor(2000);
       // Show match button if not already shown
@@ -514,7 +514,6 @@ class scene6 extends baseScene{
   }
 
   update() {
-    // Transition to scene3 when reaching the right edge
     if (this.player.x > this.mapWidth - 50 && !this.isTransitioning) {
       this.startTransitionToScene7();
       return;
@@ -523,6 +522,9 @@ class scene6 extends baseScene{
       this.stop();
       this.player.x += 10
     }
+
+    if(progress == 10 || progress == 11) {
+    // Transition to scene3 when reaching the right edge
     // Check for matches requirement
     if ((this.player.x < 4200 && this.player.x > 4100) || (this.player.x > 3250 && this.player.x < 3400)) {
       if (this.inventoryArr.includes("matches") && !this.isTransitioning) {
@@ -539,13 +541,13 @@ class scene6 extends baseScene{
     }
 
     // Check distance to toilet for progress 10
-    if (progress == 10) {
+    if (progress == 10 || progress == 11) {
       if (this.nurse) this.nurse.y = this.player.y
       const distanceToToilet = Math.abs(this.player.x - this.toilet.x);
     }
     // Progress 10 nurse dialogue
-    if (progress == 10) {
-      // Update nurse position
+    if (progress == 10 || progress == 11) {
+       // Update nurse position
       if (this.nurse) this.nurse.y = this.player.y;
       
       // Show nurse dialogue when close
@@ -610,5 +612,6 @@ class scene6 extends baseScene{
         this.showMatchButton();
       }
     }
+  }
   }
 }

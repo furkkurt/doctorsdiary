@@ -38,10 +38,13 @@ class musicPlayer extends Phaser.Scene{
       if (!musicPlayer.trackInfo[key]) return;
 
       const { artist, name } = musicPlayer.trackInfo[key];
-      const text = `Current Track: ${artist} - ${name}`;
+      const text = `${artist} - ${name}`;
+
+      // Emit event for other scenes
+      this.events.emit('trackChanged', text);
 
       if (this.trackDisplay && this.trackDisplay.setText) {
-        this.trackDisplay.setText(text);
+        this.trackDisplay.setText(`Current Track: ${text}`);
         
         // Only try animation if the text update worked
         if (this.displayTween) {

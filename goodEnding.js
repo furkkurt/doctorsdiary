@@ -62,6 +62,8 @@ class goodEnding extends Phaser.Scene {
         if (this.dialogue && this.dialogue.dialogueText) {
           this.dialogue.startDialogueSequence(initialDialogue, () => {
             // Start cutscene sequence
+    this.doctor.setVisible(false);
+    this.nurse.setVisible(false);
             this.showCutscenes();
           });
         } else {
@@ -74,6 +76,7 @@ class goodEnding extends Phaser.Scene {
   }
 
   showCutscenes() {
+
     this.bg1.setVisible(false);
     this.bg2.setVisible(false);
     // Create full screen images
@@ -98,8 +101,7 @@ class goodEnding extends Phaser.Scene {
         onComplete: () => {
           img.destroy();
           if (i === images.length - 1) {
-            this.startFinalSequence();
-            this.bg1.setVisible(true);
+            this.showFinalText();
           }
         }
       });
@@ -131,7 +133,6 @@ class goodEnding extends Phaser.Scene {
   }
 
   showFinalText() {
-    this.doctor.setVisible(false);
     // Create black overlay
     const overlay = this.add.graphics()
       .fillStyle(0x000000, 1)
@@ -166,7 +167,7 @@ class goodEnding extends Phaser.Scene {
           duration: 2000,
           onComplete: () => {
             // Wait 5 seconds before transitioning to credits
-            this.time.delayedCall(15000, () => {
+            this.time.delayedCall(3000, () => {
               //bad ending bittiğinde progress 13 yaptık
               this.scene.start('credits');
             });

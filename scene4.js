@@ -234,7 +234,9 @@ class scene4 extends baseScene{
       { text: "...", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "7", rightAnimation: "11", name: "Aras" },
       
       // Dr – Yeah, you guys don't share thoughts... since you don't share the same head and no connection through the thalamus. I thought I might ask anyway, haha. (6)
-      { text: "Yeah, you guys don't share thoughts... since you don't share the same head and no connection through the thalamus. I thought I might ask anyway, haha.", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "6", rightAnimation: "11", name: "Doctor" },
+      { text: "Yeah, you guys don't share thoughts... since you don't share the same head and no connection through the thalamus.", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "6", rightAnimation: "11", name: "Doctor" },
+      
+      { text: "I thought I might ask anyway, haha.", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "6", rightAnimation: "11", name: "Doctor" },
       
       // Ay – ... (1)
       { text: "...", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "6", rightAnimation: "1", name: "Ayaz" },
@@ -699,11 +701,11 @@ startDoorTransition() {
       
       // Start dialogue sequence
       const seq = [
-        { text: "how you guys feeling", leftPortrait: "docPort", rightPortrait: null, leftAnimation: "1", rightAnimation: null, name: "Doctor" },
-        { text: "good", leftPortrait: null, rightPortrait: "kidsPort", leftAnimation: null, rightAnimation: "5", name: "Ayaz" },
-        { text: "caugh caugh", leftPortrait: null, rightPortrait: "kidsPort", leftAnimation: null, rightAnimation: null, name: "Ayaz", onStart: () => this.kids.play("kidsCough") },
-        { text: "...", leftPortrait: "docPort", rightPortrait: null, leftAnimation: "9", rightAnimation: null, name: "Doctor" },
-        { text: "... you guys- stay... here.", leftPortrait: "docPort", rightPortrait: null, leftAnimation: "1", rightAnimation: null, name: "Doctor", onComplete: () => {
+        { text: "how you guys feeling", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "3", name: "Doctor" },
+        { text: "good", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "5", name: "Ayaz" },
+        { text: "caugh caugh", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "5", name: "Ayaz", onStart: () => this.kids.play("kidsCough") },
+        { text: "...", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "9", rightAnimation: "5", name: "Doctor" },
+        { text: "... you guys- stay... here.", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "5", name: "Doctor", onComplete: () => {
           // After this line, make doctor walk right
                       this.doctor.flipX = false;
                       this.doctor.setVelocityX(200);
@@ -717,9 +719,9 @@ startDoorTransition() {
                         this.musicPlayer.stopAllSfx();
           });
         }},
-        { text: "we will be better promise.", leftPortrait: null, rightPortrait: "kidsPort", leftAnimation: null, rightAnimation: "18", name: "Aras" },
-        { text: "so we can go outside and play this time", leftPortrait: null, rightPortrait: "kidsPort", leftAnimation: null, rightAnimation: "16", name: "Ayaz" },
-        { text: ".............", leftPortrait: "docPort", rightPortrait: null, leftAnimation: "9", rightAnimation: null, name: "Doctor" }
+        { text: "we will be better promise.", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "18", name: "Aras" },
+        { text: "so we can go outside and play this time", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "16", name: "Ayaz" },
+        { text: ".............", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "9", rightAnimation: "16", name: "Doctor" }
       ];
       
       this.startDialogueWhenReady(seq, () => {

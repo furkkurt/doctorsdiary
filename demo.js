@@ -16,6 +16,7 @@ class demo extends Phaser.Scene{
     this.add.text(10,1010,"scene 8").setInteractive().on("pointerdown",()=>{this.scene.start("scene8", {from: 1})}).setScale(4)
     this.add.text(1000,10,"good ending").setInteractive().on("pointerdown",()=>{this.scene.start("goodEnding")}).setScale(4)
     this.add.text(1000,110,"bad ending").setInteractive().on("pointerdown",()=>{this.scene.start("badEnding")}).setScale(4)
+    this.add.text(1000,210,"credits").setInteractive().on("pointerdown",()=>{this.scene.start("credits")}).setScale(4)
 
 
   };

@@ -56,7 +56,7 @@ class scene7 extends baseScene{
             .setScale(this.scaleFactor)
             .setOrigin(0.5, 1)
             .setImmovable()
-            .setVisible(true);
+            .setVisible(false)
         } else if (obj.name === 'door2') {
           this.door2 = this.physics.add.sprite(x, y, "door2")
             .setScale(this.scaleFactor)

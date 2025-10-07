@@ -201,7 +201,8 @@ class scene1 extends baseScene {
           break;
         case this.book2:
           this.inventory.pick(this.selectedItem, true, "", this.dialogue);
-          this.dialogue.dialogue("Interesting case for sure...", "docPort", null, "1", null, "Doctor");
+          if(this.book2.visible == true)
+            this.dialogue.dialogue("Interesting case for sure...", "docPort", null, "1", null, "Doctor");
           if (progress === 0)
             progress = 1
           break;
@@ -260,6 +261,8 @@ class scene1 extends baseScene {
     this.input.keyboard.on("keyup-D", this.stop.bind(this));
     this.input.keyboard.on("keydown-ESC", this.pause.bind(this));
     this.input.keyboard.on("keydown-SPACE", this.pause.bind(this));
+    if(progress == 13)
+      this.tutorText.setVisible(false)
   };
 
 lockControlsFor(ms) {
@@ -296,10 +299,13 @@ lockControlsFor(ms) {
     this.scene.stop("inventoryOverlay");
     this.time.delayedCall(1000, () => {
       this.scene.stop("dialogueOverlay");
+      if(progress != 9) {
       this.scene.start("scene2", {
         from: 1,
         currentSlot: currentSlot
       });
+
+      }
     });
   }
   right() {
@@ -1090,7 +1096,7 @@ lockControlsFor(ms) {
     this.scaleFactor = this.scale.height/this.bg1.height;
     this.bg1.setScale(this.scaleFactor);
     this.bg2.setScale(this.scaleFactor);
-    
+   
     // Create player and objects
     this.player = this.physics.add.sprite(1100,700,"doc").setDepth(99);
     this.player.play("docIdle");

@@ -224,22 +224,22 @@ class scene8 extends baseScene{
 
   startDialogueSequence() {
     const dialogueArray = [
-      { text: "good morning kids.", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "4", rightAnimation: null, name: "Doctor" },
+      { text: "good morning kids.", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "4", rightAnimation: "3", name: "Doctor" },
       { text: "good morning mister doctor", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "4", rightAnimation: "13", name: "Ayaz" },
-      { text: "reconnecting with nature i see.", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "4", rightAnimation: null, name: "Doctor" },
-      { text: "yeah aras realy likes to go outside", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: null, rightAnimation: "3", name: "Ayaz" },
-      { text: "does he now?", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "4", rightAnimation: null, name: "Doctor" },
-      { text: "...yeah.", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: null, rightAnimation: "16", name: "Aras" },
-      { text: "im so glad to hear you talk, boy.", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "4", rightAnimation: null, name: "Doctor" },
-      { text: "...", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: null, rightAnimation: "15", name: "Aras" },
-      { text: "well... it used to be better. I mean the nature.", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "4", rightAnimation: null, name: "Doctor" },
-      { text: "...realy?", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: null, rightAnimation: "17", name: "Aras" },
-      { text: "yeah... the grass was greener, the air was more clear.", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "4", rightAnimation: null, name: "Doctor" },
-      { text: "...before the war heartache...", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "4", rightAnimation: null, name: "Doctor" },
-      { text: "...", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: null, rightAnimation: "1", name: "Aras" },
-      { text: "*kids start to caugh*", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: null, rightAnimation: null },
-      { text: "okay better go inside kids. Its cold out here.", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "6", rightAnimation: null, name: "Doctor" },
-      { text: "...okay.", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: null, rightAnimation: "6", name: "Ayaz" }
+      { text: "reconnecting with nature i see.", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "4", rightAnimation: "13", name: "Doctor" },
+      { text: "yeah aras realy likes to go outside", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "4", rightAnimation: "3", name: "Ayaz" },
+      { text: "does he now?", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "4", rightAnimation: "3", name: "Doctor" },
+      { text: "...yeah.", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "4", rightAnimation: "16", name: "Aras" },
+      { text: "im so glad to hear you talk, boy.", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "4", rightAnimation: "16", name: "Doctor" },
+      { text: "...", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "4", rightAnimation: "15", name: "Aras" },
+      { text: "well... it used to be better. I mean the nature.", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "4", rightAnimation: "15", name: "Doctor" },
+      { text: "...realy?", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "4", rightAnimation: "17", name: "Aras" },
+      { text: "yeah... the grass was greener, the air was more clear.", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "4", rightAnimation: "17", name: "Doctor" },
+      { text: "...before the war heartache...", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "4", rightAnimation: "17", name: "Doctor" },
+      { text: "...", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "4", rightAnimation: "1", name: "Aras" },
+      { text: "*kids start to caugh*", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "4", rightAnimation: "1" },
+      { text: "okay better go inside kids. Its cold out here.", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "6", rightAnimation: "1", name: "Doctor" },
+      { text: "...okay.", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "6", rightAnimation: "6", name: "Ayaz" }
     ];
     
     this.dialogue.startDialogueSequence(dialogueArray, () => {

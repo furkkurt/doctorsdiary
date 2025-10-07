@@ -7,8 +7,35 @@ class credits extends Phaser.Scene {
     this.scene.launch("musicPlayer")
     this.musicPlayer = this.scene.get("musicPlayer")
     this.musicPlayer.stopAllSfx();
-    this.musicPlayer.playMusic("ong");
     this.scene.bringToTop("musicPlayer")
+
+    // Create music text display
+    this.musicText = this.add.text(
+      20,
+      20,
+      '',
+      {
+        fontFamily: 'Moving',
+        fontSize: '24px',
+        color: '#ffffff',
+        align: 'right'
+      }
+    ).setOrigin(0, 0).setScrollFactor(0).setDepth(101);
+
+    // Update music text when track changes
+    this.musicPlayer.events.on('trackChanged', (trackInfo) => {
+      this.musicText.setText(`Current Track: ${trackInfo}`);
+    });
+    this.musicPlayer.playMusic("ong");
+    this.time.delayedCall(4000, () => {
+      this.time.addEvent({
+        delay: 10,
+        callback: () => {
+          this.musicText.alpha -= 0.01
+        }, repeat: 100
+      })
+    });
+
     // Set up black background
     this.cameras.main.setBackgroundColor('#000000');
 

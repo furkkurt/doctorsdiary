@@ -4,7 +4,7 @@
   <export target="../assets/room1.json" format="json"/>
  </editorsettings>
  <objectgroup id="7" name="interactive">
-  <object id="3" name="drugs" x="2615.44" y="972.195" width="17.386" height="26.0788"/>
+  <object id="3" name="drugs" x="2633.44" y="947.275" width="17.386" height="26.0788"/>
   <object id="8" name="book2" x="2471.4" y="1009.34" width="38.4974" height="37.2555"/>
   <object id="9" name="book1" x="2134.33" y="972.927" width="33.53" height="33.53"/>
   <object id="10" name="lamp" x="2860.93" y="1367.44" width="25.2545" height="21.5406"/>

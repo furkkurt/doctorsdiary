@@ -269,11 +269,6 @@ class scene5 extends baseScene{
     try{ localStorage.setItem(key, String(progress)) } catch(e) {}
   }
 
-  logProgress(where){
-    const key = currentSlot === 1 ? "firstSlotScene" : (currentSlot === 2 ? "secondSlotScene" : "thirdSlotScene")
-    console.log(`[${where}] currentSlot=`, currentSlot, "progress=", progress, key, "=", localStorage.getItem(key))
-  }
-
   update() {
     if (this.player.x < 0){
       this.stop();
