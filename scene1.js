@@ -201,9 +201,10 @@ class scene1 extends baseScene {
         case this.book2:
           this.inventory.pick(this.selectedItem, true, "", this.dialogue);
           if (progress == 0){
+            this.stop();
             this.lockControlsFor(1000)
-            this.dialogue.dialogue("Interesting case for sure...", "docPort", null, "1", null, "Doctor");
             progress = 1
+            this.dialogue.dialogue("Interesting case for sure...", "docPort", null, "1", null, "Doctor");
           }
           break;
 

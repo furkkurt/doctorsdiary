@@ -129,7 +129,7 @@ class credits extends Phaser.Scene {
         // After credits finish, return to title/menu
         this.time.delayedCall(1000, () => {
           // You can change this to whatever scene should come after credits
-          this.scene.start('demo');
+          this.scene.start('mainMenu');
         });
       }
     });
