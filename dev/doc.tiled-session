@@ -3,7 +3,7 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "corridorUp.tmx",
+    "activeFile": "corridor2.tmx",
     "expandedProjectPaths": [
         "."
     ],
@@ -23,8 +23,8 @@
             "scale": 0.1274,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 2904.2386185243327,
-                "y": 639.717425431711
+                "x": 2904.238618524332,
+                "y": 710.3610675039249
             }
         },
         "corridorDown.tmx": {
@@ -127,10 +127,10 @@
     "recentFiles": [
         "room1.tmx",
         "corridor.tmx",
-        "corridor2.tmx",
         "garden.tmx",
         "corridorDown2.tmx",
         "corridorDown.tmx",
-        "corridorUp.tmx"
+        "corridorUp.tmx",
+        "corridor2.tmx"
     ]
 }
