@@ -1,3 +1,6 @@
+const nurseScale = .8
+const nurseAlpha = .7
+
 class preloader extends Phaser.Scene {
     constructor() {
         super("preloader");
@@ -262,7 +265,7 @@ class preloader extends Phaser.Scene {
         })
         // Portraits are now static images, no animations needed
 
-        this.scene.start("mainMenu")
+        this.scene.start("demo")
 
     }
 }

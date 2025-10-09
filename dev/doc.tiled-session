@@ -3,7 +3,7 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "corridorDown.tmx",
+    "activeFile": "corridorUp.tmx",
     "expandedProjectPaths": [
         "."
     ],
@@ -34,8 +34,8 @@
             "scale": 0.1233,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 2789.943227899432,
-                "y": 2583.130575831306
+                "x": 2903.4874290348744,
+                "y": 636.6585563665853
             }
         },
         "corridorDown2.tmx": {
@@ -53,11 +53,11 @@
             "expandedObjectLayers": [
                 3
             ],
-            "scale": 0.1857,
+            "scale": 0.1867,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 2902.5309639203015,
-                "y": 638.1260096930532
+                "x": 2903.0530262453135,
+                "y": 640.0642742367431
             }
         },
         "garden.tmx": {
@@ -125,12 +125,12 @@
     "project": "doc.tiled-project",
     "property.type": "bool",
     "recentFiles": [
-        "corridor.tmx",
         "room1.tmx",
+        "corridor.tmx",
         "corridor2.tmx",
-        "corridorUp.tmx",
         "garden.tmx",
         "corridorDown2.tmx",
-        "corridorDown.tmx"
+        "corridorDown.tmx",
+        "corridorUp.tmx"
     ]
 }

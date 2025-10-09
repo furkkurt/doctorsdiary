@@ -32,7 +32,6 @@ class scene7 extends baseScene{
     this.overlayDark.setScrollFactor(0);
     this.overlayDark.setDepth(100)
     this.dialogue.fadeOut(this.overlayDark)
-    this.logProgress("scene2 create")
 
     this.bg = this.add.image(0,0,"bg2").setOrigin(0)
     this.scaleFactor = this.scale.height/this.bg.height
@@ -110,10 +109,6 @@ class scene7 extends baseScene{
     this.musicPlayer.stopAllSfx();
   }
 
-  logProgress(where){
-    const key = currentSlot === 1 ? "firstSlotScene" : (currentSlot === 2 ? "secondSlotScene" : "thirdSlotScene")
-    console.log(`[${where}] currentSlot=`, currentSlot, "progress=", progress, key, "=", localStorage.getItem(key))
-  }
 
   startDoorTransition() {
     // Prevent multiple transitions

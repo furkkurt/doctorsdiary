@@ -32,11 +32,48 @@ class baseScene extends Phaser.Scene {
 
         // Create tutor text
         this.createTutorText();
+        this.time.addEvent({
+            delay: 1000,
+            callback: () => {
+                this.updateTutorText();
+            },loop: true
+        })
+
+        // Create track info
+        this.createTrackInfo();
+        this.time.delayedCall(1000, () => {
+        this.showTrackInfo(currentMusic);
+        console.log("showTrackInfo", currentMusic)
+        })
 
         // Call the scene's own init if it exists
         if(this.sceneInit) {
             this.sceneInit(data);
         }
+    }
+
+    createTrackInfo() {
+
+        this.trackDisplay = this.add.text(
+            this.game.config.width - 20,
+            20,
+            '',
+            {
+                fontFamily: 'Moving',
+                fontSize: '32px',
+                color: '#ffffff',
+                stroke: '#000000',
+                strokeThickness: 2
+            }   
+        )
+        .setOrigin(1, 0)
+        .setScrollFactor(0)
+        .setDepth(1000)
+        .setAlpha(.8);
+
+        this.events.on('trackChanged', (trackInfo) => {
+            this.trackDisplay.setText(`Current Track: ${trackInfo}`);
+        });
     }
 
     createTutorText() {
@@ -185,4 +222,49 @@ class baseScene extends Phaser.Scene {
             this.fadeInTutorText();
         }
     }
+
+
+  showTrackInfo(key) {
+    console.log("SHOW TRACK")
+    console.log(this.trackDisplay.alpha)
+    console.log("showTrackInfo", key)
+                const { artist, name } = musicPlayer.trackInfo[key];
+                const text = `${artist} - ${name}`;
+    try {
+      console.log("text", text)
+
+      // Emit event for other scenes
+      //this.events.emit('trackChanged', text);
+        this.trackDisplay.setText(`Current Track: ${text}`);
+
+        this.displayTween = this.tweens.add({
+          targets: this.trackDisplay,
+          alpha: { from: 0, to: 1 },
+          duration: 500,
+          ease: 'Linear',
+          onComplete: () => {
+            console.log(this.trackDisplay.alpha)
+            this.time.delayedCall(5000, () => {
+              this.tweens.add({
+                targets: this.trackDisplay,
+                alpha: 0,
+                duration: 500,
+                ease: 'Linear'
+              });
+            });
+          }
+        });
+
+        if(this.trackDisplay.text== ""){
+            try {
+                this.trackDisplay.text = text
+                this.trackDisplay.alpha = 1
+            } catch (e) {
+            }
+        }
+    } catch (e) {
+      // Silently ignore any errors - track info is nice to have but not critical
+    }
+  }
+
 }

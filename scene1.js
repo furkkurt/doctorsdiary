@@ -34,8 +34,7 @@ class scene1 extends baseScene {
     this.currentSlot = currentSlot
 
     this.musicPlayer = this.scene.get("musicPlayer")
-    if(this.musicPlayer.currentMusic == "")
-      this.musicPlayer.playMusic("docsTheme")
+    this.musicPlayer.playMusic("docsTheme")
     
     // Check for progress 3 cutscene
     if (progress == 2) {
@@ -201,17 +200,21 @@ class scene1 extends baseScene {
           break;
         case this.book2:
           this.inventory.pick(this.selectedItem, true, "", this.dialogue);
-          if(this.book2.visible == true)
+          if (progress == 0){
             this.dialogue.dialogue("Interesting case for sure...", "docPort", null, "1", null, "Doctor");
-          if (progress === 0)
             progress = 1
+          }
           break;
+
         case this.drugs:
             if (progress == 5) {
               this.startMedsCutscene();
+              this.createFlashEffect();
             } else if (progress == 8) {
+              this.createFlashEffect();
               this.startProgress8MedsCutscene();
             } else if (progress == 9) {
+              this.createFlashEffect();
               //ilaç aldık tuvalete gideceğiz progress 10
               /** bura ne? 
               progress = 10;
@@ -677,8 +680,10 @@ lockControlsFor(ms) {
             break;
           case this.drugs:
             if (progress == 8) {
+              this.createFlashEffect();
               this.startProgress8MedsCutscene();
             } else if (progress == 9) {
+              this.createFlashEffect();
               progress = 10;
               this.tutorText.text = "Go to the restroom"
               this.dialogue.dialogue("I need to use the bathroom", "docPort", null, "1", null, "Doctor");
@@ -837,6 +842,7 @@ lockControlsFor(ms) {
           break;
         case this.drugs:
           this.tutorText.setVisible(false);
+          this.createFlashEffect();
           if (window.ending === "fix") {
             this.startBadEndingTransition();
           } else {
@@ -1068,6 +1074,7 @@ lockControlsFor(ms) {
         case "NaN":
           break;
         case this.drugs:
+          this.createFlashEffect();
           this.tutorText.text = "See the kids"
           break;
       }
@@ -1344,7 +1351,7 @@ lockControlsFor(ms) {
         if(hasItems){
            // Do not change progress here automatically; keep author-controlled
            this.startDoorTransition();
-         } else {
+         } else if(progress == 9) {
           this.player.x -= 10
          }
        }
@@ -1359,10 +1366,6 @@ lockControlsFor(ms) {
     try{ localStorage.setItem(key, String(progress)) } catch(e) {}
   }
 
-  logProgress(where){
-    const key = currentSlot === 1 ? "firstSlotScene" : (currentSlot === 2 ? "secondSlotScene" : "thirdSlotScene")
-    console.log(`[${where}] currentSlot=`, currentSlot, "progress=", progress, key, "=", localStorage.getItem(key))
-  }
 
   hasRequiredItems(){
     const s1 = localStorage.getItem(this.slot+"1")
@@ -1370,6 +1373,26 @@ lockControlsFor(ms) {
     const s3 = localStorage.getItem(this.slot+"3")
     const items = [s1, s2, s3]
     return items.includes("book1") && items.includes("book2")
+  }
+
+  createFlashEffect() {
+    // Create a white rectangle covering the screen
+    const flash = this.add.rectangle(0, 0, this.scale.width, this.scale.height, 0xffffff)
+      .setOrigin(0)
+      .setScrollFactor(0)
+      .setDepth(999)
+      .setAlpha(0);
+
+    // Create a quick flash effect
+    this.tweens.add({
+      targets: flash,
+      alpha: { from: 0.8, to: 0 },
+      duration: 400,
+      ease: 'Linear',
+      onComplete: () => {
+        flash.destroy();
+      }
+    });
   }
 }
 

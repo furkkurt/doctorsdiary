@@ -31,7 +31,7 @@ class loadGame extends Phaser.Scene{
 
       const savedProgress = localStorage.getItem(sceneKey)
       const isEmpty = savedProgress === null || savedProgress === ""
-      const progressText = isEmpty ? "Empty" : `Progress: ${parseInt(savedProgress)}/13`
+      const progressText = isEmpty ? "Empty" : `Progress: ${parseInt(savedProgress)}/15`
 
       const label = this.add.text(1150, y, `Slot ${i}: ${progressText}`, {fontFamily:"Moving", fontSize: "48px", color: "#91cad1"}).setOrigin(0.5)
       const loadBtn = this.add.text(1600, y, "Load", {fontFamily:"Moving", fontSize: "56px", color: "#91cad1"}).setOrigin(0.5).setInteractive()
@@ -83,7 +83,6 @@ class loadGame extends Phaser.Scene{
     
     this.scene.launch("musicPlayer");
     this.musicPlayer = this.scene.get("musicPlayer");
-    this.musicPlayer.stopTheMusic();
     // Start in the last room if it exists, otherwise start in scene1
     if (lastRoom && lastRoom !== "") {
       this.scene.start(`scene${lastRoom}`, { currentSlot });

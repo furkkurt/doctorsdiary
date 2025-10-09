@@ -53,6 +53,8 @@ class scene3 extends baseScene{
 
     // Use bg5 and corridorUp map
     this.bg = this.add.image(0,0,"bg5").setOrigin(0)
+    if(progress >= 3)
+      this.bg = this.add.image(0,0,"bg52").setOrigin(0)
     this.scaleFactor = this.scale.height/this.bg.height
     this.bg.setScale(this.scaleFactor)
     this.mapWidth = this.bg.width * this.bg.scaleX;
@@ -277,21 +279,40 @@ class scene3 extends baseScene{
   }
 
 
-  update() {
-    // Debug info
-    console.log("UPDATE CHECK:", {
-      startedWithProgress3: this.startedWithProgress3,
-      currentProgress: progress,
-      isTransitioning: this.isTransitioning,
-      nurseDialogueStarted: this.cut3NurseDialogueStarted,
-      nurseDialogueDone: this.cut3NurseDialogueDone,
-      dialogueInSequence: this.dialogue?.isInSequence
+  walkIntoDark(){
+    if (this.player.flipX == true)
+      this.player.flipX = false;
+    else
+      this.player.flipX = true;
+
+    if(this.player.flipX == true) {
+      this.player.x -= 100;
+      this.player.setVelocityX(-500);
+    } else {
+      this.player.x += 100;
+      this.player.setVelocityX(500);
+    }
+    this.player.play("docWalk", true);
+    this.time.addEvent({
+      delay: 500,
+      callback: () => {
+        this.stop();
+        this.dialogue.dialogue("...its dark", "docPort", null, "1", null, "Doctor");
+      }
     });
-    
+  }
+
+  update() {
+    if(this.player.x > 4000 && this.bg.texture.key == "bg52"){
+      this.walkIntoDark();
+      return;
+    }
+    // Debug info
+   
     // If we started with progress 3 and it changed to 4, transition to scene4
     if (this.startedWithProgress3 && progress === 4 && !this.isTransitioning) {
       console.log("SHOULD START SCENE 4 NOW!");
-      this.startDoorTransition();
+      //this.startDoorTransition();
       return;
     }
     
@@ -307,33 +328,46 @@ class scene3 extends baseScene{
       this.player.x += 10
     }
     
-    // Progress 5 cutscene runtime logic
+    // Progress 3 cutscene runtime logic
     if (progress == 3 && this.player) {
       // Interrupt texts at x>200/600/1000
-      if (!this.cut3Shown200 && this.player.x > 400) {
+      if (!this.cut3Shown200 && this.player.x > 3000) {
         this.cut3Shown200 = true;
         this.lockControlsFor(1000);
         this.stop();
-        this.dialogue.dialogue("huh-...", "docPort", null, "1", null, "Doctor");
+        this.dialogue.dialogue("huh-...", "docPort", null, "8", null, "Doctor");
       }
-      if (!this.cut3Shown600 && this.player.x > 1200) {
+      if (!this.cut3Shown600 && this.player.x > 3200) {
         this.cut3Shown600 = true;
-        // Prevent stray portrait flash before dialogue at ~1200 by ensuring dialogue is hidden first
-        this.dialogue.hideDialogue();
         this.lockControlsFor(1000);
         this.stop();
-        this.dialogue.dialogue("is there someone? ...hello?","docPort", null, "1", null, "Doctor");
+        this.dialogue.dialogue("is there someone? ...hello?","docPort", null, "7", null, "Doctor");
       }
-      if (!this.cut3Shown1000 && this.player.x > 2000) {
+      if (!this.cut3Shown1000 && this.player.x > 3400) {
         this.cut3Shown1000 = true;
         this.lockControlsFor(1000);
         this.stop();
-        this.dialogue.dialogue(".... its dark.", "docPort", null, "1", null, "Doctor");
+        this.dialogue.dialogue(".... its dark.", "docPort", null, "9", null, "Doctor");
       }
-      
+      if (!this.cut3NurseDialogueStarted && this.player.x > 3600) {
+        console.log("NURSE DIALOGUE STARTED");
+        this.cut3NurseDialogueStarted = true;
+        this.cameras.main.stopFollow();
+        this.player.stop();
+        this.player.setVelocityX(0);
+        this.player.play("docIdle");
+        this.controlsLocked = true;
+        this.cameras.main.pan(this.mapWidth, this.cameras.main.y, 3000, 'Sine.easeInOut');
+        this.time.delayedCall(5000, () => {
+          this.startNurseDialogue();
+        });
+      }
+      console.log(this.cut3NurseDialogueStarted)
       // Nurse dialogue now triggered via kidsRoom interaction when progress===5
       
-      // After trying to walk, interrupt after 1s with another text
+      // :w
+      //After trying to walk, interrupt after 1s with another text
+      /**
       if (this.isWalking && !this.cut3PostWalkShown) {
         if (this.cut3WalkTimer == null) {
           this.cut3WalkTimer = this.time.delayedCall(1000, () => {
@@ -342,7 +376,8 @@ class scene3 extends baseScene{
             this.cut3PostWalkShown = true;
           });
         }
-      }
+      }*/
+    
       if (!this.isWalking && this.cut3WalkTimer) {
         this.cut3WalkTimer.remove(false);
         this.cut3WalkTimer = null;
@@ -407,7 +442,9 @@ class scene3 extends baseScene{
         }
       });
     }
-    this.nurse = this.physics.add.sprite(nurseX, nurseY, "nurse").setDepth(98).setScale(1.0).setImmovable();
+    console.log(nurseScale)
+    this.nurse = this.physics.add.sprite(nurseX, nurseY, "nurse").setDepth(98).setScale(1.0).setImmovable().setScale(nurseScale).setAlpha(nurseAlpha);
+    this.nurse.alpha = .4
     this.nurse.play && this.nurse.play("nurseIdle");
     
     // Invisible interaction object for kidsRoom
@@ -548,7 +585,7 @@ class scene3 extends baseScene{
     }
 
     // Nurse sprite
-    this.nurse = this.physics.add.sprite(nurseX, nurseY, "nurse").setDepth(98).setScale(1.0).setImmovable().setVisible(true);
+    this.nurse = this.physics.add.sprite(nurseX, nurseY, "nurse").setDepth(98).setScale(1.0).setImmovable().setVisible(true).setScale(nurseScale).setAlpha(nurseAlpha);
     this.nurse.play("nurseIdle");
 
     // Invisible interaction objects
@@ -604,7 +641,16 @@ class scene3 extends baseScene{
     this.startDialogueWhenReady(seq, () => {
       this.controlsLocked = false;
       this.cut5DialogueDone = true;
-      this.nurse.setVisible(false);
+      //this.nurse.setVisible(false);
+      this.tweens.add({
+        targets: this.nurse,
+        alpha: 0,
+        duration: 1000,
+        ease: 'Linear',
+        onComplete: () => {
+          this.nurse.setVisible(false);
+        }
+      });
     });
 
   }
@@ -658,7 +704,7 @@ class scene3 extends baseScene{
     }
 
     // Create nurse and door sprites
-    this.nurse = this.physics.add.sprite(nurseX, nurseY, "nurse").setDepth(98).setScale(1.0).setImmovable();
+    this.nurse = this.physics.add.sprite(nurseX, nurseY, "nurse").setDepth(98).setScale(1.0).setImmovable().setScale(nurseScale).setAlpha(nurseAlpha);
     this.nurse.play("nurseIdle");
     this.kidsRoom = this.physics.add.sprite(doorX, doorY, "kidsRoomDoor").setOrigin(0.5,1).setImmovable().setVisible(false);
 
@@ -707,17 +753,25 @@ class scene3 extends baseScene{
     this.isTransitioning = false; // Reset transition flag when starting dialogue
     this.lockControlsFor(1000);
     const seq = [
-      { text: "Don't be scared...", leftPortrait: null, rightPortrait: "nursePort", leftAnimation: null, rightAnimation: null, name: "Nurse" },
-      { text: "", leftPortrait: null, rightPortrait: null, leftAnimation: null, rightAnimation: null, name: "" },
-      { text: "Sometimes stepping in and embracing your fears is better?", leftPortrait: null, rightPortrait: "nursePort", leftAnimation: null, rightAnimation: null, name: "Nurse" },
-      { text: "What?", leftPortrait: "docPort", rightPortrait: null, leftAnimation: "1", rightAnimation: null, name: "Doctor" },
-      { text: "...?", leftPortrait: null, rightPortrait: "nursePort", leftAnimation: null, rightAnimation: null, name: "Nurse" },
-      { text: "Hello? Nurse Ayşa? Is that you?", leftPortrait: "docPort", rightPortrait: null, leftAnimation: "1", rightAnimation: null, name: "Doctor" },
+      { text: "Don't be scared...", leftPortrait: "docPort", rightPortrait: "nursePort", leftAnimation: "12", rightAnimation: null, name: "Nurse" },
+      { text: "...", leftPortrait: null, rightPortrait: null, leftAnimation: "12", rightAnimation: null, name: "" },
+      { text: "Sometimes stepping in and embracing your fears is better?", leftPortrait: "docPort", rightPortrait: "nursePort", leftAnimation: "12", rightAnimation: null, name: "Nurse" },
+      { text: "What?", leftPortrait: "docPort", rightPortrait: null, leftAnimation: "12", rightAnimation: null, name: "Doctor" },
+      { text: "...?", leftPortrait: "docPort", rightPortrait: "nursePort", leftAnimation: "12", rightAnimation: null, name: "Nurse" },
+      { text: "Hello? Nurse Ayşa? Is that you?", leftPortrait: "docPort", rightPortrait: null, leftAnimation: "12", rightAnimation: null, name: "Doctor" },
     ];
     this.startDialogueWhenReady(seq, () => {
       console.log("NURSE DIALOGUE COMPLETED");
       this.cut3NurseDialogueDone = true;
-      this.nurse.setVisible(false);
+      this.tweens.add({
+        targets: this.nurse,
+        alpha: 0,
+        duration: 1000,
+        ease: 'Linear',
+        onComplete: () => {
+          this.nurse.setVisible(false);
+        }
+      });
       if (this.startedWithProgress3) {
         console.log("SETTING PROGRESS TO 4");
         progress = 4;

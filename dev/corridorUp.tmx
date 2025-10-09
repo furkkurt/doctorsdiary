@@ -5,7 +5,7 @@
  </editorsettings>
  <objectgroup id="3" name="interactive">
   <object id="1" name="kidsRoom" x="4415.22" y="678.398" width="170.884" height="145.379"/>
-  <object id="3" name="nurse" x="4904.05" y="797.228" width="170.884" height="145.379"/>
+  <object id="3" name="nurse" x="5565.97" y="812.893" width="170.884" height="145.379"/>
   <object id="4" name="door2" x="2773.29" y="630.048" width="166.936" height="172.321"/>
   <object id="5" name="door" x="1163.17" y="613.893" width="161.551" height="161.551"/>
  </objectgroup>

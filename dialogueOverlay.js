@@ -373,9 +373,11 @@ class dialogueOverlay extends Phaser.Scene{
     if (!this.isInSequence) return
     
     // Stop current typing event
-    if (this.currentTypingEvent) {
-      this.currentTypingEvent.destroy();
-      this.currentTypingEvent = null;
+    if (this.dialogueText.text != this.text) {
+      if (this.currentTypingEvent) {
+        this.currentTypingEvent.destroy();
+        this.currentTypingEvent = null;
+      }
       this.dialogueText.text = this.text
     } else {
       this.currentDialogueIndex++

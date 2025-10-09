@@ -17,7 +17,6 @@ class scene0 extends baseScene{
     this.scene.bringToTop("dialogueOverlay")
     this.dialogue = this.scene.get('dialogueOverlay');
     progress = 0;
-    this.logProgress("scene0 start")
 
     let overlayDark = this.add.graphics();
     overlayDark.fillStyle(0x000000, 1);
@@ -29,7 +28,7 @@ class scene0 extends baseScene{
 
     this.scene.launch("musicPlayer")
     this.musicPlayer = this.scene.get("musicPlayer")
-    this.musicPlayer.playMusic("docsTheme")
+  this.musicPlayer.playMusic("docsTheme")
     this.scene.launch("brightnessOverlay")
     this.brightness = this.scene.get("brightnessOverlay")
     this.scene.bringToTop("brightnessOverlay")
@@ -179,11 +178,6 @@ class scene0 extends baseScene{
     this.scene.launch("menu", {from: this.scene.key})
     this.scene.pause()
     this.time.addEvent({delay: 10, callback: () => {this.stop();}})
-  }
-
-  logProgress(where){
-    const key = currentSlot === 1 ? "firstSlotScene" : (currentSlot === 2 ? "secondSlotScene" : "thirdSlotScene")
-    console.log(`[${where}] currentSlot=`, currentSlot, "progress=", progress, key, "=", localStorage.getItem(key))
   }
 
   bigText(text) {

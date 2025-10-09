@@ -32,7 +32,7 @@ class mainMenu extends Phaser.Scene{
     this.musicText = this.add.text(
       this.scale.width - 20,
       20,
-      '',
+      'Kurt Clawhammer - Something',
       {
         fontFamily: 'Moving',
         fontSize: '24px',
@@ -42,9 +42,6 @@ class mainMenu extends Phaser.Scene{
     ).setOrigin(1, 0).setScrollFactor(0).setDepth(101);
 
     // Update music text when track changes
-    this.musicPlayer.events.on('trackChanged', (trackInfo) => {
-      this.musicText.setText(`Current Track: ${trackInfo}`);
-    });
     if(this.musicPlayer.currentMusic != "ong")
       this.musicPlayer.playMusic("ong")
     this.time.delayedCall(4000, () => {

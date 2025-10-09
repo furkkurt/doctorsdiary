@@ -30,7 +30,6 @@ class scene4 extends baseScene{
     overlayDark.setScrollFactor(0);
     overlayDark.setDepth(100)
     this.dialogue.fadeOut(overlayDark)
-    this.logProgress("scene4 create")
 
     // Use bg6 and kidsRoom map
     this.bg = this.add.image(0,0,"bg6").setOrigin(0)
@@ -233,7 +232,6 @@ class scene4 extends baseScene{
       // Ar – ... (11)
       { text: "...", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "7", rightAnimation: "11", name: "Aras" },
       
-      // Dr – Yeah, you guys don't share thoughts... since you don't share the same head and no connection through the thalamus. I thought I might ask anyway, haha. (6)
       { text: "Yeah, you guys don't share thoughts... since you don't share the same head and no connection through the thalamus.", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "6", rightAnimation: "11", name: "Doctor" },
       
       { text: "I thought I might ask anyway, haha.", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "6", rightAnimation: "11", name: "Doctor" },
@@ -487,10 +485,6 @@ class scene4 extends baseScene{
     try{ localStorage.setItem(key, String(progress)) } catch(e) {}
   }
 
-  logProgress(where){
-    const key = currentSlot === 1 ? "firstSlotScene" : (currentSlot === 2 ? "secondSlotScene" : "thirdSlotScene")
-    console.log(`[${where}] currentSlot=`, currentSlot, "progress=", progress, key, "=", localStorage.getItem(key))
-  }
 startDoorTransition() {
     // Prevent multiple transitions
     if (this.isTransitioning) return;
@@ -703,7 +697,7 @@ startDoorTransition() {
       const seq = [
         { text: "how you guys feeling", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "3", name: "Doctor" },
         { text: "good", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "5", name: "Ayaz" },
-        { text: "caugh caugh", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "5", name: "Ayaz", onStart: () => this.kids.play("kidsCough") },
+        { text: "*caugh caugh*", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "5", name: "Ayaz", onStart: () => this.kids.play("kidsCough") },
         { text: "...", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "9", rightAnimation: "5", name: "Doctor" },
         { text: "... you guys- stay... here.", leftPortrait: "docPort", rightPortrait: "kidsPort", leftAnimation: "1", rightAnimation: "5", name: "Doctor", onComplete: () => {
           // After this line, make doctor walk right
@@ -779,6 +773,10 @@ startDoorTransition() {
   update(){
     if ((this.doctor.x > this.mapWidth - 50 && !this.isTransitioning) && (this.controlsLocked == false && progress == 7)){
       this.startDoorTransition();
+    }
+    if(this.doctor.x < 0){
+      this.stop();
+      this.doctor.x += 10
     }
   }
 }

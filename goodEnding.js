@@ -17,10 +17,11 @@ class goodEnding extends Phaser.Scene {
     this.bg2.setScale(this.scaleFactor);
 
     // Create doctor and nurse
-    this.doctor = this.physics.add.sprite(1100,700,"doc").setDepth(99);
+    this.doctor = this.physics.add.sprite(900,700,"doc").setDepth(99).setScale(.95);
     this.doctor.play("docIdle");
-    this.nurse = this.add.sprite(900, 700, "nurse").setDepth(98).setScale(1.0);
+    this.nurse = this.add.sprite(1100, 700, "nurse").setDepth(98).setScale(nurseScale);
     this.nurse.play("nurseIdle");
+    this.nurse.flipX = true;
 
     // Set up dialogue overlay
     this.scene.launch("dialogueOverlay");
@@ -46,7 +47,7 @@ class goodEnding extends Phaser.Scene {
         { text: "Was war heartache your foult?", leftPortrait: "docPort", rightPortrait: "nursePort", leftAnimation: "1", rightAnimation: null, name: "Nurse" },
         { text: "No?", leftPortrait: "docPort", rightPortrait: "nursePort", leftAnimation: "1", rightAnimation: null, name: "Nurse" },
         { text: "At least you tried yeah?", leftPortrait: "docPort", rightPortrait: "nursePort", leftAnimation: "1", rightAnimation: null, name: "Nurse" },
-        { text: "Youre just a one person?", leftPortrait: "docPort", rightPortrait: "nursePort", leftAnimation: "1", rightAnimation: null, name: "Nurse" },
+        { text: "Youre just one person?", leftPortrait: "docPort", rightPortrait: "nursePort", leftAnimation: "1", rightAnimation: null, name: "Nurse" },
         { text: "You cant change anything?", leftPortrait: "docPort", rightPortrait: "nursePort", leftAnimation: "1", rightAnimation: null, name: "Nurse" },
         { text: "Whats the worth in even trying?", leftPortrait: "docPort", rightPortrait: "nursePort", leftAnimation: "1", rightAnimation: null, name: "Nurse" },
         { text: "or.... is this even trying?", leftPortrait: "docPort", rightPortrait: "nursePort", leftAnimation: "1", rightAnimation: null, name: "Nurse" },

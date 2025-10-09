@@ -61,8 +61,17 @@ class badEnding extends Phaser.Scene {
   }
 
   showFinalText() {
-    if (this.doctor) this.doctor.setVisible(false);
-    
+    if (this.doctor) {
+      this.tweens.add({
+        targets: this.doctor,
+        alpha: 0,
+        duration: 1000,
+        onComplete: () => {
+          this.doctor.destroy();
+        }
+      });
+    } 
+      
     // Create black overlay
     this.currentOverlay = this.add.graphics()
       .fillStyle(0x000000, 1)
@@ -211,7 +220,7 @@ class badEnding extends Phaser.Scene {
                     duration: 2000,
                     onComplete: () => {
                       // Start final sequence after a short delay to ensure cleanup
-                      this.time.delayedCall(1000, () => {
+                      this.time.delayedCall(15000, () => {
                         // Clean up previous text
                         if (this.currentTextObj) this.currentTextObj.destroy();
                         if (this.currentOverlay) this.currentOverlay.destroy();

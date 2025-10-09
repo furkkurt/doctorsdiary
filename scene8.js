@@ -38,14 +38,13 @@ class scene8 extends baseScene{
     this.overlayDark.setScrollFactor(0);
     this.overlayDark.setDepth(100)
     this.dialogue.fadeOut(this.overlayDark)
-    this.logProgress("scene2 create")
 
     this.bg = this.add.image(0,0,"bg8").setOrigin(0)
     this.scaleFactor = this.scale.height/this.bg.height
     this.bg.setScale(this.scaleFactor)
     this.mapWidth = this.bg.width * this.bg.scaleX;
     this.mapHeight = this.bg.height * this.bg.scaleY;
-    this.player = this.physics.add.sprite(this.mapWidth - 400,650,"doc").setDepth(99).setScale(1)
+    this.player = this.physics.add.sprite(this.mapWidth - 400,650,"doc").setDepth(99).setScale(1.03)
     this.player.play("docIdle")
     this.player.flipX = true
 
@@ -92,10 +91,6 @@ class scene8 extends baseScene{
     this.musicPlayer.stopAllSfx();
   }
 
-  logProgress(where){
-    const key = currentSlot === 1 ? "firstSlotScene" : (currentSlot === 2 ? "secondSlotScene" : "thirdSlotScene")
-    console.log(`[${where}] currentSlot=`, currentSlot, "progress=", progress, key, "=", localStorage.getItem(key))
-  }
 
   itemSelector() {
     this.time.addEvent({
@@ -193,11 +188,11 @@ class scene8 extends baseScene{
     this.scaleFactor = this.mapWidth/this.bg.width;
     
     // Create kids sprite in the middle
-    this.kids = this.add.sprite(this.mapWidth/2, 1000, "kids").setDepth(98).setScale(this.scaleFactor);
+    this.kids = this.add.sprite(this.mapWidth/2, 1000, "kids").setDepth(98).setScale(.8);
     this.kids.play("kids1");
     
     // Create doctor sprite
-    this.player = this.physics.add.sprite(this.mapWidth - 400, 1000, "doc").setDepth(99).setScale(1);
+    this.player = this.physics.add.sprite(this.mapWidth - 400, 1000, "doc").setDepth(99).setScale(1.03);
     this.player.play("docIdle");
     this.player.flipX = true;
     

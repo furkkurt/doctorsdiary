@@ -13,7 +13,7 @@ class credits extends Phaser.Scene {
     this.musicText = this.add.text(
       20,
       20,
-      '',
+      'Kurt Clawhammer - Something',
       {
         fontFamily: 'Moving',
         fontSize: '24px',
@@ -23,9 +23,7 @@ class credits extends Phaser.Scene {
     ).setOrigin(0, 0).setScrollFactor(0).setDepth(101);
 
     // Update music text when track changes
-    this.musicPlayer.events.on('trackChanged', (trackInfo) => {
-      this.musicText.setText(`Current Track: ${trackInfo}`);
-    });
+   
     this.musicPlayer.playMusic("ong");
     this.time.delayedCall(4000, () => {
       this.time.addEvent({
@@ -55,6 +53,9 @@ class credits extends Phaser.Scene {
       "\n",
       "Coding",
       "Furkan Kurt aka Kurt Clawhammer",
+      "\n",
+      "Some help with porting phaser project to windows",
+      "HAKKICAN <3",
       "\n\n",
       "Hi there! It's the lead dev, lead artist and writer weylibn!",
       "I worked on the story, dialogues, character designs and sprites",
@@ -75,7 +76,22 @@ class credits extends Phaser.Scene {
       "\n",
       "And if you think you can help me with the new game —",
       "I mostly need help with coding —",
-      "contact me on Instagram!"
+      "contact me on Instagram!",
+      "\n",
+      "Heyy its eslem!!! im the background artist of the game and had so much fun being a part of this team!",
+      "\n",
+      "hope you had as much fun as we did and if you are interested to see more of my art follow my socials x3",
+      "(instagram artstation tiktok)",
+      "\n",
+      "@eslemw on instagram @eslemw on artstation @eslemw on tiktok",
+      "\n",
+      "Hello there! It's Kurt here, I coded this hell of a game and also made the track that is playing rn for menu and the credits!",
+      "\n",
+      "For my game dev projects look up makinDAGames and for my music projects look up Kurt Clawhammer. Thanks for playing!",
+      "\n",
+      "Kurt Clawhammer and Abuzer DAG on youtube, Kurt Clawhammer and The Clawhammers on Spotify and other music platforms.",
+      "\n",
+      "(We know your favorite number is " + localStorage.getItem("favNum") + " !!!)",
     ];
 
     // Calculate total height needed

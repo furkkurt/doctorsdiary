@@ -9,7 +9,7 @@
   <object id="4" name="ofis2" x="1879.26" y="659.664" width="142.857" height="155.462"/>
   <object id="5" name="ofis1" x="756.303" y="633.022" width="172.269" height="147.059"/>
   <object id="6" name="stairs" x="4908.17" y="635.562" width="243.697" height="180.672"/>
-  <object id="7" name="nurse" x="2919.96" y="802.746" width="109.8" height="93.412"/>
+  <object id="7" name="nurse" x="4058.11" y="732.102" width="109.8" height="93.412"/>
  </objectgroup>
  <imagelayer id="2" name="bg">
   <image source="../assets/bg4.png" width="5809" height="1278"/>

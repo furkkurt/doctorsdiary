@@ -50,10 +50,9 @@ class scene6 extends baseScene{
     this.overlayDark.setScrollFactor(0);
     this.overlayDark.setDepth(100)
     this.dialogue.fadeOut(this.overlayDark)
-    this.logProgress("scene2 create")
 
     this.bg = this.add.image(0,0,"bg3").setOrigin(0)
-    if(progress == 10)
+    if(progress >= 10)
       this.bg.setTexture("bg32")
     this.scaleFactor = this.scale.height/this.bg.height
     this.bg.setScale(this.scaleFactor)
@@ -62,10 +61,17 @@ class scene6 extends baseScene{
     this.player = this.physics.add.sprite(this.mapWidth - 300,this.playerY,"doc").setDepth(99).setScale(1.01)
     this.player.play("docIdle")
     this.player.flipX = true;
+    this.flash = this.add.rectangle(0, 0, this.scale.width, this.scale.height, 0xffffff)
+      .setOrigin(0)
+      .setScrollFactor(0)
+      .setDepth(999)
+      .setAlpha(0);
 
     // Add nurse if progress is 10
     if (progress == 10) {
-      this.nurse = this.add.sprite(0, 0, "nurse").setScale(this.scaleFactor).setDepth(98);
+      this.nurse = this.add.sprite(0, 0, "nurse").setScale(nurseScale).setDepth(98);
+      this.nurse.alpha = nurseAlpha;
+      this.nurse.flipX = true
       this.musicPlayer.stopTheMusic()
       this.musicPlayer.playMusic("nursesTheme");
     }
@@ -134,6 +140,23 @@ class scene6 extends baseScene{
       this.player.x = this.mapWidth - 300
     }
   };  
+  createFlashEffect() {
+    this.flashEffect = this.add.rectangle(0, 0, this.scale.width, this.scale.height, 0xffffff)
+      .setOrigin(0)
+      .setScrollFactor(0)
+      .setDepth(999)
+      .setAlpha(0);
+    // Create a quick flash effect
+    this.tweens.add({
+      targets: this.flash,
+      alpha: { from: 0.8, to: 0 },
+      duration: 400,
+      ease: 'Linear',
+      onComplete: () => {
+        this.flash.destroy();
+      }
+    });
+  }
 
   toiletInteraction(){
     this.stop();
@@ -147,8 +170,11 @@ class scene6 extends baseScene{
         // After fade out, spawn nurse and start dialogue
         this.time.delayedCall(1000, () => {
           // Create nurse if not exists
-          this.nurse = this.add.sprite(3700, 650, "nurse").setScale(this.scaleFactor).setDepth(98);
+          this.nurse = this.add.sprite(3700, 650, "nurse").setScale(nurseScale).setDepth(98);
+          this.nurse.alpha = nurseAlpha;
           this.nurse.flipX = true
+          this.player.flipX = false
+          this.createFlashEffect();
           
           // Disable player movement
           this.input.keyboard.removeAllListeners();
@@ -158,19 +184,27 @@ class scene6 extends baseScene{
           
           // Start dialogue sequence
           const seq = [
-            { text: "you cant run this time?", leftPortrait: null, rightPortrait: "nursePort", leftAnimation: null, rightAnimation: null, name: "Nurse" },
-            { text: "shut up.", leftPortrait: "docPort", rightPortrait: null, leftAnimation: "10", rightAnimation: null, name: "Doctor" },
-            { text: "is this an opurtunity to redeem yourself?", leftPortrait: null, rightPortrait: "nursePort", leftAnimation: null, rightAnimation: null, name: "Nurse" },
-            { text: "or escape the pain? Again?", leftPortrait: null, rightPortrait: "nursePort", leftAnimation: null, rightAnimation: null, name: "Nurse" },
-            { text: "sometimes we have to choose?", leftPortrait: null, rightPortrait: "nursePort", leftAnimation: null, rightAnimation: null, name: "Nurse" },
-            { text: "one or another?", leftPortrait: null, rightPortrait: "nursePort", leftAnimation: null, rightAnimation: null, name: "Nurse" },
-            { text: "it cant be both?", leftPortrait: null, rightPortrait: "nursePort", leftAnimation: null, rightAnimation: null, name: "Nurse" },
-            { text: "SHUT UP", leftPortrait: "docPort", rightPortrait: null, leftAnimation: "12", rightAnimation: null, name: "Doctor" }
+            { text: "you cant run this time?", leftPortrait: "docPort", rightPortrait: "nursePort", leftAnimation: "12", rightAnimation: null, name: "Nurse" },
+            { text: "shut up.", leftPortrait: "docPort", rightPortrait: "nursePort", leftAnimation: "12", rightAnimation: null, name: "Doctor" },
+            { text: "is this an opportunity to redeem yourself?", leftPortrait: "docPort", rightPortrait: "nursePort", leftAnimation: "12", rightAnimation: null, name: "Nurse" },
+            { text: "or escape the pain? Again?", leftPortrait: "docPort", rightPortrait: "nursePort", leftAnimation: "12", rightAnimation: null, name: "Nurse" },
+            { text: "sometimes we have to choose?", leftPortrait: "docPort", rightPortrait: "nursePort", leftAnimation: "12", rightAnimation: null, name: "Nurse" },
+            { text: "one or another?", leftPortrait: "docPort", rightPortrait: "nursePort", leftAnimation: "12", rightAnimation: null, name: "Nurse" },
+            { text: "it cant be both?", leftPortrait: "docPort", rightPortrait: "nursePort", leftAnimation: "12", rightAnimation: null, name: "Nurse" },
+            { text: "SHUT UP", leftPortrait: "docPort", rightPortrait: "nursePort", leftAnimation: "12", rightAnimation: null, name: "Doctor" }
           ];
           
           this.dialogue.startDialogueSequence(seq, () => {
             //nurse diyaoloğu sonrası
             progress = 11;
+            this.tweens.add({
+              targets: this.nurse,
+              alpha: 0,
+              duration: 1000,
+              onComplete: () => {
+                this.nurse.destroy();
+              }
+            })
             
             // Re-enable player movement
             this.input.keyboard.on("keydown-A", this.left.bind(this));
@@ -275,10 +309,6 @@ class scene6 extends baseScene{
     this.musicPlayer.stopAllSfx();
   }
 
-  logProgress(where){
-    const key = currentSlot === 1 ? "firstSlotScene" : (currentSlot === 2 ? "secondSlotScene" : "thirdSlotScene")
-    console.log(`[${where}] currentSlot=`, currentSlot, "progress=", progress, key, "=", localStorage.getItem(key))
-  }
 
   startDoorTransition() {
     // Prevent multiple transitions
@@ -377,6 +407,7 @@ class scene6 extends baseScene{
   }
   right() {
     if(this.controlsLocked) return;
+    /** 
     // Check if we're at teleport point
     if (progress == 10 && !this.nurse && this.player.x > 3900 && this.player.x < 4000) {
       this.stop();
@@ -395,6 +426,7 @@ class scene6 extends baseScene{
       }
       return;
     }
+    */
 
     this.player.setVelocityX(500);
     this.player.play("docWalk", true)
@@ -410,24 +442,7 @@ class scene6 extends baseScene{
 
   left() {
     if(this.controlsLocked) return;
-    // Check if we're at teleport point
-    if (progress == 10 && !this.nurse && this.player.x > 4500 && this.player.x < 4850) {
-      this.stop();
-      this.lockControlsFor(2000);
-      // Show match button if not already shown
-      if (!this.matchButton) {
-        this.matchButton = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY - 100, "Click to use matches", {
-          fontFamily: "Moving",
-          fontSize: "64px",
-          color: "#ffffff",
-          stroke: "#000000",
-          strokeThickness: 4
-        }).setOrigin(0.5).setScrollFactor(0).setDepth(101).setInteractive();
-        
-        this.matchButton.on('pointerdown', () => this.handleMatchClick());
-      }
-      return;
-    }
+
     this.player.setVelocityX(-500)
     this.player.play("docWalk", true)
     this.player.flipX = true
@@ -512,6 +527,29 @@ class scene6 extends baseScene{
     this.matchButton.destroy();
     this.matchButton = null;
   }
+ walkIntoDark(){
+    if (this.player.flipX == true)
+      this.player.flipX = false;
+    else
+      this.player.flipX = true;
+
+    if(this.player.flipX == true) {
+      this.player.x -= 100;
+      this.player.setVelocityX(-500);
+    } else {
+      this.player.x += 100;
+      this.player.setVelocityX(500);
+    }
+    this.player.play("docWalk", true);
+    this.time.addEvent({
+      delay: 500,
+      callback: () => {
+        this.stop();
+        this.dialogue.dialogue("...its dark", "docPort", null, "1", null, "Doctor");
+      }
+    });
+  }
+
 
   update() {
     if (this.player.x > this.mapWidth - 50 && !this.isTransitioning) {
@@ -526,29 +564,113 @@ class scene6 extends baseScene{
     if(progress == 10 || progress == 11) {
     // Transition to scene3 when reaching the right edge
     // Check for matches requirement
-    if ((this.player.x < 4200 && this.player.x > 4100) || (this.player.x > 3250 && this.player.x < 3400)) {
+    //KİBRİTÇİ KIZ
+    if(this.player.x > 3300 && this.player.x < 3400 && !this.matchUsed && !this.useMatchBtn){
       if (this.inventoryArr.includes("matches") && !this.isTransitioning) {
         this.stop();
-        this.player.setVelocityX(0); // Ensure player is completely stopped
-        
-        // Only show button if we don't already have one
-        if (!this.matchButton) {
-          this.showMatchButton();
-        }
+        this.controlsLocked = true;
+        this.useMatchBtn = this.add.text(
+            this.cameras.main.centerX, 
+            this.cameras.main.centerY,
+            "Click to use match",
+            {fontFamily:"Moving", fontSize:"64px", color: "white",  stroke: '#000000',
+                strokeThickness: 2}
+          ).setOrigin(0.5).setScrollFactor(0).setDepth(101).setInteractive();
+
+          this.useMatchBtn.on("pointerdown", () => {
+            // Clean up button immediately
+            this.useMatchBtn.text = "";
+            this.useMatchBtn.destroy();
+            this.useMatchBtn = null;
+            this.matchUsed = true;
+
+            //screen face to black
+            this.tweens.add({
+              targets: this.overlayDark,
+              alpha: 1,
+              duration: 1000,
+              onComplete: () => {
+                this.player.x = 4200;
+                this.time.delayedCall(1000, () => {
+                  this.tweens.add({
+                    targets: this.overlayDark,
+                    alpha: 0,
+                    duration: 1000,
+                    onComplete: () => {
+                      console.log("DONE")
+                      this.controlsLocked = false
+                      this.isTransitioning = false;
+                      this.player.x += 10;
+                      this.player.flipX = false;
+                      this.matchUsed = false;
+                    }
+                  })
+                });
+              }
+            })
+          })
+
+      } else {
+        this.walkIntoDark();
       }
-    } else if (this.matchButton) {
-      this.hideMatchButton();
+
+    }
+    if ((this.player.x < 4200 && this.player.x > 4100 && !this.matchUsed && !this.useMatchBtn)) {
+      if (this.inventoryArr.includes("matches") && !this.isTransitioning) {
+        this.stop();
+        this.controlsLocked = true;
+        this.useMatchBtn = this.add.text(
+            this.cameras.main.centerX, 
+            this.cameras.main.centerY,
+            "Click to use match",
+            {fontFamily:"Moving", fontSize:"64px", color: "white",  stroke: '#000000',
+                strokeThickness: 2}
+          ).setOrigin(0.5).setScrollFactor(0).setDepth(101).setInteractive();
+
+          this.useMatchBtn.on("pointerdown", () => {
+            // Clean up button immediately
+            this.useMatchBtn.text = "";
+            this.useMatchBtn.destroy();
+            this.useMatchBtn = null;
+            this.matchUsed = true;
+
+            //screen face to black
+            this.tweens.add({
+              targets: this.overlayDark,
+              alpha: 1,
+              duration: 1000,
+              onComplete: () => {
+                this.player.x = 3300;
+                this.time.delayedCall(1000, () => {
+                  this.tweens.add({
+                    targets: this.overlayDark,
+                    alpha: 0,
+                    duration: 1000,
+                    onComplete: () => {
+                      console.log("DONE")
+                      this.controlsLocked = false
+                      this.isTransitioning = false;
+                      this.player.x -= 10;
+                      this.player.flipX = true;
+                      this.matchUsed = false;
+                    }
+                  })
+                });
+              }
+            })
+          })
+
+      } else {
+        this.walkIntoDark();
+      }
     }
 
-    // Check distance to toilet for progress 10
-    if (progress == 10 || progress == 11) {
-      if (this.nurse) this.nurse.y = this.player.y
-      const distanceToToilet = Math.abs(this.player.x - this.toilet.x);
-    }
     // Progress 10 nurse dialogue
     if (progress == 10 || progress == 11) {
        // Update nurse position
       if (this.nurse) this.nurse.y = this.player.y;
+      if(!this.flashEffect)
+        this.createFlashEffect();
       
       // Show nurse dialogue when close
       if (this.nurse && !this.nurseDialogueShown && this.player.x > 3500) {
@@ -556,29 +678,25 @@ class scene6 extends baseScene{
         
         // Disable player movement and stop sounds
         this.input.keyboard.removeAllListeners();
-        this.player.setVelocityX(0);
-        this.player.play("docIdle");
         this.musicPlayer.stopAllSfx();
+        this.stop();
+        this.controlsLocked = true;
         
-        // Show nurse dialogue with nurse on right
-        this.dialogue.dialogue("are you planning to run again?", null, "nursePort", null, null, "Nurse");
+        // Start dialogue sequence
+        const seq = [
+          { text: "are you planning to run again?", leftPortrait: "docPort", rightPortrait: "nursePort", leftAnimation: "12", rightAnimation: null, name: "Nurse" },
+          { text: "ugh!", leftPortrait: "docPort", rightPortrait: null, leftAnimation: "12", rightAnimation: null, name: "Doctor" }
+        ];
         
-        // After nurse dialogue, show doctor's response
-        this.time.delayedCall(2000, () => {
-          this.dialogue.hideDialogue();
-          this.time.delayedCall(100, () => {
-            this.dialogue.dialogue("ugh!", "docPort", null, "12", null, "Doctor");
-          });
-          
-          // Fade out nurse after dialogue
-          this.time.delayedCall(2000, () => {
-            this.tweens.add({
+        this.dialogue.startDialogueSequence(seq, () => {
+          // Fade out nurse after dialogue sequence
+          this.tweens.add({
               targets: this.nurse,
               alpha: 0,
               duration: 1000,
               onComplete: () => {
                 this.nurse.destroy();
-                
+                this.controlsLocked = false;                
                 // Re-enable player movement
                 this.input.keyboard.on("keydown-A", this.left.bind(this));
                 this.input.keyboard.on("keydown-D", this.right.bind(this));
@@ -604,7 +722,6 @@ class scene6 extends baseScene{
               }
             });
           });
-        });
       }
       
       // Match teleportation and boundary check

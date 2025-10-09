@@ -12,69 +12,15 @@ class musicPlayer extends Phaser.Scene{
   }
   create(){
     console.log("BEHOLD THE MUSIC PLAYER!");
-    currentMusic = "";
-    
-    // Create track display text
-    this.trackDisplay = this.add.text(
-      this.game.config.width - 20,
-      20,
-      '',
-      {
-        fontFamily: 'Moving',
-        fontSize: '32px',
-        color: '#ffffff',
-        stroke: '#000000',
-        strokeThickness: 4
-      }
-    )
-    .setOrigin(1, 0)
-    .setScrollFactor(0)
-    .setDepth(Number.MAX_SAFE_INTEGER)
-    .setAlpha(0);
-  };
-
-  showTrackInfo(key) {
-    try {
-      if (!musicPlayer.trackInfo[key]) return;
-
-      const { artist, name } = musicPlayer.trackInfo[key];
-      const text = `${artist} - ${name}`;
-
-      // Emit event for other scenes
-      this.events.emit('trackChanged', text);
-
-      if (this.trackDisplay && this.trackDisplay.setText) {
-        this.trackDisplay.setText(`Current Track: ${text}`);
-        
-        // Only try animation if the text update worked
-        if (this.displayTween) {
-          this.displayTween.stop();
-        }
-
-        this.displayTween = this.tweens.add({
-          targets: this.trackDisplay,
-          alpha: { from: 0, to: 1 },
-          duration: 500,
-          ease: 'Linear',
-          onComplete: () => {
-            this.time.delayedCall(5000, () => {
-              this.tweens.add({
-                targets: this.trackDisplay,
-                alpha: 0,
-                duration: 500,
-                ease: 'Linear'
-              });
-            });
-          }
-        });
-      }
-    } catch (e) {
-      // Silently ignore any errors - track info is nice to have but not critical
-    }
-  }
+    };
   
 
   playMusic(key) {
+    if(currentMusic == key)
+      return;
+    currentMusic = key
+    console.log("currentMusic", currentMusic)
+    console.log("key", key)
     currentMusic = key
     let music = this.sound.add(key, { loop: true, volume: musicVolume/5 });
     this.sound.sounds.forEach(s => {
@@ -83,7 +29,21 @@ class musicPlayer extends Phaser.Scene{
       }
     });
     music.play();
-    this.showTrackInfo(key);
+    let slot = ""
+    if (currentSlot == 1)
+      slot = "first"
+    else if (currentSlot == 2)
+      slot = "second"
+    else
+      slot = "third"
+    this.time.delayedCall(1000, () => {
+      let currentScene = this.scene.get("scene"+localStorage.getItem(`${slot}SlotLastRoom`))
+      console.log("currentScene", currentScene)
+      try {
+        currentScene.showTrackInfo(key);
+      } catch (e) {
+      }
+    })
     return music;
   }
 

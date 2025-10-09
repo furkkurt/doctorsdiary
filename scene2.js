@@ -24,13 +24,13 @@ class scene2 extends baseScene{
     console.log(data.from)
 
     this.musicPlayer = this.scene.get("musicPlayer")
-    if(this.musicPlayer.currentMusic == "")
-      this.musicPlayer.playMusic("docsTheme")
+    this.musicPlayer.playMusic("docsTheme")
     this.scene.bringToTop("musicPlayer")
     this.isWalking = false
     this.walkingSound = null
     this.isTransitioning = false
     this.controlsLocked = false
+    this.matchUsed = false
 
     // build inventory array AFTER determining slot
     this.slot = currentSlot === 1 ? "firstSlotItem" : (currentSlot === 2 ? "secondSlotItem" : "thirdSlotItem");
@@ -54,10 +54,8 @@ class scene2 extends baseScene{
     this.overlayDark.setScrollFactor(0);
     this.overlayDark.setDepth(100)
     this.dialogue.fadeOut(this.overlayDark)
-    this.logProgress("scene2 create")
-    console.log("SAHNE İKİDEYİZ")
     this.bg = this.add.image(0,0,"bg4").setOrigin(0)
-    if(progress == 10)
+    if(progress >= 6)
       this.bg.setTexture("bg42")
     this.scaleFactor = this.scale.height/this.bg.height
     this.bg.setScale(this.scaleFactor)
@@ -102,7 +100,8 @@ class scene2 extends baseScene{
 
     // Spawn nurse for progress 8 or 13
     if (progress == 6 || progress == 13) {
-      this.nurse = this.physics.add.sprite(nurseX, nurseY, "nurse").setDepth(98).setScale(1.0).setImmovable();
+      this.nurse = this.physics.add.sprite(nurseX, nurseY, "nurse").setDepth(98).setScale(nurseScale).setImmovable();
+      this.nurse.alpha = nurseAlpha;
       this.nurse.play && this.nurse.play("nurseIdle");
     }
 
@@ -197,11 +196,6 @@ class scene2 extends baseScene{
     this.time.addEvent({delay: 10, callback: () => {this.stop();}})
     // Stop all SFX sounds when pausing
     this.musicPlayer.stopAllSfx();
-  }
-
-  logProgress(where){
-    const key = currentSlot === 1 ? "firstSlotScene" : (currentSlot === 2 ? "secondSlotScene" : "thirdSlotScene")
-    console.log(`[${where}] currentSlot=`, currentSlot, "progress=", progress, key, "=", localStorage.getItem(key))
   }
 
   startDoorTransition() {
@@ -345,15 +339,138 @@ class scene2 extends baseScene{
       }, loop: true
     })
   }
+  walkIntoDark(){
+    if (this.player.flipX == true)
+      this.player.flipX = false;
+    else
+      this.player.flipX = true;
+
+    if(this.player.flipX == true) {
+      this.player.x -= 100;
+      this.player.setVelocityX(-500);
+    } else {
+      this.player.x += 100;
+      this.player.setVelocityX(500);
+    }
+    this.player.play("docWalk", true);
+    this.time.addEvent({
+      delay: 500,
+      callback: () => {
+        this.stop();
+        this.dialogue.dialogue("...its dark", "docPort", null, "1", null, "Doctor");
+      }
+    });
+  }
+
 
   update() {
+    console.log(this.useMatchBtn)
+      // Going forward past 3500
+      if(this.player.x > 2600 && this.player.x < 2700 && this.bg.texture.key == "bg42" && !this.matchUsed && !this.useMatchBtn) {
+        if(this.inventoryArr.includes("matches")) {
+          this.stop();
+          this.controlsLocked = true;
+          this.useMatchBtn = this.add.text(
+            this.cameras.main.centerX, 
+            this.cameras.main.centerY,
+            "Click to use match",
+            {fontFamily:"Moving", fontSize:"64px", color: "white",  stroke: '#000000',
+                strokeThickness: 2}
+          ).setOrigin(0.5).setScrollFactor(0).setDepth(101).setInteractive();
+
+          this.useMatchBtn.on("pointerdown", () => {
+            // Clean up button immediately
+            this.useMatchBtn.text = "";
+            this.useMatchBtn.destroy();
+            this.useMatchBtn = null;
+            this.matchUsed = true;
+
+            //screen face to black
+            this.tweens.add({
+              targets: this.overlayDark,
+              alpha: 1,
+              duration: 1000,
+              onComplete: () => {
+                this.player.x = 3800;
+                this.time.delayedCall(1000, () => {
+                  this.tweens.add({
+                    targets: this.overlayDark,
+                    alpha: 0,
+                    duration: 1000,
+                    onComplete: () => {
+                      console.log("DONE")
+                      this.controlsLocked = false
+                      this.isTransitioning = false;
+                      this.player.x += 10;
+                      this.player.flipX = false;
+                      this.matchUsed = false;
+                    }
+                  })
+                });
+              }
+            })
+          })
+        }
+        else {
+          this.walkIntoDark();
+        }
+      }
+      if(this.player.x < 3600 && this.player.x > 3500 && this.bg.texture.key == "bg42" && !this.matchUsed && !this.useMatchBtn) {
+        if(this.inventoryArr.includes("matches")) {
+          this.stop();
+          this.controlsLocked = true;
+          this.useMatchBtn = this.add.text(
+            this.cameras.main.centerX, 
+            this.cameras.main.centerY,
+            "Click to use match",
+            {fontFamily:"Moving", fontSize:"64px", color: "white",  stroke: '#000000',
+                strokeThickness: 2}
+          ).setOrigin(0.5).setScrollFactor(0).setDepth(101).setInteractive();
+
+          this.useMatchBtn.on("pointerdown", () => {
+            // Clean up button immediately
+            this.useMatchBtn.text = "";
+            this.useMatchBtn.destroy();
+            this.useMatchBtn = null;
+            this.matchUsed = true;
+
+            //screen face to black
+            this.tweens.add({
+              targets: this.overlayDark,
+              alpha: 1,
+              duration: 1000,
+              onComplete: () => {
+                this.player.x = 2600;
+                this.time.delayedCall(1000, () => {
+                  this.tweens.add({
+                    targets: this.overlayDark,
+                    alpha: 0,
+                    duration: 1000,
+                    onComplete: () => {
+                      console.log("DONE")
+                      this.controlsLocked = false
+                      this.isTransitioning = false;
+                      this.player.x -= 10;
+                      this.player.flipX = true;
+                      this.matchUsed = false;
+                    }
+                  })
+                });
+              }
+            })
+          })
+        }
+        else {
+          this.walkIntoDark();
+        }
+      }
     // Progress 8/13 scripted events
     if (progress == 6 || progress == 13) {
       // Trigger nurse dialogue at x > 2000 once
-      if (!this.p6NurseDialogueStarted && this.player.x > 2000) {
+      if (!this.p6NurseDialogueStarted && this.player.x > 2550) {
         this.p6NurseDialogueStarted = true;
-        this.lockControlsFor(1000);
-        
+        this.stop()
+        this.controlsLocked = true;
         let seq;
         //nurese son diyalog başlayınca 13 yaptık
         if (progress == 13) {
@@ -370,156 +487,17 @@ class scene2 extends baseScene{
             { text: "kids are outside?", leftPortrait: "docPort", rightPortrait: "nursePort", leftAnimation: "1", rightAnimation: null, name: "Nurse" }
           ];
         }
-        
+        this.cameras.main.pan(3200, this.cameras.main.y, 3000, 'Sine.easeInOut');
+        this.time.delayedCall(5000, () => {
         this.dialogue.startDialogueSequence(seq, () => {
           if (this.nurse) {
-            this.tweens.add({ targets: this.nurse, alpha: 0, duration: 500, onComplete: () => { this.nurse.destroy(); this.nurse = null; } });
+            this.tweens.add({ targets: this.nurse, alpha: 0, duration: 500, onComplete: () => { this.nurse.destroy(); this.nurse = null; this.controlsLocked = false; } });
           }
         });
-      }
+      });
     }
-
-    // Progress 8/9/13 match usage
-    if (progress == 6 || progress == 7 || progress == 13) {      // Block going beyond x > 2500 with warning (but only lock briefly)
-      if (this.player.x > 2500) {
-        if (!this.inventoryArr.includes("matches")) {
-          this.tutorText.setVisible(true)
-          this.p6BoundaryWarned = true;
-          this.player.x = 2450;
-          this.lockControlsFor(3000);
-          this.dialogue.dialogue("I dont want to walk into dark, i need to find a source of light", "docPort", null, "1", null, "Doctor");
-          this.time.delayedCall(2000, () => { this.p6BoundaryWarned = false; });
-        }
-      }
-      // Going forward past 2500
-      if (this.inventoryArr.includes("matches") && ((this.player.x > 2500) && (this.player.x < 3400) && (!this.matchButtonShown && !this.isTransitioning))) {
-        this.stop();
-        this.player.x = 2500;
-        this.lockControlsFor(2000);
-        
-        // Create match use button if not exists
-        if (!this.useMatchBtn) {
-          this.useMatchBtn = this.add.text(
-            this.cameras.main.centerX, 
-            this.cameras.main.centerY,
-            "Click to use match",
-            {fontFamily:"Moving", fontSize:"64px", color: "white"}
-          ).setOrigin(0.5).setScrollFactor(0).setDepth(101).setInteractive();
-          
-          this.useMatchBtn.on("pointerdown", () => {
-            if (this.isTransitioning) return;
-            this.isTransitioning = true;
-            this.useMatchBtn.destroy();
-            this.matchButtonShown = false;
-            
-            // Fade out, move player, fade in
-            this.dialogue.fadeIn(this.overlayDark, 1000);
-            
-            // Remove keyboard controls during transition
-            this.input.keyboard.removeAllListeners();
-            
-            // Wait for fade to complete, then teleport
-            this.time.delayedCall(2000, () => {
-              // Stop any existing movement and physics
-              console.log("MOVED")
-              this.player.setVelocity(0, 0);
-              this.player.x = 3500;
-              
-              // Force camera update
-              this.cameras.main.stopFollow();
-              this.cameras.main.pan(3500, this.player.y, 0);
-              this.cameras.main.startFollow(this.player, true);
-              
-              // Wait a bit then fade back in
-              this.time.delayedCall(300, () => {
-                this.dialogue.fadeOut(this.overlayDark, 1000);
-                this.time.delayedCall(1100, () => {
-                  // Re-enable keyboard controls
-                  this.input.keyboard.on("keydown-A", this.left.bind(this));
-                  this.input.keyboard.on("keydown-D", this.right.bind(this));
-                  this.input.keyboard.on("keyup-A", this.stop.bind(this));
-                  this.input.keyboard.on("keyup-D", this.stop.bind(this));
-                  this.input.keyboard.on("keydown-ESC", this.pause.bind(this));
-                  this.input.keyboard.on("keydown-SPACE", this.pause.bind(this));
-                  this.isTransitioning = false;
-                });
-              });
-            });
-          });
-          this.matchButtonShown = true;
-        }
-      }
-      
-      // Going backward from 3500
-      if (this.player.x < 3500 && this.player.x > 3400 && !this.matchButtonShown && !this.isTransitioning) {
-        this.stop();
-        this.player.x = 3500;
-        this.lockControlsFor(2000);
-        
-        // Create return button if not exists
-        if (!this.useMatchBtn) {
-          this.useMatchBtn = this.add.text(
-            this.cameras.main.centerX,
-            this.cameras.main.centerY,
-            "Click to use match",
-            {fontFamily:"Moving", fontSize:"64px", color: "white"}
-          ).setOrigin(0.5).setScrollFactor(0).setDepth(101).setInteractive();
-          
-          this.useMatchBtn.on("pointerdown", () => {
-            if (this.isTransitioning) return;
-            this.isTransitioning = true;
-            this.useMatchBtn.destroy();
-            this.matchButtonShown = false;
-            
-            // Fade out, move player, fade in
-            this.dialogue.fadeIn(this.overlayDark, 1000);
-            
-            // Remove keyboard controls during transition
-            this.input.keyboard.removeAllListeners();
-            
-            // Wait for fade to complete, then teleport
-            this.time.delayedCall(1200, () => {
-              // Stop any existing movement and physics
-              this.player.setVelocity(0, 0);
-              this.player.x = 2500;
-              this.player.flipX = true;
-              
-              // Force camera update
-              this.cameras.main.stopFollow();
-              this.cameras.main.pan(2500, this.player.y, 0);
-              this.cameras.main.startFollow(this.player, true);
-              
-              // Wait a bit then fade back in
-              this.time.delayedCall(300, () => {
-                this.dialogue.fadeOut(this.overlayDark, 1000);
-                this.time.delayedCall(1100, () => {
-                  // Re-enable keyboard controls
-                  this.input.keyboard.on("keydown-A", this.left.bind(this));
-                  this.input.keyboard.on("keydown-D", this.right.bind(this));
-                  this.input.keyboard.on("keyup-A", this.stop.bind(this));
-                  this.input.keyboard.on("keyup-D", this.stop.bind(this));
-                  this.input.keyboard.on("keydown-ESC", this.pause.bind(this));
-                  this.input.keyboard.on("keydown-SPACE", this.pause.bind(this));
-                  this.isTransitioning = false;
-                });
-              });
-            });
-          });
-          this.matchButtonShown = true;
-        }
-      }
-      
-      // Clear button when moving away
-      if (this.useMatchBtn && 
-          ((this.player.x < 2400 && this.player.x > 0) || 
-           (this.player.x > 3600 && this.player.x < this.mapWidth))) {
-        this.useMatchBtn.destroy();
-        this.useMatchBtn = null;
-        this.matchButtonShown = false;
-      }
     }
-
-    // Transition to scene3 when reaching the right edge
+   // Transition to scene3 when reaching the right edge
     if (this.player.x > this.mapWidth - 50 && !this.isTransitioning) {
       this.startTransitionToScene3();
       return;
