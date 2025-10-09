@@ -5,12 +5,13 @@ class badEnding extends Phaser.Scene {
 
   startFinalSequence() {
     // Clean up any existing scenes
-    this.scene.stop("dialogueOverlay");
+    if (this.scene.get('dialogueOverlay')) {
+      this.scene.stop("dialogueOverlay");
+    }
     
     // Set up fresh dialogue overlay
     this.scene.launch("dialogueOverlay");
     this.scene.bringToTop("dialogueOverlay");
-    this.dialogue = this.scene.get('dialogueOverlay');
 
     // Change background
     this.bg1 = this.add.image(0,0,"bg62").setOrigin(0);
@@ -22,42 +23,25 @@ class badEnding extends Phaser.Scene {
     this.doctor.flipX = true
     this.doctor.play("docIdle");
 
-    // Create kids sprite
-    this.kids = this.add.sprite(900, 700, "kids").setDepth(98).setScale(0.8).setVisible(false);
-    this.kids.play("kids1");
+    // Wait a bit for dialogue system to be fully initialized
+    this.time.delayedCall(500, () => {
+      this.dialogue = this.scene.get('dialogueOverlay');
+      
+      // Final dialogue sequence
+      const finalDialogue = [
+        { text: "good morning kids...", leftPortrait: "docPort", rightPortrait: null, leftAnimation: "4", rightAnimation: null, name: "Doctor" },
+        { text: "...", leftPortrait: null, rightPortrait: null, leftAnimation: null, rightAnimation: null, name: "Ayaz" },
+        { text: "...", leftPortrait: null, rightPortrait: null, leftAnimation: null, rightAnimation: null, name: "Aras" },
+        { text: "ill find a way... dont you guys ever worry okay?", leftPortrait: "docPort", rightPortrait: null, leftAnimation: "4", rightAnimation: null, name: "Doctor" },
+        { text: "ill find a way.", leftPortrait: "docPort", rightPortrait: null, leftAnimation: "4", rightAnimation: null, name: "Doctor" }
+      ];
 
-    // Wait for dialogue system to be ready
-    const tryStartDialogue = () => {
-      if (this.dialogue && this.dialogue.dialogueBox && this.dialogue.dialogueText && this.dialogue.scene.isActive()) {
-        // Final dialogue sequence
-        const finalDialogue = [
-          { text: "good morning kids...", leftPortrait: "docPort", rightPortrait: null, leftAnimation: "4", rightAnimation: null, name: "Doctor" },
-          { text: "...", leftPortrait: "docPort", rightPortrait: null, leftAnimation: "4", rightAnimation: null, name: "Ayaz" },
-          { text: "...", leftPortrait: "docPort", rightPortrait: null, leftAnimation: "4", rightAnimation: null, name: "Aras" },
-          { text: "ill find a way... dont you guys ever worry okay?", leftPortrait: "docPort", rightPortrait: null, leftAnimation: "4", rightAnimation: null, name: "Doctor" },
-          { text: "ill find a way.", leftPortrait: "docPort", rightPortrait: null, leftAnimation: "4", rightAnimation: null, name: "Doctor" }
-        ];
-
-        this.dialogue.startDialogueSequence(finalDialogue, () => {
-          // After dialogue, show final text with interaction
-          this.showFinalText();
-        });
-        return true;
-      }
-      return false;
-    };
-
-    // Try to start dialogue, retry if not ready
-    if (!tryStartDialogue()) {
-      this.time.addEvent({ 
-        delay: 100, 
-        callback: () => { 
-          if (!tryStartDialogue()) {
-            this.time.addEvent({ delay: 100, callback: tryStartDialogue });
-          }
-        }
+      // Force start the dialogue sequence
+      this.dialogue.startDialogueSequence(finalDialogue, () => {
+        // After dialogue, show final text with interaction
+        this.showFinalText();
       });
-    }
+    });
   }
 
   showFinalText() {
@@ -222,8 +206,7 @@ class badEnding extends Phaser.Scene {
                       // Start final sequence after a short delay to ensure cleanup
                       this.time.delayedCall(15000, () => {
                         // Clean up previous text
-                        if (this.currentTextObj) this.currentTextObj.destroy();
-                        if (this.currentOverlay) this.currentOverlay.destroy();
+                        finalTextObj.destroy();
                         // Start final sequence
                         this.startFinalSequence();
                       });

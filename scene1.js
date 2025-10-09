@@ -844,9 +844,6 @@ lockControlsFor(ms) {
         case this.drugs:
           this.tutorText.setVisible(false);
           this.createFlashEffect();
-          if (window.ending === "fix") {
-            this.startBadEndingTransition();
-          } else {
             this.musicPlayer.playSfx("writing")
             // Show "0 Days Left" and fade to black
             this.overlayDark = this.add.graphics();
@@ -872,11 +869,20 @@ lockControlsFor(ms) {
               
               this.scene.stop("inventoryOverlay");
               this.time.delayedCall(2500, () => {
-                this.scene.start("goodEnding");
+                let slot = "";
+                if(currentSlot == 1)
+                    slot = "first"
+                if(currentSlot == 2)
+                    slot = "second"
+                if(currentSlot == 3)
+                    slot = "third"
+                if(localStorage.getItem(slot+"SlotEnding") == "fix")
+                    this.scene.start("badEnding");
+                else
+                  this.scene.start("goodEnding");
               });
             });
-          }
-          break;
+         break;
         case this.lamp:
           if (this.lamp.texture.key == "lamp") {
             this.bg1.setTexture("testBg2");

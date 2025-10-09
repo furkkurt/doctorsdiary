@@ -125,7 +125,16 @@ class baseScene extends Phaser.Scene {
             15: "Go back to your office and face the consuqences of your choice"
         };
 
-        const message = messages[progress] || "";
+        var message = messages[progress] || "";
+        let slot = "";
+        if(currentSlot == 1)
+            slot = "first"
+        if(currentSlot == 2)
+            slot = "second"
+        if(currentSlot == 3)
+            slot = "third"
+        if(progress == 15 && localStorage.getItem(slot+"SlotLastRoom") == "1") 
+            message = "Take. Your. Meds."
         if (progress !== 0) {
             this.tutorText.setText(message);
             if (message) {
